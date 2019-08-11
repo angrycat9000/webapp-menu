@@ -71,10 +71,11 @@ class Item {
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
-            element.appendChild(Menu.iconGenerator.namedIcon('chevron_right'))
+            element.appendChild(Menu.iconGenerator('chevron_right'))
         }
 
-        element.setAttribute('data-menu-item-id', this.id);
+        if(this.id)
+            element.setAttribute('data-menu-item-id', this.id);
         element['data-menu-item'] = this;
         return this.element = element;
     }
@@ -183,6 +184,9 @@ var Position =  {
         return function(menu, container) {
             return positionPopup(menu, container, left, top, verticalMargin);
         }
+   },
+   absolute: function(left, top) {
+       return {top, left, name:'absolute'}
    }
 };
 
@@ -201,6 +205,8 @@ class Menu {
         addEventMember(this);
 
         this.state = 'closed';
+
+        this.autoClose = true;
     }
 
     /**
@@ -448,9 +454,8 @@ class Menu {
         if('function' == typeof item.action)
             item.action(event);
 
-        if(event._close)
+        if(this.autoClose && event._close)
             this.hide();    
-       // initiatingEvent.preventDefault();
     }
 }
 
@@ -474,7 +479,6 @@ class ListContainer extends Menu {
         this.stack = [];
 
         this.autoResize = true;
-        this.autoClose = true;
         this.events.on('closed', this.clearHeight,this);
 
         this.element.addEventListener('focusout', ()=>{

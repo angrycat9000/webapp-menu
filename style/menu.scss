@@ -1,14 +1,13 @@
 .menu-container {
     overflow:hidden;
-    position:absolute;
+    display:inline-block;
     background: $panel-background;
+    border:1px solid $panel-border;
     padding:0;
     margin:0;
-    width:320px;
-    max-height:calc(320px - 1.5rem);
-    border-radius:3px;
-    box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.2); 
-    z-index:30;
+    width:20rem;
+    max-height:calc(20rem - 1.5rem);
+    border-radius:0.25rem;
     transition:height 0.2s;
     transition-delay:0.2s;
 
@@ -20,6 +19,16 @@
         overflow: hidden;
     }
 }
+
+.menu_position__dockedRight,
+.menu-position__dockedLeft,
+.menu-position__dockedBottom,
+.menu-position__popup,
+.menu-position__absolute {
+    position:absolute;
+    z-index:30;
+}
+
 
 .menu-position__dockedRight,
 .menu-position__dockedLeft {
@@ -153,9 +162,7 @@
     background: $panel-background;
     padding:0;
     margin:0;
-    border-radius:3px;
-    box-shadow: 2px 2px 4px 2px rgba(0,0,0,0.2); 
-    z-index:30;
+    border-radius:0.25rem;
     display:flex;
     flex-direction:row;
     border-radius:0.5rem;

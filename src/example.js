@@ -5,9 +5,18 @@ import Menu from './Menu';
 
 
 const items = [
+    {label:'Submenu', type:Menu.ItemType.Nested, action:showSubMenu},
     {label:'Action 1', icon:''},
-    {label:'Action 2', icon:''}
+    {label:'Action 2', icon:''},
+    {label:'Action 3',}
 ];
+
+function showSubMenu() {
+    return [
+        {label:'Sub menu action 1'},
+        {label:'Sub menu action 2'}
+    ]
+}
 
 const menu = new Menu.ListContainer(items);
 
@@ -29,7 +38,9 @@ function run() {
     const button = document.createElement('button');
     button.innerHTML = 'Show Menu';
     button.addEventListener('click', (e)=>{
-        menu.show(document.body);
+        const rect = e.currentTarget.getBoundingClientRect();
+        const top = rect.top + rect.height + 8;
+        menu.show(document.body, Menu.Position.absolute(rect.left, top));
     })
     document.body.appendChild(button);
 
