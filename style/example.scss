@@ -1,0 +1,18 @@
+@import 'base';
+@import 'menu';
+
+button {
+    border: 1px solid $panel-border;
+    background: $panel-background;
+    font-size:1rem;
+    padding:0.5rem 1rem;
+    border-radius:0.25rem;
+}
+
+#toolbar {
+    .menu-toolbar{
+        position:static;
+        display:inline-block;
+    }
+    margin: 1rem 0;
+}

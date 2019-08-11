@@ -1,0 +1,38 @@
+{
+  "name": "webapp-menu",
+  "version": "1.0.0",
+  "description": "Tools for creating an accessible menu (for example: file, edit, toolbars) for web apps.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "develop": "webpack-dev-server --open --config webpack.development.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angrycat9000/webapp-menu.git"
+  },
+  "author": "Mark Dane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/angrycat9000/webapp-menu/issues"
+  },
+  "homepage": "https://github.com/angrycat9000/webapp-menu#readme",
+  "dependencies": {
+    "EventEmitter": "^1.0.0",
+    "material-icons": "^0.3.1"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^2.0.2",
+    "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
+    "html-webpack-plugin": "^4.0.0-beta.5",
+    "mini-css-extract-plugin": "^0.7.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.2.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
+  }
+}

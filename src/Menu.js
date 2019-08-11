@@ -1,7 +1,5 @@
 import Animation from './Animation';
-import { addEventFunctions, addEventMember } from './Events';
-import Utility from './Utility';
-import { AxisAlignedBoundingBox } from './Geometry';
+import {addEventFunctions, addEventMember } from './Events';
 
 var ItemType = {
     Action: 'action',
@@ -15,7 +13,7 @@ var ItemType = {
  */
 function iconToElement(icon) {
     if('string' == typeof icon)
-        return Utility.namedIcon(icon);
+        return Menu.iconGenerator(icon);
     else if(icon instanceof Node)
         return icon;
     else
@@ -73,7 +71,7 @@ class Item {
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
-            element.appendChild(Utility.namedIcon('chevron_right'))
+            element.appendChild(Menu.iconGenerator.namedIcon('chevron_right'))
         }
 
         element.setAttribute('data-menu-item-id', this.id);
@@ -456,7 +454,14 @@ class Menu {
     }
 }
 
+function materialIcon(name) {
+    const icon = document.createElement('i');
+    icon.className = 'material-icons';
+    icon.innerHTML = name;
+    return icon;
+}
 
+Menu.iconGenerator = materialIcon;
 
 /**
  * 
