@@ -46,9 +46,7 @@ class Item {
 
         let element = document.createElement('button');
         element.className  = `menu-item menu-item__${this.type}`;
-        element.setAttribute('role','menuitem');
-        // element.setAttribute('title', this.label); // removed title because it'll be redundant in some screen readers, and not available to keyboard-only users
-    
+        element.setAttribute('role','menuitem');    
         let icon = document.createElement('span');
         icon.className = "menu-item-icon";
         if(this.icon) {
