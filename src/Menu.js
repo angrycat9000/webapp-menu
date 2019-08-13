@@ -47,12 +47,20 @@ class Item {
         let element = document.createElement('button');
         element.className  = `menu-item menu-item__${this.type}`;
         element.setAttribute('role','menuitem');
-        element.setAttribute('title', this.label);
-
+        // element.setAttribute('title', this.label); // removed title because it'll be redundant in some screen readers, and not available to keyboard-only users
+    
         let icon = document.createElement('span');
         icon.className = "menu-item-icon";
-        if(this.icon) 
+        if(this.icon) {
+            
+            if(ItemType.Back == this.type) {
+                element.setAttribute('aria-label', "Back to previous level: "+this.label); // screen reader will read 'back to previous level' and visible text
+            } else {
+                element.setAttribute('aria-label', this.label); // add aria-label on the BUTTONS containing icons that don't have visible text
+            }
             icon.appendChild(iconToElement(this.icon));
+            icon.setAttribute('aria-hidden','true'); //otherwise screen readers could speak the icon's name
+        }
         element.appendChild(icon);
 
         let labelContainer = document.createElement('span');
@@ -71,7 +79,8 @@ class Item {
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
-            element.appendChild(Menu.iconGenerator('chevron_right'))
+            element.appendChild(Menu.iconGenerator('chevron_right'));
+            element.setAttribute('aria-haspopup','true'); //since this opens a submenu, it needs aria-haspopup
         }
 
         if(this.id)
@@ -463,6 +472,7 @@ function materialIcon(name) {
     const icon = document.createElement('i');
     icon.className = 'material-icons';
     icon.innerHTML = name;
+    icon.setAttribute('aria-hidden','true'); //otherwise screen readers will read the icon, and the text might read inconsistently here across screen readers, with the icon
     return icon;
 }
 
