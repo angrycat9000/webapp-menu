@@ -1,29 +1,41 @@
 import Animation from './Animation';
 import {addEventFunctions, addEventMember } from './Events';
 
-var ItemType = {
+/**
+ * @enum
+ * @readonly
+ */
+const ItemType = {
     Action: 'action',
     Nested: 'nested',
     Back:  'back',
 };
 
 /**
- * Returns an HTMLElementth for this icon name
- * @param {string|HTMLElement} icon
+ * @callback iconFactoryFunction
+ * @param {string} name
+ * @return {HTMLElement}
  */
-function iconToElement(icon) {
-    if('string' == typeof icon)
-        return Menu.iconGenerator(icon);
-    else if(icon instanceof Node)
-        return icon;
-    else
-        throw new Error('icon is not a string or HTMLElement');
-}
+
+/**
+ * @callback itemActionFunction
+ * @param {ItemActionEvent} event
+ */
 
 /**
  * 
  */
 class Item {
+    /** 
+     * @param {string} options.label
+     * @param {string} [options.label2]
+     * @param {string} [options.id]
+     * @param {string|Element} [options.icon]
+     * @param {itemActionFunction} [options.action]
+     * @param {*} [options.data] member to save caller defined data related to this item
+     * @param {ItemType} [options.type] defaults to ItemType.Action
+
+     */
     constructor(options) {
         if( ! options.label)
             throw new Error('Menu.Item must have a label');
@@ -51,8 +63,8 @@ class Item {
 
         let icon = document.createElement('span');
         icon.className = "menu-item-icon";
-        if(this.icon) 
-            icon.appendChild(iconToElement(this.icon));
+        if(this.icon instanceof Element)
+            icon.appendChild(this.icon);
         element.appendChild(icon);
 
         let labelContainer = document.createElement('span');
@@ -71,7 +83,7 @@ class Item {
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
-            element.appendChild(Menu.iconGenerator('chevron_right'))
+            element.appendChild(Menu.defaultIconFactory('chevron_right'))
         }
 
         if(this.id)
@@ -80,13 +92,27 @@ class Item {
         return this.element = element;
     }
 
+    /**
+     * @param {iconFactoryFunction}
+     */
+    convertIconStringToElement(factory) {
+        if( ! this.icon || 'string' != typeof this.icon || ! factory)
+            return;
+
+        let iconElement = factory(this.icon);
+        const iconContainer = this.element.querySelector('.menu-item-icon');
+        if(iconContainer.firstElementChild)
+            iconContainer.removeChild(iconContainer.firstElementChild)
+        iconContainer.appendChild(iconElement);
+    }
+
     /** @property {Boolean} disabled true if the item is disabled */
     get disabled() {return this.element.hasAttribute('disabled')}
     set disabled(value) {
         if(value)
             this.element.setAttribute('disabled','');
         else
-            this.element.removeAttribute('disabled');
+            this.element.removeAttribute('disabjhxcled');
     }
 
     static fromElement(element) {
@@ -102,7 +128,8 @@ class Item {
  * 
  */
 class List {
-    constructor(items) {
+    constructor(items, iconFactory) {
+        this.iconFactory = iconFactory
         this.items = items.map(item=>item instanceof Item ? item : new Item(item));
         this.element = document.createElement('div');
         this.element.className = 'menu-list';
@@ -113,6 +140,7 @@ class List {
             const item = this.items[i];
             hasIcons = hasIcons || item.icon
             item.element.setAttribute('tabindex', (0==i) ? '0' : '-1');
+            item.convertIconStringToElement(this.iconFactory);
             this.element.appendChild(item.element);
         }
         this.element.setAttribute('data-menu-list-hasIcons', hasIcons ? 'true' : 'false');
@@ -170,33 +198,122 @@ function computeResponsivePosition(menu, container, left, top, verticalMargin, s
     return positionPopup(menu, container, left, top, verticalMargin);
 }
 
-var Position =  {
-   DockedBottom: {bottom:0, left:0, right:0, name:'dockedBottom'},
-   DockedRight: {right:0, bottom:0, top:0, name:'dockedRight'},
-   DockedLeft: {left:0, bottom:0, top:0, name:'dockedLeft'},
-   Unset: {name:'unset'},
-   responsivePopup: function(left, top, verticalMargin=16, size=400, portrait=Position.DockedBottom, landscape=Position.DockedRight) {
-       return function(menu, container) {
-           return computeResponsivePosition(menu, container, left, top, verticalMargin, size, portrait, landscape);
-       }
-   },
-   popup: function(left, top, verticalMargin) {
-        return function(menu, container) {
-            return positionPopup(menu, container, left, top, verticalMargin);
+/**
+ * @typedef ComputedPosition
+ * @property {string} [name] used to generate a CSS class in the form of menu-position__name
+ * @property {number|string} [left]
+ * @property {number|string} [top]
+ * @property {number|string} [right]
+ * @property {number|string} [bottom]
+ */
+
+
+/**
+ * Provides ability to defer computation of position until after the elementn has been added
+ * to the DOM.  This allows accessing the size of the element;
+ */
+class Position {
+    /**
+     * @param {function|ComputedPosition} data An object with the position data or a function that will
+     *                                         a ComputedPosition object.
+     */
+    constructor(data) {
+        this.data = data;
+    }
+
+    static cssClassName(name) {
+        return  name ? `menu-position__${name}` : '';
+    }
+
+    /**
+     * Apply this position to the menu element.
+     * @param {HTMLElement} menu
+     * @param {HTMLElement} container
+     */
+    apply(menu, container) {
+        const data = 'function' === typeof this.data ? this.data(menu,container) : this.data
+
+        const newCssClass = Position.cssClassName(data.name);
+        for(let cssClass of menu.classList) {
+            if(cssClass.startsWith('menu-position__') && cssClass != newCssClass)
+                menu.classList.remove(cssClass);
         }
-   },
-   absolute: function(left, top) {
-       return {top, left, name:'absolute'}
-   }
-};
+    
+        for(let prop of ['top', 'bottom', 'left', 'right']) {
+            let value = data[prop]
+            if('undefined' === typeof value )
+                value = '';
+            else if('number' === typeof value) 
+                value = value +'px';
+            menu.style[prop] = value;
+        }
 
+        if(newCssClass)
+            menu.classList.add(newCssClass);
+    }
+}
 
+/**
+ * @instance {Position} Static treat the menu as a static position and does not set the top, left, bottom, or right values on the element
+ *                             Allow overriding the positioning by setting an id on the element and using CSS
+ */
+Position.Static = new Position({name:'static'});
+
+/** 
+ * @function Absolute
+ * @param {number} left
+ * @param {number} top
+ * @return {Position}
+*/
+Position.Absolute = function(left, top) {
+    return new Position({name:'absolute', left:left, top:top})
+}
+
+/** @instance {Position} DockedBottom keeps the menu locked to the bottom, left, and right sides of the screen*/
+Position.DockedBottom = new Position({name:'dockedBottom'});
+
+/** @instance {Position} DockedRight keeps the menu locked to the top, right, and bottom sides of the screen */
+Position.DockedRight = {name:'dockedRight'}
+
+/** @instance {Position} DockedLeft keeps the menu locked to the top, left, and bottom sides of the screen */
+Position.DockedLeft = new Position({name:'dockedLeft'});
+
+/** 
+ * @function DockablePopup shows the menu as a floating popup of if the container meets a minimum size.  Otherwise
+ *                                    sets it as docked to the bottom or right
+ * @param {number} left
+ * @param {number} top
+ * @param {number} verticalMargin amount of space between the point and the top or bottom of the menu.
+ * @return {Position}
+ */
+Position.DockablePopup = function(left, top, verticalMargin=16, size=400, portrait=Position.DockedBottom, landscape=Position.DockedRight) {
+    const f = (menu, container)=>computeResponsivePosition(menu, container, left, top, verticalMargin, size, portrait, landscape);
+    return new Position(f);
+}
+
+/** 
+ * @function DockablePopup Shows the menu as a floating popup within the container
+ * @param {number} left
+ * @param {number} top
+ * @param {number} verticalMargin amount of space between the point and the top or bottom of the menu.
+ * @return {Position}
+ */
+Position.Popup = function(left, top, verticalMargin = 16) {
+    const f = (menu, container)=>positionPopup(menu, container, left, top, verticalMargin);
+    return new Position(f);
+}
 
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
  */
 class Menu {
-    constructor() {
+    /**
+     * @param {HTMLElement} [options.host] element to add the menu to when it is opened
+     * @param {iconFactoryFunction} [options.iconFactory]
+     */
+    constructor(options) {
+        options = options || {};
+
         this.element = document.createElement('div');
         this.element.className = 'menu';
         this.element['data-menu'] = this;
@@ -205,8 +322,11 @@ class Menu {
         addEventMember(this);
 
         this.state = 'closed';
-
         this.autoClose = true;
+        this.host = options.host || document.body;
+        this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
+        this.position = Position.Static;
+        this.useAnimation = true;
     }
 
     /**
@@ -216,7 +336,6 @@ class Menu {
     get itemParent() {
         return this.element;
     }
-
 
     /**
      * @param {HTMLElement} element
@@ -232,10 +351,19 @@ class Menu {
 
     /**
      * If the menu is opened, closed, or in transition
+     * @property {string} state;
      */
     get state() {return this._state;}
     set state(value) {
         this._state = value;
+    }
+
+    startTransition(transition) {
+        if(this.useAnimation)
+            transition.play();
+        else
+            transition.fastForward();
+        return transition;
     }
 
     /**
@@ -245,23 +373,25 @@ class Menu {
      * 
      * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
      *                     the menu is triggered via a pointer event instead of a keyboard event
+     * @return {Transition}
      */
-    show(host, position, suppressFocus=false) {
+    show(suppressFocus=false) {
+
+        if( ! this.host)
+            throw new Error('Tried to show Menu without a host element');
+
         this.previousFocus = document.activeElement;
         this.state = 'opening';
-        this.host = host;
-        //this.position = position || Position.Unset;
-        position = position || Position.Unset;
-
 
         let anim = new Animation.Transition(this.element, 'menushow');
-        anim.on('beforestart',(e)=>{
-            if('opening' !== this.state)
-                e.cancel();
-        })
         anim.on('firstframe', (e)=>{
-            host.appendChild(this.element);
-            this.setPosition(position);
+            if('opening' !== this.state) {
+                e.transition.stop();
+                return;
+            }
+
+            this.host.appendChild(this.element);
+            this.position.apply(this.element, this.host);
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -269,34 +399,12 @@ class Menu {
                 this.setDefaultFocus();
             this.events.emit('opened', {menu:this});
         })
-        anim.play();
-        return anim;
-    }
-    
-    /**
-     * 
-     */
-    setPosition(position) {
-        if('function' === typeof position)
-            position = position(this.element, this.host);
 
-        const newCssClass = position.name ? `menu-position__${position.name}` : '';
-        for(let cssClass of this.element.classList) {
-            if(cssClass.startsWith('menu-position__') && cssClass != newCssClass)
-                this.element.classList.remove(cssClass);
-        }
-    
-        for(let prop of ['top', 'bottom', 'left', 'right'])
-            this.element.style[prop] = 'undefined' === typeof position[prop] ? '' : position[prop] +'px';
-
-        if(newCssClass)
-            this.element.classList.add(newCssClass);
-
-        this.position = position;
+        return this.startTransition(anim);
     }
 
     /**
-     * 
+     * @return {Transition}
      */
     hide() {
         if(this.state == 'closed' || this.state == 'closing')
@@ -305,9 +413,9 @@ class Menu {
         this.state = 'closing';
 
         let anim = new Animation.Transition(this.element, 'menuhide');
-        anim.on('beforestart',(e)=>{
+        anim.on('firstframe',(e)=>{
             if(this.state !== 'closing')
-                e.cancel();
+                e.transition.stop();
         });
         anim.on('complete', ()=>{
             if(this.state != 'closing')
@@ -320,13 +428,12 @@ class Menu {
             if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body))
                 this.previousFocus.focus();
             
-            this.host = null;
             this.previousFocus = null;
             this.setFocusOn(null);
             this.events.emit('closed', {menu:this});
         });
-        anim.play();
-        return anim;
+
+        return this.startTransition(anim);
     }
 
     /**
@@ -444,42 +551,59 @@ class Menu {
         if(item.disabled)
             return;
 
+        
+        let closeMenu = true;
+        /** 
+         * @typedef ItemActionEvent 
+         * @property {Menu} menu
+         * @property {Item} item
+         * @property {Event} initiatingEvent
+         * @function preventClose
+        */
         const event = {
             menu:this,
             item:item,
             event:initiatingEvent, 
-            _close: true,
-            preventClose:function(){this._close = false}
+            preventClose:function(){closeMenu = false}
         };
         if('function' == typeof item.action)
             item.action(event);
 
-        if(this.autoClose && event._close)
+        if(this.autoClose && closeMenu)
             this.hide();    
+    }
+
+
+    /**
+     * @type {Position|ComputedPosition} position
+     */
+    get position() {return this._position;}
+    set position(value) {
+        if( ! (value instanceof Position))
+            value = new Position(value);
+
+        this._position = value;
     }
 }
 
-function materialIcon(name) {
-    const icon = document.createElement('i');
-    icon.className = 'material-icons';
-    icon.innerHTML = name;
-    return icon;
-}
-
-Menu.iconGenerator = materialIcon;
 
 /**
  * 
  */
 class ListContainer extends Menu {
-    constructor(list) {
-        super();
+    /**
+     * 
+     */
+    constructor(list, options) {
+        super(options);
+
         this.element.classList.add('menu-container');
         
         this.stack = [];
 
         this.autoResize = true;
         this.events.on('closed', this.clearHeight,this);
+
 
         this.element.addEventListener('focusout', ()=>{
             window.requestAnimationFrame(()=>{
@@ -502,13 +626,14 @@ class ListContainer extends Menu {
         this.innerElement = document.createElement('div');
         this.element.appendChild(this.innerElement);
 
-        list = list instanceof List ? list : new List(list);
-        this.stack.push(list);
+        list = new List(list, this.iconFactory);
+        this.stack.push({list, parent:null});
         this.innerElement.appendChild(list.element);
     }
-    show(host, position, suppressFocus) {
-        const anim = super.show(host, position, suppressFocus);
+    show(suppressFocus) {
+        const anim = super.show(suppressFocus);
         anim.on('firstframe', this.resize, this);
+        return anim;
     }
 
     clearHeight() {
@@ -522,7 +647,7 @@ class ListContainer extends Menu {
      */
     resize() {
         const width = this.element.clientWidth; 
-        let height = this.element.clientHeight;
+        let height = this.element.clientHeight; 
 
         if(this.autoResize && this.position !== Position.DockedRight &&  this.position !== Position.DockedLeft) {
             height = this.currentList.element.scrollHeight;
@@ -551,43 +676,80 @@ class ListContainer extends Menu {
         this.currentList.element.style.height = this.element.clientHeight + 'px';
     }
 
-    push(list) {
-        list = list instanceof List ? list : new List(list);
-        this.stack.push(list);
+    /**
+     * @param {Array<Item>} list
+     * @param {Item} item Item in the previous menu level that opened this level.  Null for first level
+     */
+    push(list, item) {
+
+        if(item) {
+            const back = {
+                icon: 'arrow_back',
+                label:item.label, 
+                id:'menu-back', 
+                type:ItemType.Back
+            };
+            list = [back].concat(list);
+        }
+
+        list = new List(list, this.iconFactory);
+        this.stack.push({list, parent:item});
 
         let anim = new Animation.Transition(this.innerElement, 'menuresize');
-        anim.on('firstframe',()=>{this.innerElement.appendChild(list.element);});
-        anim.on('secondframe',this.resize, this);
+        anim.on('firstframe',()=>{
+            this.innerElement.appendChild(list.element);
+            this.resize();
+        });
         anim.on('complete', ()=>{
             this.resizeForScroll();
             this.setDefaultFocus()
         });
-        anim.play();
+
+        return this.startTransition(anim);
     }
 
     get currentList() {
-        return this.stack[this.stack.length - 1];
+        return this.stack[this.stack.length - 1].list;
     }
 
     get itemParent() {
         return this.currentList.element
     }
 
-    pop() {
-        if(this.stack.length < 2)
-            return;
+    /**
+     * @property {Array<Item>} itemPath for nested menus, returns the menu items selected to
+     *                           reach the current level.  Array is length n - 1 where n is the
+     *                           number of levels in the menu.
+     */
+    get itemPath() {
+        return this.stack.slice(1).map(i=>i.parent);
+    }
 
-        this.stack.pop();
+    /**
+     * @param {Boolean} all True to return to the first level menu.  False
+     *                      to just move one level up.  Defaults to false.
+     * @return {Transition|false} false if it failed to pop any items.  Transitino
+     *                         for changing display otherwise;
+     */
+    pop(all=false) {
+        if(this.stack.length < 2)
+            return false;
+
+        if(all)
+            this.stack = this.stack.slice(0,1);
+        else
+            this.stack.pop();
 
         let anim = new Animation.Transition(this.innerElement, 'menupop');
         anim.on('secondframe', this.resize, this);
         anim.on('complete', ()=>{
-            this.setDefaultFocus();
-            this.resizeForScroll();
             while(this.innerElement.children.length > this.stack.length)
                 this.innerElement.removeChild(this.innerElement.lastElementChild);
+            this.setDefaultFocus();
+            this.resizeForScroll();
         });
-        anim.play();
+
+        return this.startTransition(anim);
     }
 
     activate(item, initiatingEvent) {
@@ -601,17 +763,11 @@ class ListContainer extends Menu {
             const list = item.action(event);
             if( ! Array.isArray(list))
                 throw new Error('Nested menu item did not return an array of items');
-            
-            const back = {
-                icon: 'arrow_back',
-                label:item.label, 
-                id:'menu-back', 
-                type:ItemType.Back
-            };
-            this.push([back].concat(list));
+
+            this.push(list, item);
             initiatingEvent.preventDefault();
         } else {
-            super.activate(item);
+            super.activate(item, initiatingEvent);
         }
     }
 
@@ -637,12 +793,25 @@ class ListContainer extends Menu {
 
 addEventFunctions(Menu.prototype);
 
-/**
+/** 
  * 
  */
+Menu.defaultIconFactory = function (name) {
+    const icon = document.createElement('i');
+    icon.className = 'material-icons';
+    icon.innerHTML = name;
+    return icon;
+}
+
+
 class Toolbar extends Menu {
-    constructor(items) {
-        super();
+    /**
+     * @param {Array<Item>} items
+     * @param {HTMLElement} [options.parent]
+     * @param {iconFactoryFunction} [options.iconFactory]
+     */
+    constructor(items, options={}) {
+        super(options);
 
         this.element.classList.add('menu-toolbar');
         this.element.setAttribute('role', 'menu');
@@ -650,6 +819,7 @@ class Toolbar extends Menu {
         this.items = items.map(item=>item instanceof Item ? item : new Item(item));
         for(let i = 0; i < this.items.length; i++) {
             const item = this.items[i];
+            item.convertIconStringToElement(this.iconFactory);
             this.element.appendChild(item.element)
             item.element.setAttribute('tabindex', 0==i ? '0' : '-1');
         }
@@ -657,8 +827,5 @@ class Toolbar extends Menu {
 }
 
 
-
-
 var menuExport = {ItemType, Item, Menu, ListContainer, Toolbar, Position};
-
 export default menuExport;

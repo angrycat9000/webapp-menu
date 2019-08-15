@@ -1,9 +1,14 @@
-@import 'base';
+
+$menu-border:1px solid #808080;
+$menu-background:#e0e0e0;
+$menu-text:#202020;
+$menu-transition-duration: 0.4s;
+
 @import 'menu';
 
 button {
-    border: 1px solid $panel-border;
-    background: $panel-background;
+    border: $menu-border;
+    background: $menu-background;
     font-size:1rem;
     padding:0.5rem 1rem;
     border-radius:0.25rem;
