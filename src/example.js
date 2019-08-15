@@ -33,7 +33,8 @@ function run() {
     ]
     const toolbar = new Menu.Toolbar(tools , {iconFactory:materialIcon});
     toolbar.element.id = 'toolbar';
-    toolbar.autoClose = false;    
+    toolbar.autoClose = false;
+    toolbar.useAnimation = false;
 
     const toolbarContainer = document.createElement('div');
     toolbarContainer.id='toolbar';
