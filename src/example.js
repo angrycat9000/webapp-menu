@@ -38,6 +38,7 @@ function run() {
 
     const button = document.createElement('button');
     button.innerHTML = 'Show Menu';
+    button.setAttribute('aria-haspopup','true'); // since this button spawns an ARIA menu, set aria-haspopup
     button.addEventListener('click', (e)=>{
         const rect = e.currentTarget.getBoundingClientRect();
         const top = rect.top + rect.height + 8;
