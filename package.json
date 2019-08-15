@@ -18,8 +18,7 @@
   },
   "homepage": "https://github.com/angrycat9000/webapp-menu#readme",
   "dependencies": {
-    "EventEmitter": "^1.0.0",
-    "material-icons": "^0.3.1"
+    "EventEmitter": "^1.0.0"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^2.0.2",
@@ -30,6 +29,7 @@
     "node-sass": "^4.12.0",
     "sass-loader": "^7.2.0",
     "style-loader": "^0.23.1",
+    "svg-inline-loader": "^0.8.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",

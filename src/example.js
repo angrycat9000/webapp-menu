@@ -1,7 +1,13 @@
 import '../style/example.scss';
-import 'material-icons/iconfont/material-icons.scss';
 
 import Menu from './Menu';
+
+function materialIcon(name) {
+    const icon = document.createElement('i');
+    icon.className = 'material-icons';
+    icon.innerHTML = name;
+    return icon;
+}
 
 function run() {
     const items = [
@@ -25,7 +31,7 @@ function run() {
         {label:'Upload', icon:'cloud_upload'},
         {label:'Delete', icon:'delete'},
     ]
-    const toolbar = new Menu.Toolbar(tools);
+    const toolbar = new Menu.Toolbar(tools , {iconFactory:materialIcon});
     toolbar.element.id = 'toolbar';
     toolbar.autoClose = false;    
 

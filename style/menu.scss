@@ -120,6 +120,14 @@ $menu-transition-duration: 0.4s;
   }
 }
 
+
+.menu-item-nestedIcon,
+.menu-item__back .menu-item-icon svg {
+  fill: currentColor;
+  width:24px;
+  height:24px;
+}
+
 .animation-menushow__active,
 .animation-menuhide__active {
   transition: opacity $menu-transition-duration, transform $menu-transition-duration;

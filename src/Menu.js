@@ -1,6 +1,16 @@
 import Animation from './Animation';
 import {addEventFunctions, addEventMember } from './Events';
 
+import backSvgIcon from '../icons/back.svg';
+import nestedSvgIcon from '../icons/nested.svg';
+
+function svgIconFromString(text) {
+    const div = document.createElement('div');
+    div.innerHTML = text;
+    div.firstElementChild.setAttribute('aria-hidden', 'true')
+    return div.firstElementChild;
+}
+
 /**
  * @enum
  * @readonly
@@ -70,7 +80,7 @@ class Item {
         icon.className = "menu-item-icon";
         icon.setAttribute('aria-hidden','true'); //otherwise screen readers could speak the icon's name
         if(this.icon instanceof Element)
-            icon.appendChild(iconToElement(this.icon));
+            icon.appendChild(this.icon);
         element.appendChild(icon);
 
 
@@ -90,7 +100,9 @@ class Item {
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
-            element.appendChild(Menu.defaultIconFactory('chevron_right'))
+            const nestedIcon = svgIconFromString(nestedSvgIcon);
+            nestedIcon.classList.add('menu-item-nestedIcon');
+            element.appendChild(nestedIcon);
             element.setAttribute('aria-haspopup','true'); //since this opens a submenu, it needs aria-haspopup
         }
 
@@ -120,7 +132,7 @@ class Item {
         if(value)
             this.element.setAttribute('disabled','');
         else
-            this.element.removeAttribute('disabjhxcled');
+            this.element.removeAttribute('disabled');
     }
 
     static fromElement(element) {
@@ -692,7 +704,7 @@ class ListContainer extends Menu {
 
         if(item) {
             const back = {
-                icon: 'arrow_back',
+                icon: svgIconFromString(backSvgIcon),
                 label:item.label, 
                 id:'menu-back', 
                 type:ItemType.Back
@@ -802,14 +814,9 @@ class ListContainer extends Menu {
 addEventFunctions(Menu.prototype);
 
 /** 
- * 
+ * Set this as a fallback for any newly created Menu objects to use as the icon factory
  */
-Menu.defaultIconFactory = function (name) {
-    const icon = document.createElement('i');
-    icon.className = 'material-icons';
-    icon.innerHTML = name;
-    return icon;
-}
+Menu.defaultIconFactory = null;
 
 
 class Toolbar extends Menu {
