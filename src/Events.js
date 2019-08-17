@@ -1,4 +1,5 @@
-var EventEmitter = require('EventEmitter').default;
+const EventEmitter = require('EventEmitter').default;
+//import EventEmitter from 'EventEmitter';
 
 /**
 *

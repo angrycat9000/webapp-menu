@@ -1,6 +1,5 @@
 import '../style/example.scss';
-
-import Menu from './Menu';
+import Menu from './api.js';
 
 function materialIcon(name) {
     const icon = document.createElement('i');

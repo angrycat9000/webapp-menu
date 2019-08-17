@@ -1,12 +1,8 @@
-/*
-These are the variables that should be defined.
-
-$menu-border:1px solid #808080;
-$menu-background:#e0e0e0;
-$menu-text:#202020;
-$menu-transition-duration: 0.4s;
-
-*/
+$menu-border:1px solid #808080 !default;
+$menu-background:#e0e0e0 !default;
+$menu-text:#202020 !default;
+$menu-transition-duration: 0.4s !default;
+$menu-border-radius: 0.25rem !default;
 
 @mixin focus() {
   &:focus {
@@ -25,7 +21,7 @@ $menu-transition-duration: 0.4s;
   margin:0;
   width:20rem;
   max-height:calc(20rem - 1.5rem);
-  border-radius:0.25rem;
+  border-radius: $menu-border-radius;
   transition:height $menu-transition-duration / 2;
   transition-delay: $menu-transition-duration / 2;
 
@@ -191,7 +187,7 @@ $menu-transition-duration: 0.4s;
   margin:0;
   display:flex;
   flex-direction:row;
-  border-radius:0.5rem;
+  border-radius: $menu-border-radius;
   border: $menu-border;
 
   .menu-item {

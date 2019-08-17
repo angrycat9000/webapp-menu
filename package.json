@@ -2,10 +2,12 @@
   "name": "webapp-menu",
   "version": "1.0.0",
   "description": "Tools for creating an accessible menu (for example: file, edit, toolbars) for web apps.",
-  "main": "index.js",
+  "main": "dist/webapp-menu.js",
+  "style": "dist/webapp-menu.css",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "webpack-dev-server --open --config webpack.development.config.js"
+    "develop": "webpack-dev-server --open --config webpack.develop.config.js",
+    "build": "webpack --mode production --config webpack.library.config.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,9 @@
     "EventEmitter": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^2.0.2",
     "css-loader": "^3.2.0",
     "file-loader": "^4.2.0",
@@ -32,7 +37,6 @@
     "svg-inline-loader": "^0.8.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1",
-    "webpack-merge": "^4.2.1"
+    "webpack-dev-server": "^3.2.1"
   }
 }
