@@ -81,7 +81,14 @@ class Position {
      * @param {HTMLElement} container
      */
     apply(menu, container) {
-        const data = 'function' === typeof this.data ? this.data(menu,container) : this.data
+        const data = 'function' === typeof this.data ? this.data(menu,container) : this.data;
+
+        // Sometimes a function will want to return one of the instance values on Position
+        // In that case, it needs to run again to get the computed position value.
+        if(data instanceof Position) {
+            data.apply(menu, container);
+            return;
+        }
 
         const newCssClass = Position.cssClassName(data.name);
         for(let cssClass of menu.classList) {
@@ -123,7 +130,7 @@ Position.Absolute = function(left, top) {
 Position.DockedBottom = new Position({name:'dockedBottom'});
 
 /** @instance {Position} DockedRight keeps the menu locked to the top, right, and bottom sides of the screen */
-Position.DockedRight = {name:'dockedRight'}
+Position.DockedRight = new Position({name:'dockedRight'});
 
 /** @instance {Position} DockedLeft keeps the menu locked to the top, left, and bottom sides of the screen */
 Position.DockedLeft = new Position({name:'dockedLeft'});
