@@ -1,11 +1,13 @@
 const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  mode:'production',
   entry: {
     "webapp-menu": Path.resolve(__dirname, 'src/bundle.js'),
+    "webapp-menu.min": Path.resolve(__dirname, 'src/bundle.js'),
   },
   output: {
     path: Path.join(__dirname, 'dist'),
@@ -17,6 +19,17 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin()
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserJSPlugin({
+        test: /\.min\.js$/
+      }),
+     new OptimizeCSSAssetsPlugin({
+        assetNameRegExp: /\.min\.css$/
+      })
+    ],
+  },
   module: {
     rules: [
       {
@@ -42,6 +55,11 @@ module.exports = {
         ],
       }
     ]
+  },
+  stats: {
+    all:false,
+    errors:true,
+    assets:true,
   }
 };
 

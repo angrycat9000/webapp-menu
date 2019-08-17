@@ -1,19 +1,23 @@
 {
   "name": "webapp-menu",
   "version": "1.0.0",
-  "description": "Tools for creating an accessible menu (for example: file, edit, toolbars) for web apps.",
-  "main": "dist/webapp-menu.js",
+  "description": "Create accessible menus for web apps (eg. file, edit, context menus)",
+  "browser": "dist/webapp-menu.js",
   "style": "dist/webapp-menu.css",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "webpack-dev-server --open --config webpack.develop.config.js",
-    "build": "webpack --mode production --config webpack.library.config.js"
+    "build": "webpack --mode production --config webpack.library.config.js",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/angrycat9000/webapp-menu.git"
   },
   "author": "Mark Dane",
+  "contributors":[
+    "Alex Umstead"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/angrycat9000/webapp-menu/issues"
@@ -32,11 +36,23 @@
     "html-webpack-plugin": "^4.0.0-beta.5",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
     "sass-loader": "^7.2.0",
     "style-loader": "^0.23.1",
     "svg-inline-loader": "^0.8.0",
+    "terser-webpack-plugin": "^1.4.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"
-  }
+  },
+  "keywords": [
+    "menu",
+    "toolbar",
+    "ui",
+    "accessible",
+    "webapp",
+    "popup",
+    "context menu",
+    "context toolbar"
+  ]
 }
