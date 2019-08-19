@@ -100,8 +100,8 @@ class ListContainer extends Menu {
         // it shrinks the N+1 lists to fit in the space for N when animating
         this.innerElement.style.width = (width * (this.stack.length +1)) + 'px';
 
-        let active = this.currentList.element;
-        active.style.width = width + 'px';
+        for(let child of this.innerElement.children)
+            child.style.width = width + 'px';
         // set height in resizeForScroll()
     }
 
