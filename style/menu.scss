@@ -3,6 +3,10 @@ $menu-background:#e0e0e0 !default;
 $menu-text:#202020 !default;
 $menu-transition-duration: 0.4s !default;
 $menu-border-radius: 0.25rem !default;
+$menu-highlight-color: #40C4FF !default;
+
+$menu-hover-background: rgba($menu-highlight-color, 0.5) !default;
+$menu-pressed-background: $menu-highlight-color !default;
 
 @mixin focus() {
   &:focus {
@@ -12,208 +16,14 @@ $menu-border-radius: 0.25rem !default;
   }
 }
 
-.menu-container {
-  overflow:hidden;
-  display:inline-block;
-  background: $menu-background;
-  border: $menu-border;
-  padding:0;
-  margin:0;
-  width:20rem;
-  max-height:calc(20rem - 1.5rem);
-  border-radius: $menu-border-radius;
-  transition:height $menu-transition-duration / 2;
-  transition-delay: $menu-transition-duration / 2;
-
-  > div  {
-      display:flex;
-      flex-direction:row;
-      overflow: hidden;
-  }
-}
-
-.menu_position__dockedRight,
-.menu-position__dockedLeft,
-.menu-position__dockedBottom,
-.menu-position__popup,
-.menu-position__absolute {
-  position:absolute;
-  z-index:30;
-}
+@import 'animation.scss';
+@import 'position.scss';
+@import 'item.scss';
+@import 'toolbar.scss';
+@import 'listcontainer.scss';
 
 
-.menu-position__dockedRight,
-.menu-position__dockedLeft {
-  max-height:unset;
-}
-
-.menu-position__dockedBottom {
-  max-width:unset;
-  width:unset;
-}
-
-.menu-list {
-  overflow: hidden;
-  height:100%;
-  width:100%;
-  padding:0;
-  margin:0;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .menu-item {
-      font-size:1rem;
-      box-sizing: border-box;
-      background:none;
-      border:none;
-      padding:0 0.5rem;
-      margin:0;
-      height:3rem;
-      width:100%;
-      display:flex;
-      align-items: center;
-      justify-content:flex-start;
-      @include focus;
-
-      color: $menu-text;
-      position:relative;
-
-      .menu-item-label {
-          text-align:left;
-          flex-grow:1;
-          flex-basis:100%;
-
-      }
-      .menu-item-label span {
-          display:block;
-      }
-
-      .menu-item-label > span:nth-child(2) {
-          font-size:75%;
-          opacity:0.75;
-          margin-top:0.25rem;
-      }
 
 
-      .menu-item-icon,
-      .menu-item-icon2 {
-          height:2rem;
-          width:2rem;
-          display:flex;
-          align-items: center;
-          justify-content: center;
-          flex-grow:0;
-          flex-shrink:0;
-      }
-  }
-
-  .menu-item__back {
-      position:sticky;
-      top:0;
-      z-index:1;
-      background-color: $menu-background;
-  }
-
-  &[data-menu-list-hasIcons=false] .menu-item-icon{
-      display:none;
-  }
-}
 
 
-.menu-item-nestedIcon,
-.menu-item__back .menu-item-icon svg {
-  fill: currentColor;
-  width:24px;
-  height:24px;
-}
-
-.animation-menushow__active,
-.animation-menuhide__active {
-  transition: opacity $menu-transition-duration, transform $menu-transition-duration;
-}
-
-.animation-menushow__first,
-.animation-menuhide__second {
-  transform: scale(0.8,0.8);
-  opacity:0
-}
-.animation-menushow__second,
-.animation-menuhide__first
-{
-  transform: scale(1,1);
-  opacity:1
-}
-
-.animation-menushow__active.menu-position__dockedBottom,
-.animation-menushow__active.menu-position__dockedRight,
-.animation-menushow__active.menu-position__dockedLeft  {
-  transition: transform $menu-transition-duration;
-}
-
-.animation-menushow__first.menu-position__dockedBottom,
-.animation-menuhide__second.menu-position__dockedBottom {
-  transform: translateY(100%)
-}
-.animation-menushow__second.menu-position__dockedBottom,
-.animation-menuhide__first.menu-position__dockedBottom {
-  transform: translateY(0)
-}
-
-.animation-menushow__first.menu-position__dockedRight,
-.animation-menuhide__second.menu-position__dockedRight {
-  transform: translateX(100%)
-}
-.animation-menushow__second.menu-position__dockedRight,
-.animation-menuhide__first.menu-position__dockedRight,
-.animation-menushow__second.menu-position__dockedLeft,
-.animation-menuhide__first.menu-position__dockedLeft {
-  transform: translateX(0)
-}
-
-.animation-menushow__first.menu-position__dockedLeft,
-.animation-menuhide__second.menu-position__dockedLeft {
-  transform: translateX(-100%)
-}
-
-.animation-menupop__active,
-.animation-menuresize__active {
-  transition: margin-left $menu-transition-duration;
-}
-
-.menu-toolbar {
-  position:absolute;
-  background: $menu-background;
-  padding:0;
-  margin:0;
-  display:flex;
-  flex-direction:row;
-  border-radius: $menu-border-radius;
-  border: $menu-border;
-
-  .menu-item {
-    min-width:3rem;
-    height:3rem;
-    background: $menu-background;
-    border:0;
-    @include focus;
-  }
-
-  .menu-item-label {display:none;}
-
-  .menu-item:first-child {
-    border-top-left-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
-  }
-
-  .menu-item:last-child,
-  .menu-item__last {
-    border-top-right-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem; 
-  }
-
-  .menu-item + .menu-item {
-    border-left: $menu-border;
-    border-top-left-radius:0;
-    border-bottom-left-radius:0;
-  }
-}

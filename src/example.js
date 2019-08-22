@@ -9,38 +9,29 @@ function materialIcon(name) {
 }
 
 function run() {
+    const container = document.createElement('main');
+    document.body.appendChild(container);
+
     const items = [
         {label:'Submenu', type:Menu.ItemType.Nested, action:showSubMenu},
         {label:'Action 1', icon:''},
         {label:'Action 2', icon:''},
         {label:'Action 3',}
     ];
-    
-    function showSubMenu() {
-        return [
-            {label:'Sub menu action 1'},
-            {label:'Sub menu action 2'}
-        ]
-    }
-    
     const menu = new Menu.ListContainer(items);
     
     const tools = [
         {label:'Add', icon:'add'},
         {label:'Upload', icon:'cloud_upload'},
-        {label:'Delete', icon:'delete'},
+        {label:'Delete', icon:'delete'}
     ]
-    const toolbar = new Menu.Toolbar(tools , {iconFactory:materialIcon});
+
+    const toolbar = new Menu.Toolbar(tools , {host:container, iconFactory:materialIcon});
     toolbar.element.id = 'toolbar';
     toolbar.autoClose = false;
     toolbar.useAnimation = false;
 
-    const toolbarContainer = document.createElement('div');
-    toolbarContainer.id='toolbar';
-    document.body.appendChild(toolbarContainer);
-
-    toolbar.host = toolbarContainer;
-    toolbar.show();
+    container.appendChild(toolbar.element);
 
     const button = document.createElement('button');
     button.innerHTML = 'Show Menu';
@@ -51,9 +42,18 @@ function run() {
         menu.position = Menu.Position.Absolute(rect.left, top);
         menu.show();
     })
-    document.body.appendChild(button);
+    container.appendChild(button);
+}
 
-    
+function showSubMenu() {
+    return [
+        {label:'Sub menu action 1'},
+        {label:'Sub menu action 2'},
+        {label:'Sub menu action 3'},
+        {label:'Sub menu action 4'},
+        {label:'Sub menu action 5'},
+        {label:'Sub menu action 6'},
+    ]
 }
 
 if('loading' == document.readyState)

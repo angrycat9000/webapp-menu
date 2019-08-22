@@ -3,29 +3,7 @@ import Menu from './Menu';
 import Position from './Position';
 import Animation from './Animation';
 import {Item, ItemType} from './Item';
-
-/**
- * 
- */
-class List {
-    constructor(items, iconFactory) {
-        this.iconFactory = iconFactory
-        this.items = items.map(item=>item instanceof Item ? item : new Item(item));
-        this.element = document.createElement('div');
-        this.element.className = 'menu-list';
-        this.element.setAttribute('role', 'menu')
-
-        let hasIcons = false;
-        for(let i=0; i < this.items.length; i++) {
-            const item = this.items[i];
-            hasIcons = hasIcons || item.icon
-            item.element.setAttribute('tabindex', (0==i) ? '0' : '-1');
-            item.convertIconStringToElement(this.iconFactory);
-            this.element.appendChild(item.element);
-        }
-        this.element.setAttribute('data-menu-list-hasIcons', hasIcons ? 'true' : 'false');
-    }
-}
+import ItemList from './ItemList';
 
 /**
  * 
@@ -37,7 +15,7 @@ class ListContainer extends Menu {
     constructor(list, options) {
         super(options);
 
-        this.element.classList.add('menu-container');
+        this.element.classList.add('menu-listcontainer');
         
         this.stack = [];
 
@@ -66,7 +44,7 @@ class ListContainer extends Menu {
         this.innerElement = document.createElement('div');
         this.element.appendChild(this.innerElement);
 
-        list = new List(list, this.iconFactory);
+        list = new ItemList(list, this.iconFactory);
         this.stack.push({list, parent:null});
         this.innerElement.appendChild(list.element);
     }
@@ -132,7 +110,7 @@ class ListContainer extends Menu {
             list = [back].concat(list);
         }
 
-        list = new List(list, this.iconFactory);
+        list = new ItemList(list, this.iconFactory);
         this.stack.push({list, parent:item});
 
         let anim = new Animation.Transition(this.innerElement, 'menuresize');
@@ -144,6 +122,8 @@ class ListContainer extends Menu {
             this.resizeForScroll();
             this.setDefaultFocus()
         });
+
+        this.events.emit('push', {menu:this});
 
         return this.startTransition(anim);
     }
@@ -188,6 +168,8 @@ class ListContainer extends Menu {
             this.setDefaultFocus();
             this.resizeForScroll();
         });
+
+        this.events.emit('pop', {menu:this, all});
 
         return this.startTransition(anim);
     }

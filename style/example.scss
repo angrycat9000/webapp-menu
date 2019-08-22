@@ -2,18 +2,17 @@
 
 @import 'menu';
 
-button {
+main > button {
     border: $menu-border;
     background: $menu-background;
     font-size:1rem;
     padding:0.5rem 1rem;
     border-radius: $menu-border-radius;
+    margin-top:1rem;
 }
 
-#toolbar {
-    .menu-toolbar{
-        position:static;
-        display:inline-block;
-    }
-    margin: 1rem 0;
+main {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
 }

@@ -1,5 +1,6 @@
 import Menu from './Menu';
 import {Item} from  './Item';
+import ItemList from './ItemList';
 
 class Toolbar extends Menu {
     /**
@@ -13,13 +14,12 @@ class Toolbar extends Menu {
         this.element.classList.add('menu-toolbar');
         this.element.setAttribute('role', 'menu');
 
-        this.items = items.map(item=>item instanceof Item ? item : new Item(item));
-        for(let i = 0; i < this.items.length; i++) {
-            const item = this.items[i];
-            item.convertIconStringToElement(this.iconFactory);
-            this.element.appendChild(item.element)
-            item.element.setAttribute('tabindex', 0==i ? '0' : '-1');
-        }
+        this.items = new ItemList(items, this.iconFactory);
+        this.element.appendChild(this.items.element);
+    }
+
+    get itemParent() {
+        return this.items.element;
     }
 }
 

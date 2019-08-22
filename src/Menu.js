@@ -91,7 +91,10 @@ class Menu {
                 return;
             }
 
-            this.host.appendChild(this.element);
+            // don't append the element to the end if it already is in the parent
+            if(this.host != this.element.parentElement)
+                this.host.appendChild(this.element);
+
             this.position.apply(this.element, this.host);
         });
         anim.on('complete',()=>{
