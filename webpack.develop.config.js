@@ -39,7 +39,7 @@ module.exports = {
       [
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader?sourceMap=true', 'sass-loader?sourceMap=true']
       },
       {
         test: /\.svg$/,
