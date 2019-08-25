@@ -39,7 +39,7 @@ function run() {
     button.addEventListener('click', (e)=>{
         const rect = e.currentTarget.getBoundingClientRect();
         const top = rect.top + rect.height + 8;
-        menu.position = Menu.Position.Absolute(rect.left, top);
+        menu.position = Menu.Position.DockablePopup(rect.left, top);
         menu.show();
     })
     container.appendChild(button);

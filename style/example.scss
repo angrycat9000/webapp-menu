@@ -2,6 +2,13 @@
 
 @import 'menu';
 
+body {
+    margin:0;
+    padding:0;
+    min-width:100vw;
+    min-height:100vh;
+}
+
 main > button {
     border: $menu-border;
     background: $menu-background;
@@ -12,6 +19,7 @@ main > button {
 }
 
 main {
+    padding:0.5rem;
     display:flex;
     flex-direction:column;
     align-items:flex-start;

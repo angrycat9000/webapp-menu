@@ -31,7 +31,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       title:'WebApp Menu Development',
       inject:'head',
-      name:'[name].html'
+      name:'[name].html',
+      meta:{viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no'}
     })
   ],
   module: {

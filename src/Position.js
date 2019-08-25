@@ -76,19 +76,34 @@ class Position {
     }
 
     /**
+     * 
+     */
+    equal(other, menu, container) {
+        const myData = this.evaluate(menu, container);
+        const otherData = other.evaluate(menu, container);
+        return myData == otherData;
+    }
+
+    /**
+     * @return {ComputedPosition}
+     */
+    evaluate(menu, container) {
+       const data = 'function' === typeof this.data ? this.data(menu,container) : this.data;
+        // Sometimes a function will want to return one of the instance values on Position
+        // In that case, it needs to run again to get the computed position value.
+        if(data instanceof Position)
+            return data.evaluate(menu, container);
+        
+        return data;
+    }
+
+    /**
      * Apply this position to the menu element.
      * @param {HTMLElement} menu
      * @param {HTMLElement} container
      */
     apply(menu, container) {
-        const data = 'function' === typeof this.data ? this.data(menu,container) : this.data;
-
-        // Sometimes a function will want to return one of the instance values on Position
-        // In that case, it needs to run again to get the computed position value.
-        if(data instanceof Position) {
-            data.apply(menu, container);
-            return;
-        }
+        const data = this.evaluate(menu, container);
 
         const newCssClass = Position.cssClassName(data.name);
         for(let cssClass of menu.classList) {

@@ -1,6 +1,6 @@
 
-.animation-menushow__active,
-.animation-menuhide__active {
+.animation-menushow__second,
+.animation-menuhide__second {
   transition: opacity $menu-transition-duration, transform $menu-transition-duration;
 }
 
@@ -16,9 +16,9 @@
   opacity:1
 }
 
-.animation-menushow__active.menu-position__dockedBottom,
-.animation-menushow__active.menu-position__dockedRight,
-.animation-menushow__active.menu-position__dockedLeft  {
+.animation-menushow__second.menu-position__dockedBottom,
+.animation-menushow__second.menu-position__dockedRight,
+.animation-menushow__second.menu-position__dockedLeft  {
   transition: transform $menu-transition-duration;
 }
 
@@ -39,7 +39,7 @@
 .animation-menuhide__first.menu-position__dockedRight,
 .animation-menushow__second.menu-position__dockedLeft,
 .animation-menuhide__first.menu-position__dockedLeft {
-  transform: translateX(0)
+  transform: translateX(0);
 }
 
 .animation-menushow__first.menu-position__dockedLeft,

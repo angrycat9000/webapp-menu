@@ -1,5 +1,4 @@
-
-.menu_position__dockedRight,
+.menu-position__dockedRight,
 .menu-position__dockedLeft,
 .menu-position__dockedBottom,
 .menu-position__popup,
@@ -8,13 +7,32 @@
   z-index:30;
 }
 
-
 .menu-position__dockedRight,
 .menu-position__dockedLeft {
   max-height:unset;
+  top:0;
+  bottom:0;
+  border-radius:0;
+  border:0;
+}
+
+.menu-position__dockedLeft {
+  left:0;
+  border-right: $menu-border;
+}
+.menu-position__dockedRight {
+  right:0;
+  border-left: $menu-border;
 }
 
 .menu-position__dockedBottom {
   max-width:unset;
   width:unset;
+  bottom:0;
+  right:0;
+  left:0;
+  border-right:0;
+  border-left:0;
+  border-bottom:0;
+  border-radius:0;
 }

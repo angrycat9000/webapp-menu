@@ -17,11 +17,11 @@ $menu-pressed-background: $menu-highlight-color !default;
 }
 
 @import 'animation.scss';
-@import 'position.scss';
+
 @import 'item.scss';
 @import 'toolbar.scss';
 @import 'listcontainer.scss';
-
+@import 'position.scss';
 
 
 

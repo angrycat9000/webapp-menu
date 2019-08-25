@@ -67,6 +67,10 @@ class Menu {
         return transition;
     }
 
+    handleWindowResized() {
+        this.position.apply(this.element, this.host);
+    }
+
     /**
      * @param {HTMLElement} host The element that the menu will be added to.
      * @param {} position object with top,left,bottom, or right properties to be set on the element.
@@ -74,12 +78,14 @@ class Menu {
      * 
      * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
      *                     the menu is triggered via a pointer event instead of a keyboard event
-     * @return {Transition}
+     * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
     show(suppressFocus=false) {
-
         if( ! this.host)
             throw new Error('Tried to show Menu without a host element');
+
+        if('open' == this.state|| 'opening' == this.state)
+            return null;
 
         this.previousFocus = document.activeElement;
         this.state = 'opening';
@@ -94,32 +100,38 @@ class Menu {
             // don't append the element to the end if it already is in the parent
             if(this.host != this.element.parentElement)
                 this.host.appendChild(this.element);
-
-            this.position.apply(this.element, this.host);
+                this.position.apply(this.element, this.host);
         });
         anim.on('complete',()=>{
             this.state = 'open';
             if( ! suppressFocus)
                 this.setDefaultFocus();
             this.events.emit('opened', {menu:this});
+            this.windowResizeFunc = ()=>this.handleWindowResized();
+            window.addEventListener('resize',this.windowResizeFunc);
         })
 
         return this.startTransition(anim);
     }
 
     /**
-     * @return {Transition}
+     * @return {Transition} Null if it is already closed
      */
     hide() {
         if(this.state == 'closed' || this.state == 'closing')
-            return;
+            return null;
 
         this.state = 'closing';
 
         let anim = new Animation.Transition(this.element, 'menuhide');
         anim.on('firstframe',(e)=>{
-            if(this.state !== 'closing')
+            if(this.state !== 'closing') {
                 e.transition.stop();
+                return;
+            }
+            
+            window.removeEventListener('resize', this.windowResizeFunc);
+            this.windowResizeFunc = null;
         });
         anim.on('complete', ()=>{
             if(this.state != 'closing')

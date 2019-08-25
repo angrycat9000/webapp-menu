@@ -9,8 +9,6 @@
 
   max-height:calc(20rem - 1.5rem);
   border-radius: $menu-border-radius;
-  transition:height $menu-transition-duration / 2;
-  transition-delay: $menu-transition-duration / 2;
 
   > div  {
     display:flex;
@@ -59,4 +57,10 @@
       background-color: $menu-highlight-color;
     }
   }
+}
+
+.animation-menuresize__active,
+.animation-menupop__active {
+  transition:height $menu-transition-duration / 2;
+  transition-delay: $menu-transition-duration / 2;
 }

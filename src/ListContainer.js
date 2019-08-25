@@ -50,12 +50,19 @@ class ListContainer extends Menu {
     }
     show(suppressFocus) {
         const anim = super.show(suppressFocus);
-        anim.on('firstframe', this.resize, this);
+        if(anim)
+            anim.on('firstframe', this.resize, this);
         return anim;
     }
 
     clearHeight() {
         this.element.style.height = '';
+    }
+
+    handleWindowResized(){
+        super.handleWindowResized();
+        this.resize();
+        this.resizeForScroll();
     }
 
     /**
@@ -67,9 +74,15 @@ class ListContainer extends Menu {
         const width = this.element.clientWidth; 
         let height = this.element.clientHeight; 
 
-        if(this.autoResize && this.position !== Position.DockedRight &&  this.position !== Position.DockedLeft) {
+        const position = this.position.evaluate(this.element, this.host);
+        if(this.autoResize 
+           && ! this.position.equal(Position.DockedRight, this.element, this.host)
+           && ! this.position.equal(Position.DockedLeft, this.element, this.host)
+           && ! this.position.equal(Position.DockedBottom, this.element, this.host)) {
             height = this.currentList.element.scrollHeight;
             this.element.style.height =  this.currentList.element.scrollHeight + 'px';
+        } else {
+            this.element.style.height = '';
         }
 
         this.innerElement.style.marginLeft = ((1 - this.stack.length) * width) + 'px'; 
