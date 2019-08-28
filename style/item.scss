@@ -20,6 +20,7 @@
     }
   }
 
+
 [data-menu-hasicons="false"] .menu-item-icon {
   display:none;
 }
@@ -39,4 +40,18 @@
   justify-content: center;
   flex-grow:0;
   flex-shrink:0;
+}
+
+.menu-item-label {
+  text-align:left;
+  flex-grow:1;
+  flex-basis:100%;
+  
+  span {display:block;}
+}
+
+.menu-item-label > span:nth-child(2) {
+    font-size:75%;
+    opacity:0.75;
+    margin-top:0.25rem;
 }

@@ -5,33 +5,33 @@
     background: $menu-background;
     padding:0;
     margin:0;
+    display:flex;
+    flex-direction:row;
 
-    .menu-itemlist {
-        display:flex;
-        flex-direction:row;
-    }
   
-    .menu-item {
+    webapp-menu-item {
       min-width:3rem;
-      justify-content:center;
     }
   
-    .menu-item-label {display:none;}
   
-    .menu-item:first-child {
+    webapp-menu-item:first-child {
       border-top-left-radius: $menu-border-radius;
       border-bottom-left-radius: $menu-border-radius;
     }
   
-    .menu-item:last-child,
+    webapp-menu-item:last-child,
     .menu-item__last {
       border-top-right-radius: $menu-border-radius;
       border-bottom-right-radius: $menu-border-radius; 
     }
   
-    .menu-item + .menu-item {
-      border-left: $menu-border;
-      border-top-left-radius:0;
-      border-bottom-left-radius:0;
-    }
+
+  }
+
+  :host-context(.menu-toolbar) .menu-item-label {display:none};
+
+webapp-menu-toolbar webapp-menu-item + webapp-menu-item  {
+    border-left: $menu-border;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
   }

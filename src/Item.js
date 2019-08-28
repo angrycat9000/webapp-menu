@@ -1,4 +1,5 @@
 import Icon from './Icon';
+import {getStyleLink} from './Style';
 
 /**
  * @enum
@@ -24,7 +25,7 @@ export const ItemType = {
 /**
  * 
  */
-export class Item {
+export class Item extends HTMLElement {
     /** 
      * @param {string} options.label
      * @param {string} [options.label2]
@@ -36,28 +37,29 @@ export class Item {
 
      */
     constructor(options) {
-        if( ! options.label)
-            throw new Error('Menu.Item must have a label');
+        super();
+        this._createShadow()
 
-        this.id = options.id || '';
-        this.label = options.label;
-        this.label2 = options.label2;
-        this.id = options.id;
-        this.icon = options.icon || null;
-        this.action = options.action || null;
-        this.data = options.data || null;
-        this.type = options.type || ItemType.Action;
-
-        this.element = this.createElement();
     }
 
-    createElement() {
-        if(this.element)
-            return this.element;
+    static createElement(options) {
+        const item = document.createElement('webapp-menu-item');
+        item.copyProperties(options);
+        return item;
+    }
+
+    static get observedAttributes() {
+        return ['label', ,'label2', 'icon', 'disabled'];
+      }
+
+    _createShadow() {
+        this._shadow = this.attachShadow({mode: 'open'});
+
 
         let element = document.createElement('button');
         element.className  = `menu-item menu-item__${this.type}`;
         element.setAttribute('role','menuitem'); 
+        element.setAttribute('tabindex', -1);
 
         if(ItemType.Back == this.type) {
             element.setAttribute('aria-label', "Back to previous level: "+this.label); // screen reader will read 'back to previous level' and visible text
@@ -68,24 +70,19 @@ export class Item {
         let icon = document.createElement('span');
         icon.className = "menu-item-icon";
         icon.setAttribute('aria-hidden','true'); //otherwise screen readers could speak the icon's name
-        if(this.icon instanceof Element)
-            icon.appendChild(this.icon);
+        icon.appendChild(document.createElement('slot'))
         element.appendChild(icon);
 
 
         let labelContainer = document.createElement('span');
         labelContainer.className = 'menu-item-label';
-        if( ! this.label2)
-            labelContainer.appendChild(document.createTextNode(this.label));
-        else {
-            let label1 = document.createElement('span');
-            label1.appendChild(document.createTextNode(this.label));
-            labelContainer.appendChild(label1);
 
-            let label2 = document.createElement('span');
-            label2.appendChild(document.createTextNode(this.label2));
-            labelContainer.appendChild(label2);
-        }
+        this._label1 = document.createElement('span');
+        labelContainer.appendChild(this._label1);
+
+        this._label2 = document.createElement('span');
+        labelContainer.appendChild(this._label2);
+
         element.appendChild(labelContainer);
 
         if(ItemType.Nested == this.type) {
@@ -97,32 +94,119 @@ export class Item {
 
         if(this.id)
             element.setAttribute('data-menu-item-id', this.id);
-        element['data-menu-item'] = this;
-        return this.element = element;
+
+        
+        this._shadow.appendChild(getStyleLink());
+        this._shadow.appendChild(element);
     }
 
-    /**
-     * @param {iconFactoryFunction}
-     */
-    convertIconStringToElement(factory) {
-        if( ! this.icon || 'string' != typeof this.icon || ! factory)
-            return;
-
-        let iconElement = factory(this.icon);
-        const iconContainer = this.element.querySelector('.menu-item-icon');
-        if(iconContainer.firstElementChild)
-            iconContainer.removeChild(iconContainer.firstElementChild)
-        iconContainer.appendChild(iconElement);
+    get label() {return this.getAttribute('label')}
+    set label(value) {
+        if( ! value)
+            this.removeAttribute('label');
+        else {
+            this.setAttribute('label', value);
+        }
     }
 
-    /** @property {Boolean} disabled true if the item is disabled */
-    get disabled() {return this.element.hasAttribute('disabled')}
+    get label2() {return this.getAttribute('label2')}
+    set label2(value) {
+        if( ! value)
+            this.removeAttribute('label2');
+        else {
+            this.setAttribute('label2', value);
+        }
+    }
+
+    focus() {
+        const button =  this._shadow.querySelector('button');
+        button.focus();
+    }
+
+    copyProperties(props) {
+        for(let prop of ['label', 'label2', 'iconName', 'data', 'id']) {
+            if('undefined' != typeof props[prop])
+                this[prop] = props[prop];
+        }
+    }
+
+    get _iconParent() {return this.shadowRoot.querySelector('.menu-item-icon')}
+     
+    get hasCustomIcon() {
+        return Boolean(this.innerHTML.trim());
+    }
+
+    get iconElement() {
+        const iconParent = this._iconParent;
+        if('slot' == iconParent.nodeName)
+            return this.firstChild;
+        return iconParent.firstChild;
+    }
+    set iconElement(element) {this.setIcon(element, false);}
+
+    setIconElement(node, internal) {
+        const iconParent = this._iconParent;
+        if(internal) {
+            while(iconParent.firstElementChild)
+                iconParent.removeChild(iconParent.firstElementChild);
+            iconParent.appendChild(node);
+        } else {
+            while(this.firstChild)
+                this.remove(firstChild);
+            this.appendChild(node);
+        }
+    }
+
+    get iconName() {return this.getAttribute('iconName')}
+    set iconName(value) {
+        if( ! value)
+            this.removeAttribute('iconname');
+        else
+            this.setAttribute('iconname', value);
+    }
+
+    updateIcon() {
+        if(this.hasCustomIcon) {
+            if('SLOT' != this._iconParent.firstChild.nodeName)
+                setIconElement(document.createElement('slot'), true);
+        } else if(this.iconName && this.parentElement.iconFactory) {
+            const iconElement = this.parentElement.iconFactory(this.iconName);
+            this.setIconElement(iconElement, false);
+        } 
+    }
+
+    connectedCallback() {
+        this.updateIcon();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        const hasValue = newValue !== null;
+        switch (name) {
+            case 'label':
+                this._label1.innerText = newValue ? newValue : '';
+                break;
+            case 'label2':
+                this._label2.innerText = newValue ? newValue : '';
+                break;     
+            case 'icon':
+                if( ! this.hasCustomIcon) 
+                    this.updateIcon();
+                break;
+            case 'disabled':
+                this.shadowRoot.querySelector('button').setAttribute('disabled', newValue);
+                break;
+        }
+      }
+
+    /** @property {boolean} disabled true if the item is disabled */
+    get disabled() {return this.hasAttribute('disabled')}
     set disabled(value) {
         if(value)
-            this.element.setAttribute('disabled','');
+            this.setAttribute('disabled','');
         else
-            this.element.removeAttribute('disabled');
+            this.removeAttribute('disabled');
     }
+
 
     static fromElement(element) {
         while(element && ! element['data-menu-item'] && ! element.classList.contains('menu-container')) {
@@ -131,3 +215,17 @@ export class Item {
         return element ? element['data-menu-item'] : null;
     }
 };
+/*
+var template = null;
+Object.defineProperty(Item.prototype, 'template', {get:function(){
+    if(template)
+        return template;
+
+    template = document.createElement('tempalate');
+    template.innerHTML = 
+        `<button class="menu-item menu-item__action" role="menuitem" tabindex="-1">
+            <span class="menu-item-icon" aria-hidden="true"><slot></slot></span>
+            <span class="menu-item-label"><slot></slot></span>
+        </button>`;
+    return template;
+}});*/

@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-@import 'menu';
-
 body {
     margin:0;
     padding:0;
@@ -10,11 +8,11 @@ body {
 }
 
 main > button {
-    border: $menu-border;
+    /*border: $menu-border;
     background: $menu-background;
     font-size:1rem;
     padding:0.5rem 1rem;
-    border-radius: $menu-border-radius;
+    border-radius: $menu-border-radius;*/
     margin-top:1rem;
 }
 

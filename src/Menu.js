@@ -2,51 +2,93 @@ import Animation from './Animation';
 import Position from './Position';
 import {Item} from './Item';
 import {addEventFunctions, addEventMember } from './Events';
+import {getStyleLink} from './Style';
+import ItemCollection from './ItemCollection';
 
+
+function getBooleanAttribute(element, attributeName, defaultValue) {
+    if( ! element.hasAttribute(attributeName))
+        return defaultValue;
+
+    const value = this.getAttribute(attributeName);
+    if(value == 'false' || value == 'no')
+        return false;
+    if(value == 'true' || value == 'yes')
+        return true;
+
+    return defaultValue;
+}
+
+function setBooleanAttribute(element, attributeName, value) {
+    const boolValue = ('yes' == value || 'true' == value) ? true : Boolean(value);
+    element.setAttribute(attributeName, boolValue);
+}
 
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
  */
-class Menu {
-    /**
-     * @param {HTMLElement} [options.host] element to add the menu to when it is opened
-     * @param {iconFactoryFunction} [options.iconFactory]
-     */
-    constructor(options) {
-        options = options || {};
+class Menu extends HTMLElement {
+    constructor() {
+        super();
 
-        this.element = document.createElement('div');
+        this._shadow = this.attachShadow({mode: 'open'});
+        this._shadow.appendChild(getStyleLink());
+
+        this.items = new ItemCollection(this);
+
+
+        /*this.element = document.createElement('div');
         this.element.className = 'menu';
-        this.element['data-menu'] = this;
-        this.element.addEventListener('keydown', Menu.onKeyDown);
-        this.element.addEventListener('click', Menu.onClick);
+        this.element['data-menu'] = this;*/
+        this.addEventListener('keydown', Menu.onKeyDown);
+        this.addEventListener('click', Menu.onClick);
         addEventMember(this);
 
         this.state = 'closed';
-        this.autoClose = true;
-        this.host = options.host || document.body;
-        this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
+        //this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
         this.position = Position.Static;
-        this.useAnimation = true;
     }
 
     /**
-     * {HTMLElement} element that is the direct parent of the menu items.  Defaults to this.element
-     * but sub classes can override this if they have a different structure
+     * {HTMLElement} element that is the direct parent of the menu items.
      */
     get itemParent() {
-        return this.element;
+        if( ! this._itemParent) {
+            this._itemParent = document.createElement('div');
+            this._itemParent.className = 'menu-itemlist';
+            this._itemParent.setAttribute('role', 'menu');
+            this.itemParent.appendChild(document.createElement('slot'));
+            this._shadow.appendChild(this._itemParent);
+        }
+        return this._itemParent;
     }
+
+    /** @property {Boolean} useAnimation */
+    get useAnimation() {return getBooleanAttribute(this, 'useanimation', true)}
+    set useAnimation(value) {setBooleanAttribute(this, 'useanimation', value)}
+
+    /** @property {boolean} autoClose */
+    get autoClose() {return getBooleanAttribute(this, 'autoclose', true)}
+    set autoClose(value) {setBooleanAttribute(this, 'autoclose', value)}
+
+    /** @property {iconFactoryFunction} iconFactory */
+    get iconFactory() {return this._iconFactory}
+    set iconFactory(value) {
+        this._iconFactory = value;
+        for(let item of this.items)
+            item.updateIcon();
+    }
+
 
     /**
      * @param {HTMLElement} element
      * @return {Menu} Get the Menu object that this element is contained in
      */
     static fromElement(element) {
-        while( ! element['data-menu']) {
+        while(element &&  ! (element instanceof Menu)) {
             element = element.parentElement;
         }
-        return element['data-menu'];
+        return element;
     }
 
 
@@ -72,22 +114,17 @@ class Menu {
     }
 
     /**
-     * @param {HTMLElement} host The element that the menu will be added to.
-     * @param {} position object with top,left,bottom, or right properties to be set on the element.
-     *                      can include any or none of these properties. 
-     * 
      * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
      *                     the menu is triggered via a pointer event instead of a keyboard event
      * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
-    show(suppressFocus=false) {
-        if( ! this.host)
-            throw new Error('Tried to show Menu without a host element');
-
+    open(suppressFocus=false) {
+        this.itemParent.style.display = '';
+        return;
         if('open' == this.state|| 'opening' == this.state)
             return null;
 
-        this.previousFocus = document.activeElement;
+        this.previousFocus = this.parentElement ? document.activeElement : null;
         this.state = 'opening';
 
         let anim = new Animation.Transition(this.element, 'menushow');
@@ -98,9 +135,10 @@ class Menu {
             }
 
             // don't append the element to the end if it already is in the parent
-            if(this.host != this.element.parentElement)
+            /*if(this.host != this.element.parentElement)
                 this.host.appendChild(this.element);
                 this.position.apply(this.element, this.host);
+                */
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -117,7 +155,8 @@ class Menu {
     /**
      * @return {Transition} Null if it is already closed
      */
-    hide() {
+    close() {
+        this.itemParent.style.display='none';
         if(this.state == 'closed' || this.state == 'closing')
             return null;
 
@@ -153,36 +192,48 @@ class Menu {
     }
 
     /**
-     * @param {HTMLElement} current
-     * @return {HTMLElement} The next element in this.itemParent. If current is the last element it
+     * @return {Array<Item>}
+     */
+    _getItems() {
+        return Array.from(this.querySelectorAll('webapp-menu-item'));
+    }
+
+
+    /**
+     * @param {Item} current
+     * @return {Item} The next element in this.itemParent. If current is the last element it
      *                       return the first element. If there is no current element it returns the
      *                       first element
      */
     getNext(current) {
-        if(current && current.nextElementSibling)
-            return current.nextElementSibling;
-        else
-            return this.itemParent.firstElementChild;
+        const index = this.items.indexOf(current);
+        if(index < 0)
+            return this.items.atIndex(0);
+        
+        return this.items.atIndex((index+1) % this.items.length);
     }
 
     /**
-     * @param {HTMLElement} current
-     * @return {HTMLElement} the next item in this.itemParent. If current is the first element it
+     * @param {Item} current
+     * @return {Item} the next item in this.itemParent. If current is the first element it
      *                       return the last element. If there is no current it returns the last element;
      */
     getPrevious(current) {
-        if(current && current.previousElementSibling)
-            return current.previousElementSibling;
-        else
-            return this.itemParent.lastElementChild;
+        const index = this.items.indexOf(current);
+        const length = this.items.length;
+        if(index < 0)
+            return items.atIndex(length - 1);
+        
+        return this.items.atIndex((index - 1 + length) % length);
     }
 
     /**
      * @return {HTMLElement|null} focused item in this menu or null if the focus is outside of this parent
      */
     getFocused() {
-        let focused = document.activeElement;
-        if(focused.parentElement != this.itemParent)
+        const focused = document.activeElement;
+        const menu = Menu.fromElement(focused);
+        if(menu != this)
             return null;
         
         return focused;
@@ -202,7 +253,7 @@ class Menu {
      * @param {HTMLElement} item
      */
     setFocusOn(item) {
-        for(let element of this.itemParent.children) {
+        for(let element of this.items) {
             if(item === element) {
                 element.setAttribute('tabindex', 0);
                 element.focus();

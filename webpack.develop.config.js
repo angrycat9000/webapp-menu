@@ -2,6 +2,7 @@ const Path = require('path');
 const Webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 module.exports = {
@@ -10,6 +11,7 @@ module.exports = {
   devServer: {
     inline: true,
     overlay:true,
+    contentBase: Path.join(__dirname, 'www'),
     host: '0.0.0.0',
     watchOptions: {
       aggregateTimeout: 300,
@@ -18,12 +20,15 @@ module.exports = {
   },
   entry: {
     example: Path.resolve(__dirname, 'src/example.js'),
+    "webapp-menu": Path.resolve(__dirname, 'src/bundle.js'),
   },
   output: {
     path: Path.join(__dirname, 'examples'),
     filename: '[name].js',
   },
   plugins: [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin(),
     new Webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development')
     }),
@@ -40,7 +45,7 @@ module.exports = {
       [
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader?sourceMap=true', 'sass-loader?sourceMap=true']
+        use: [MiniCssExtractPlugin.loader, 'css-loader?sourceMap=true', 'sass-loader?sourceMap=true']
       },
       {
         test: /\.svg$/,
