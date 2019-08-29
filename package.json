@@ -1,6 +1,6 @@
 {
   "name": "webapp-menu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create accessible menus for web apps (eg. file, edit, context menus)",
   "browser": "dist/webapp-menu.js",
   "style": "dist/webapp-menu.css",
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/angrycat9000/webapp-menu.git"
   },
   "author": "Mark Dane",
-  "contributors":[
+  "contributors": [
     "Alex Umstead"
   ],
   "license": "MIT",
