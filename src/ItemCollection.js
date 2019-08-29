@@ -1,15 +1,21 @@
 import {Item} from './Item';
 
 function convertToItem(obj) {
-    return (obj instanceof Item) ? obj : Item.createElement(obj);
+    return (obj instanceof Item) ? obj : Item.create(obj);
 }
 
 /**
  * 
  */
 class ItemCollection {
-    constructor(owner) {
+    constructor(owner, shadowContainer) {
         this.owner = owner;
+        this.shadowContainer = shadowContainer;
+    }
+
+    onChange() {
+        if(this.shadowContainer)
+            this.shadowContainer.setAttribute('data-hasIcons', this.hasIcons);
     }
 
     /**
@@ -48,6 +54,7 @@ class ItemCollection {
      */
     insertBefore(newItem, exisiting) {
         const nextItem = 'number' == typeof exisiting ?  this.atIndex(exisiting) : existing;
+        this.onChange();
         return this.owner.insertBefore(newItem, nextItem);
     }
 
@@ -55,7 +62,9 @@ class ItemCollection {
      *  @param {Item|object} item 
      */
     append(item) {
-        return this.owner.appendChild(convertToItem(item));
+        const rValue = this.owner.appendChild(convertToItem(item));
+        this. onChange();
+        return rValue;
     }
 
     /** 
@@ -65,8 +74,10 @@ class ItemCollection {
         if('number' == typeof item)
             item = this.atIndex(item);
 
-        if(item instanceof Item && item.parentElement == owner)
+        if(item instanceof Item && item.parentElement == owner) {
             this.owner.removeChild(item);
+            this.onChange();
+        }
     }
     
     /** 
@@ -100,6 +111,13 @@ class ItemCollection {
 
         for(let i of items)
             this.owner.appendChild(i);
+
+        this.onChange();
+    }
+
+    /** @property {boolean} hasIcons */
+    get hasIcons() {
+        return Boolean(this.owner.querySelector(`${this.owner.tagName} > ${Item.tagName} > [slot=icon]`))
     }
 
     *[Symbol.iterator]() {

@@ -27,173 +27,129 @@ export const ItemType = {
  */
 export class Item extends HTMLElement {
     /** 
-     * @param {string} options.label
-     * @param {string} [options.label2]
-     * @param {string} [options.id]
-     * @param {string|Element} [options.icon]
-     * @param {itemActionFunction} [options.action]
-     * @param {*} [options.data] member to save caller defined data related to this item
-     * @param {ItemType} [options.type] defaults to ItemType.Action
-
      */
     constructor(options) {
         super();
-        this._createShadow()
 
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.appendChild(getStyleLink());
+
+        const button = Item.template.content.cloneNode(true);
+        shadow.appendChild(button);
     }
 
-    static createElement(options) {
-        const item = document.createElement('webapp-menu-item');
-        item.copyProperties(options);
+    static create(options) {
+        const item = document.createElement(Item.tagName);
+        item.set(options);
         return item;
     }
 
-    static get observedAttributes() {
-        return ['label', ,'label2', 'icon', 'disabled'];
-      }
-
-    _createShadow() {
-        this._shadow = this.attachShadow({mode: 'open'});
-
-
-        let element = document.createElement('button');
-        element.className  = `menu-item menu-item__${this.type}`;
-        element.setAttribute('role','menuitem'); 
-        element.setAttribute('tabindex', -1);
-
-        if(ItemType.Back == this.type) {
-            element.setAttribute('aria-label', "Back to previous level: "+this.label); // screen reader will read 'back to previous level' and visible text
-        } else {
-            element.setAttribute('aria-label', this.label); // add aria-label on the BUTTONS containing icons that don't have visible text
-        }
-
-        let icon = document.createElement('span');
-        icon.className = "menu-item-icon";
-        icon.setAttribute('aria-hidden','true'); //otherwise screen readers could speak the icon's name
-        icon.appendChild(document.createElement('slot'))
-        element.appendChild(icon);
-
-
-        let labelContainer = document.createElement('span');
-        labelContainer.className = 'menu-item-label';
-
-        this._label1 = document.createElement('span');
-        labelContainer.appendChild(this._label1);
-
-        this._label2 = document.createElement('span');
-        labelContainer.appendChild(this._label2);
-
-        element.appendChild(labelContainer);
-
-        if(ItemType.Nested == this.type) {
-            const nestedIcon = Icon.Nested;
-            nestedIcon.classList.add('menu-item-nestedIcon');
-            element.appendChild(nestedIcon);
-            element.setAttribute('aria-haspopup','true'); //since this opens a submenu, it needs aria-haspopup
-        }
-
-        if(this.id)
-            element.setAttribute('data-menu-item-id', this.id);
-
-        
-        this._shadow.appendChild(getStyleLink());
-        this._shadow.appendChild(element);
-    }
-
-    get label() {return this.getAttribute('label')}
-    set label(value) {
-        if( ! value)
-            this.removeAttribute('label');
-        else {
-            this.setAttribute('label', value);
-        }
-    }
-
-    get label2() {return this.getAttribute('label2')}
-    set label2(value) {
-        if( ! value)
-            this.removeAttribute('label2');
-        else {
-            this.setAttribute('label2', value);
-        }
-    }
-
     focus() {
-        const button =  this._shadow.querySelector('button');
+        const button =  this.shadowRoot.querySelector('button');
         button.focus();
     }
 
-    copyProperties(props) {
-        for(let prop of ['label', 'label2', 'iconName', 'data', 'id']) {
+    /**
+     * @param {object} props
+     * @param {string} [props.label]
+     * @param {string} [props.label2]
+     * @param {Node|string} [props.icon]
+     * @param {boolean} [props.disabled]
+     */
+    set(props) {
+        if( ! props)
+            return;
+ 
+        if('undefined' != props.label || 'undefined' != props.label2)
+            this.setLabel(props.label, props.label2);
+        
+        if('undefined' != props.icon)
+            this.setIcon(props.icon);
+
+        for(let prop of ['disabled']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
     }
 
-    get _iconParent() {return this.shadowRoot.querySelector('.menu-item-icon')}
-     
-    get hasCustomIcon() {
-        return Boolean(this.innerHTML.trim());
-    }
+    /**
+     * @param {Node|string} label
+     * @param {Node|string} [label2]
+     */
+    setLabel(label, label2) {
+        this.clearSlot('label');
 
-    get iconElement() {
-        const iconParent = this._iconParent;
-        if('slot' == iconParent.nodeName)
-            return this.firstChild;
-        return iconParent.firstChild;
-    }
-    set iconElement(element) {this.setIcon(element, false);}
+        if( ! label && ! label2)
+            return;
 
-    setIconElement(node, internal) {
-        const iconParent = this._iconParent;
-        if(internal) {
-            while(iconParent.firstElementChild)
-                iconParent.removeChild(iconParent.firstElementChild);
-            iconParent.appendChild(node);
-        } else {
-            while(this.firstChild)
-                this.remove(firstChild);
-            this.appendChild(node);
+        if( ! label2) {
+            const l0 = stringToNode(label);
+            l0.setAttribute('slot', 'label');
+            this.appendChild(l0);
+            return;
         }
+
+        const l0 = document.createElement('div');
+        l0.setAttribute('slot', 'label');
+        l0.appendChild(stringToNode(label))
+        l0.appendChild(stringToNode(label2))
+
+        this.appendChild(l0);
     }
 
-    get iconName() {return this.getAttribute('iconName')}
-    set iconName(value) {
-        if( ! value)
-            this.removeAttribute('iconname');
-        else
-            this.setAttribute('iconname', value);
+    /**
+     * @param {Node|string} icon
+     */
+    setIcon(icon) {
+        this.clearSlot('icon');
+        if( ! icon)
+            return;
+
+        if(icon instanceof Node) {
+            icon.setAttribute('slot', 'icon');
+            this.appendChild(icon);
+            return;
+        }
+
+        let iconElement;
+        if(this.parentElement && this.parentElement.iconFactory) {
+            iconElement = this.parentElement.iconFactory(icon);
+        } else {
+            iconElement = document.createElement('span');
+        }
+
+        iconElement.setAttribute('slot', 'icon');
+        iconElement.setAttribute('data-icon-factory-arg', icon);
+        this.appendChild(iconElement);
     }
 
-    updateIcon() {
-        if(this.hasCustomIcon) {
-            if('SLOT' != this._iconParent.firstChild.nodeName)
-                setIconElement(document.createElement('slot'), true);
-        } else if(this.iconName && this.parentElement.iconFactory) {
-            const iconElement = this.parentElement.iconFactory(this.iconName);
-            this.setIconElement(iconElement, false);
-        } 
+    updateFactoryIcon() {
+        let oldIcon = this.querySelector('[slot=icon][data-icon-factory-arg]');
+        if( ! oldIcon)
+            return;
+        
+        oldIcon = oldIcon.getAttribute('data-icon-factory-arg');
+        if( ! oldIcon)
+            return;
+        this.setIcon(oldIcon);   
     }
 
     connectedCallback() {
-        this.updateIcon();
+        this.updateFactoryIcon();
+    }
+
+    static get observedAttributes() {
+        return ['disabled', 'isdefaultfocus'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         const hasValue = newValue !== null;
         switch (name) {
-            case 'label':
-                this._label1.innerText = newValue ? newValue : '';
-                break;
-            case 'label2':
-                this._label2.innerText = newValue ? newValue : '';
-                break;     
-            case 'icon':
-                if( ! this.hasCustomIcon) 
-                    this.updateIcon();
-                break;
             case 'disabled':
                 this.shadowRoot.querySelector('button').setAttribute('disabled', newValue);
+                break;
+            case 'isdefaultfocus':
+                this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)
                 break;
         }
       }
@@ -207,25 +163,67 @@ export class Item extends HTMLElement {
             this.removeAttribute('disabled');
     }
 
+    /**
+     * @property {boolean} isDefaultFocus True if the item is the one to recieve focus when the user
+     *                                    tabs into it
+     */
+    get isDefaultFocus() {return this.hasAttribute('isdefaultfocus')}
+    set isDefaultFocus(value) {
+        if(value)
+            this.setAttribute('isdefaultfocus','');
+        else
+            this.removeAttribute('isdefaultfocus');
+    }
+
+    clearSlot(name) {
+        const items = this.querySelectorAll(`[slot=${name}]`);
+        for(let item of items)
+            this.removeChild(item);
+    }
+
+    /**
+     * @param {Node} element
+     */
+    static isItem(element) {
+        return ; 
+    }
 
     static fromElement(element) {
-        while(element && ! element['data-menu-item'] && ! element.classList.contains('menu-container')) {
+        while(element && ! (element instanceof Item))
             element = element.parentElement;
-        }
-        return element ? element['data-menu-item'] : null;
+        
+        return element instanceof Item ? element : null;
     }
 };
-/*
+
+Item.tagName = 'wam-item';
+
 var template = null;
-Object.defineProperty(Item.prototype, 'template', {get:function(){
+Object.defineProperty(Item, 'template', {get:function(){
     if(template)
         return template;
 
-    template = document.createElement('tempalate');
+    template = document.createElement('template');
     template.innerHTML = 
         `<button class="menu-item menu-item__action" role="menuitem" tabindex="-1">
-            <span class="menu-item-icon" aria-hidden="true"><slot></slot></span>
-            <span class="menu-item-label"><slot></slot></span>
+            <span class="menu-item-icon" aria-hidden="true"><slot name="icon"></slot></span>
+            <span class="menu-item-label"><slot name="label"></slot></span>
         </button>`;
     return template;
-}});*/
+}});
+
+
+
+/**
+ * @param {Node|string} str
+ * @return {Node}
+ * @private
+ */
+function stringToNode(str, tag='span') {
+    if(str instanceof Node) 
+        return str;
+        
+    const span = document.createElement(tag);
+    span.appendChild(document.createTextNode(str));
+    return span;
+}

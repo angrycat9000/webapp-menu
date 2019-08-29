@@ -11,6 +11,7 @@
     align-items: center;
     justify-content:flex-start;
     @include focus;
+    width:100%;
   
     &:hover {
       background:$menu-hover-background;
@@ -21,15 +22,15 @@
   }
 
 
-[data-menu-hasicons="false"] .menu-item-icon {
+:host-context([data-hasicons=false]) .menu-item-icon {
   display:none;
 }
 
 .menu-item-nestedIcon,
 .menu-item__back .menu-item-icon svg {
   fill: currentColor;
-  width:24px;
-  height:24px;
+  width:2rem;
+  height:2rem;
 }
 
 .menu-item-icon {
@@ -44,14 +45,17 @@
 
 .menu-item-label {
   text-align:left;
+  display:flex;
   flex-grow:1;
   flex-basis:100%;
-  
-  span {display:block;}
 }
 
-.menu-item-label > span:nth-child(2) {
+wam-item [slot=label] {
+  & > *:nth-child(2) {
     font-size:75%;
     opacity:0.75;
     margin-top:0.25rem;
+  }
+
+  span {display:block}
 }

@@ -5,10 +5,17 @@ import ItemList from './ItemList';
 class Toolbar extends Menu {
     constructor() {
         super();
-        this.itemParent.classList.add('menu-toolbar');
-        this.itemParent.setAttribute('icononly','');
+        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
+    
+    
+  
+
+        //this.itemParent.classList.add('menu-toolbar');
+        //this.itemParent.setAttribute('icononly','');
     }
 
 }
+
+Toolbar.tagName = 'wam-toolbar';
 
 export default Toolbar;

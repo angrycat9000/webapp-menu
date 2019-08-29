@@ -10,7 +10,7 @@ function getBooleanAttribute(element, attributeName, defaultValue) {
     if( ! element.hasAttribute(attributeName))
         return defaultValue;
 
-    const value = this.getAttribute(attributeName);
+    const value = element.getAttribute(attributeName);
     if(value == 'false' || value == 'no')
         return false;
     if(value == 'true' || value == 'yes')
@@ -31,10 +31,19 @@ class Menu extends HTMLElement {
     constructor() {
         super();
 
-        this._shadow = this.attachShadow({mode: 'open'});
-        this._shadow.appendChild(getStyleLink());
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.appendChild(getStyleLink());
+        const outer = document.createElement('div');
+        outer.className = 'menu menu-outer';
+        outer.setAttribute('role', 'menu');
+        const inner = document.createElement('div');
+        inner.className = 'menu-inner';
+        const slot = document.createElement('slot');
+        inner.appendChild(slot);
+        outer.appendChild(inner);
+        shadow.appendChild(outer);
 
-        this.items = new ItemCollection(this);
+        this.items = new ItemCollection(this, inner);
 
 
         /*this.element = document.createElement('div');
@@ -49,19 +58,7 @@ class Menu extends HTMLElement {
         this.position = Position.Static;
     }
 
-    /**
-     * {HTMLElement} element that is the direct parent of the menu items.
-     */
-    get itemParent() {
-        if( ! this._itemParent) {
-            this._itemParent = document.createElement('div');
-            this._itemParent.className = 'menu-itemlist';
-            this._itemParent.setAttribute('role', 'menu');
-            this.itemParent.appendChild(document.createElement('slot'));
-            this._shadow.appendChild(this._itemParent);
-        }
-        return this._itemParent;
-    }
+
 
     /** @property {Boolean} useAnimation */
     get useAnimation() {return getBooleanAttribute(this, 'useanimation', true)}
@@ -76,7 +73,7 @@ class Menu extends HTMLElement {
     set iconFactory(value) {
         this._iconFactory = value;
         for(let item of this.items)
-            item.updateIcon();
+            item.updateFactoryIcon();
     }
 
 
@@ -119,7 +116,7 @@ class Menu extends HTMLElement {
      * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
     open(suppressFocus=false) {
-        this.itemParent.style.display = '';
+        this.shadowRoot.querySelector('.menu').style.display = '';
         return;
         if('open' == this.state|| 'opening' == this.state)
             return null;
@@ -156,7 +153,7 @@ class Menu extends HTMLElement {
      * @return {Transition} Null if it is already closed
      */
     close() {
-        this.itemParent.style.display='none';
+        this.shadowRoot.querySelector('.menu').style.display='none';
         if(this.state == 'closed' || this.state == 'closing')
             return null;
 
@@ -190,14 +187,6 @@ class Menu extends HTMLElement {
 
         return this.startTransition(anim);
     }
-
-    /**
-     * @return {Array<Item>}
-     */
-    _getItems() {
-        return Array.from(this.querySelectorAll('webapp-menu-item'));
-    }
-
 
     /**
      * @param {Item} current
@@ -243,7 +232,7 @@ class Menu extends HTMLElement {
      * 
      */
     setDefaultFocus() {
-        let item =  this.itemParent.querySelector('[tabindex="0"]') || this.itemParent.firstElementChild;
+        let item =  this.querySelector('[isdefaultfocus]') || this.firstElementChild;
         this.setFocusOn(item);
     }
 
@@ -255,10 +244,10 @@ class Menu extends HTMLElement {
     setFocusOn(item) {
         for(let element of this.items) {
             if(item === element) {
-                element.setAttribute('tabindex', 0);
+                element.setAttribute('isdefaultfocus', '');
                 element.focus();
             } else {
-                element.setAttribute('tabindex', -1);
+                element.removeAttribute('isdefaultfocus')
             }
       }
     }
@@ -301,7 +290,7 @@ class Menu extends HTMLElement {
                 e.preventDefault();
                 break;
             case 'Escape':
-                this.hide();
+                this.close();
                 //e.preventDefault();
                 break;
             case ' ':
@@ -337,7 +326,7 @@ class Menu extends HTMLElement {
             item.action(event);
 
         if(this.autoClose && closeMenu)
-            this.hide();    
+            this.close();    
     }
 
     /**

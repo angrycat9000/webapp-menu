@@ -1,0 +1,15 @@
+wam-popup {
+  wam-item {
+    max-width:20rem;
+    width:100%
+  }
+}
+
+.menu-popup.menu-outer {
+  display:inline-block;
+}
+
+.menu-inner {width:100%}
+:host-context(wam-popup) .menu-item {
+  padding: 0 1rem;
+}

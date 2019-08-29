@@ -16,14 +16,19 @@ $menu-pressed-background: $menu-highlight-color !default;
   }
 }
 
+.menu {
+  border-radius: $menu-border-radius;
+  border: $menu-border;    
+  background: $menu-background;
+  padding:0;
+  margin:0;
+}
+
 @import 'animation.scss';
 
 @import 'item.scss';
 @import 'toolbar.scss';
 @import 'listcontainer.scss';
 @import 'position.scss';
-
-
-
-
+@import 'popup.scss'
 
