@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: Path.join(__dirname, 'dist'),
     filename: '[name].js',
-    library: 'WebappMenu',
+    library: 'WebAppMenu',
     libraryTarget:'umd'
   },
   plugins:[

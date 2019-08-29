@@ -4,6 +4,8 @@ Create accessible menu for performing on page actions in web apps.  Eg. context 
 
 **Note:** These menus are not intended for navigation between different web pages.
 
+[**Live Example**](https://codepen.io/markdane/pen/YzKQejQ)
+
 ## Setup
 
 ### Quick Start
@@ -17,11 +19,12 @@ Include the Javascript and CSS files in your HTML file.
 
 ### NPM
 
+Install the 1.0 version of webapp-menu.  Version 2.0 is planned to have breaking changes to move to the web component model
 ```
-npm install --save webapp-menu
+npm install --save webapp-menu@^1.0.0
 ```
 
-In your Javascipt file include:
+In your Javascript file include:
 
 ```javascript
 import Menu from 'webapp-menu'
@@ -60,7 +63,7 @@ const items = [
     {label:'Action 3' action:clicked}
 ];
 
-const menu = new Menu.ListContainer(items);
+const menu = new WebAppMenu.ListContainer(items);
 menu.show();
 ```
 
@@ -68,7 +71,7 @@ menu.show();
 ```javascript
 const items = [{label:'Action 1'}, ...];
 
-const toolbar = new Menu.Toolbar(items);
+const toolbar = new WebAppMenu.Toolbar(items);
 toolbar.show();
 ```
 
@@ -94,7 +97,7 @@ menu.position = Position.Popup(50,50,24);
 menu.position = Position.ResponsivePopup(50,50,24); 
 ```
 
-See the documentation for more information.
+See the in code documentation for more information.
 
 ### Icon Factory
 
@@ -113,5 +116,5 @@ const items = [
     {label:'More Typing', icon:myIconFactory('delete')}
 ];
 
-const toolbar = new Menu.Toolbar(items, {iconFactory:myIconFactory});
+const toolbar = new WebAppMenu.Toolbar(items, {iconFactory:myIconFactory});
 ```
