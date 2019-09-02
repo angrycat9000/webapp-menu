@@ -36,6 +36,9 @@ export class Item extends HTMLElement {
 
         const button = Item.template.content.cloneNode(true);
         shadow.appendChild(button);
+
+        /** @property {function} action */
+        this.action = null;
     }
 
     static create(options) {
@@ -66,7 +69,7 @@ export class Item extends HTMLElement {
         if('undefined' != props.icon)
             this.setIcon(props.icon);
 
-        for(let prop of ['disabled']) {
+        for(let prop of ['disabled', 'showToolbarLabel', 'action']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
@@ -121,6 +124,16 @@ export class Item extends HTMLElement {
         iconElement.setAttribute('slot', 'icon');
         iconElement.setAttribute('data-icon-factory-arg', icon);
         this.appendChild(iconElement);
+    }
+
+    /** 
+     * @property {string} showToolbarLabel
+     * 
+     */
+    get showToolbarLabel() {return this.hasAttribute('showtoolbarlabel');}
+    set showToolbarLabel(value) {
+        if(value) this.setAttribute('showtoolbarlabel', '');
+        else this.removeAttribute('showtoolbarlabel');
     }
 
     updateFactoryIcon() {
@@ -180,6 +193,8 @@ export class Item extends HTMLElement {
         for(let item of items)
             this.removeChild(item);
     }
+
+
 
     /**
      * @param {Node} element

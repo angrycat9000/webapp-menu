@@ -21,8 +21,14 @@ wam-toolbar {
   }
 }
 
-:host-context(wam-toolbar) .menu-item-label {display:none};
+:host-context(wam-toolbar) .menu-item-label {
+  display:none
+}
 
+:host-context(wam-toolbar[showtoolbarlabel], wam-toolbar[showtoolbarlabel]) .menu-item-label,
+:host-context(wam-item[showtoolbarlabel], wam-item[showtoolbarlabel]) .menu-item-label {
+  display:block;
+}
 
 .menu-toolbar.menu-outer {
   display:inline-block;

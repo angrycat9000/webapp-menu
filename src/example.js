@@ -10,6 +10,9 @@ function materialIcon(name) {
 
 function run() {
     const container = document.createElement('main');
+    const p = document.createElement('p');
+    p.appendChild(document.createTextNode('Use this toolbar to trigger the menu'));
+    container.appendChild(p);
     document.body.appendChild(container);
 
     const items = [
@@ -19,16 +22,33 @@ function run() {
         {label:'Action 3',}
     ];
     const menu = Menu.Popup.create(items);
-    menu.autoClose = false;
-    menu.useAnimation = false;
-    menu.open();
+    //menu.autoClose = false;
+    //menu.useAnimation = false;
     document.body.appendChild(menu);
     
     const tools = [
         {label:'Add', icon:'add'},
         {label:'Upload', icon:'cloud_upload'},
-        {label:'Delete', icon:'delete'}
-    ]
+        {label:'Delete', icon:'delete'},
+        {label:'Show Popup Menu', icon:'menu', showToolbarLabel:true, action:(e)=>{
+            const rect = e.detail.item.getBoundingClientRect();
+            const top = rect.top + rect.height + 8;
+            menu.position = Menu.Position.DockablePopup(rect.left, top);
+            menu.open();
+        }}
+    ];
+    
+    const toolbar = document.createElement(Menu.Toolbar.tagName);
+    toolbar.items.set(tools);
+    toolbar.autoClose = false;
+    toolbar.iconFactory =  materialIcon;
+
+    const customIcon = Menu.Item.create({label:'Custom Icon Test'});
+    customIcon.innerHTML = '<span slot="icon">&copy;</span>';
+    toolbar.appendChild(customIcon)
+    toolbar.appendChild(Menu.Item.create({label:'Test2 Label', label2:'sub label', icon:'add'}))
+
+    container.appendChild(toolbar);
 
     /*const toolbar = new Menu.Toolbar(tools , {host:container, iconFactory:materialIcon});
     toolbar.element.id = 'toolbar';
@@ -37,31 +57,8 @@ function run() {
 
     container.appendChild(toolbar.element);*/
 
-    const button = document.createElement('button');
-    button.innerHTML = 'Show Menu';
-    button.setAttribute('aria-haspopup','true'); // since this button spawns an ARIA menu, set aria-haspopup
-    button.addEventListener('click', (e)=>{
-        const rect = e.currentTarget.getBoundingClientRect();
-        const top = rect.top + rect.height + 8;
-        menu.position = Menu.Position.DockablePopup(rect.left, top);
-        menu.open();
-    })
-    container.appendChild(button);
+   // button.setAttribute('aria-haspopup','true'); // since this button spawns an ARIA menu, set aria-haspopup
 
-    const item = document.createElement(Menu.Item.tagName);
-    item.setAttribute('label', 'Test');
-    document.body.appendChild(item);
-
-    const toolbar = document.createElement(Menu.Toolbar.tagName);
-    toolbar.items.set(tools);
-    toolbar.autoClose = false;
-    toolbar.iconFactory =  materialIcon;
-
-    const customIcon = Menu.Item.create({label:'Custom Icon Test'});
-    customIcon.innerHTML = '<span slot="icon">XY</span>';
-    toolbar.appendChild(customIcon)
-    toolbar.appendChild(Menu.Item.create({label:'Test2 Label', label2:'sub label', icon:'add'}))
-    document.body.appendChild(toolbar);
 }
 
 function showSubMenu() {

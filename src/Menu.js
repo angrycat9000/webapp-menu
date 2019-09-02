@@ -56,8 +56,27 @@ class Menu extends HTMLElement {
         this.state = 'closed';
         //this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
         this.position = Position.Static;
+
+        this.addEventListener('focusout', this.onFocusOut.bind(this));
     }
 
+    onFocusOut() {
+        window.requestAnimationFrame(()=>{
+            if( ! this.autoClose  || 'open' != this.state) {
+                return;
+            }
+
+            let focused = document.activeElement;
+            while(focused) {
+                if(focused === this)
+                    return;
+                focused = focused.parentElement
+            }
+
+            if('open' == this.state)
+                this.close();
+        })
+    }
 
 
     /** @property {Boolean} useAnimation */
@@ -116,15 +135,15 @@ class Menu extends HTMLElement {
      * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
     open(suppressFocus=false) {
-        this.shadowRoot.querySelector('.menu').style.display = '';
-        return;
         if('open' == this.state|| 'opening' == this.state)
             return null;
 
         this.previousFocus = this.parentElement ? document.activeElement : null;
         this.state = 'opening';
 
-        let anim = new Animation.Transition(this.element, 'menushow');
+        const menuElement = this.shadowRoot.querySelector('.menu');
+
+        let anim = new Animation.Transition(menuElement, 'menushow');
         anim.on('firstframe', (e)=>{
             if('opening' !== this.state) {
                 e.transition.stop();
@@ -132,6 +151,8 @@ class Menu extends HTMLElement {
             }
 
             // don't append the element to the end if it already is in the parent
+            menuElement.style.display = '';
+
             /*if(this.host != this.element.parentElement)
                 this.host.appendChild(this.element);
                 this.position.apply(this.element, this.host);
@@ -153,13 +174,12 @@ class Menu extends HTMLElement {
      * @return {Transition} Null if it is already closed
      */
     close() {
-        this.shadowRoot.querySelector('.menu').style.display='none';
         if(this.state == 'closed' || this.state == 'closing')
             return null;
 
         this.state = 'closing';
 
-        let anim = new Animation.Transition(this.element, 'menuhide');
+        let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'menuhide');
         anim.on('firstframe',(e)=>{
             if(this.state !== 'closing') {
                 e.transition.stop();
@@ -174,8 +194,7 @@ class Menu extends HTMLElement {
                 return;
 
             this.state = 'closed';
-            if(this.element.parentElement)
-                this.element.parentElement.removeChild(this.element);
+            this.shadowRoot.querySelector('.menu').style.display = 'none';
 
             if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body))
                 this.previousFocus.focus();
@@ -307,24 +326,25 @@ class Menu extends HTMLElement {
         if(item.disabled)
             return;
 
-        
-        let closeMenu = true;
-        /** 
-         * @typedef ItemActionEvent 
-         * @property {Menu} menu
-         * @property {Item} item
-         * @property {Event} initiatingEvent
-         * @function preventClose
-        */
-        const event = {
+        const event = new CustomEvent('menuitem', {detail: {
+            item: item,
+            menu: this,
+            source:initiatingEvent
+        }});
+
+
+        const myEvent = {
             menu:this,
             item:item,
             event:initiatingEvent, 
             preventClose:function(){closeMenu = false}
         };
+
         if('function' == typeof item.action)
             item.action(event);
 
+        const closeMenu = item.dispatchEvent(event);
+        
         if(this.autoClose && closeMenu)
             this.close();    
     }
