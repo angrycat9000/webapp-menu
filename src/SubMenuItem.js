@@ -2,11 +2,17 @@ import Item from './Item';
 import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 
+import {reusableStyleSheetsFunction} from './Style';
+import style from '../style/submenu.scss';
+const getStyleSheets = reusableStyleSheetsFunction(style);
+
 export class SubMenuItem extends Item {
     constructor() {
         super();
 
         const shadow = this.shadowRoot;
+        shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, ...getStyleSheets()];
+        
         const outer = document.createElement('div');
         outer.className = 'submenu-outer';
         outer.setAttribute('role', 'menu');
@@ -28,6 +34,6 @@ export class SubMenuItem extends Item {
     }
 }
 
-SubMenuItem.tagName = 'wam-submenu';
+Object.defineProperty(SubMenuItem, 'tagName', {value:'wam-submenu'});
 
 export default SubMenuItem;

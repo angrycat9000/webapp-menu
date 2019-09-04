@@ -1,5 +1,7 @@
 import Attributes from './Attributes';
-import {getStyleLink} from './Style';
+import {reusableStyleSheetsFunction} from './Style';
+import itemStyle from '../style/item.scss';
+const getStyleSheets = reusableStyleSheetsFunction(itemStyle);
 
 
 /**
@@ -13,6 +15,9 @@ import {getStyleLink} from './Style';
  * @param {ItemActionEvent} event
  */
 
+
+
+
 /**
  * 
  */
@@ -23,7 +28,7 @@ export class Item extends HTMLElement {
         super();
 
         const shadow = this.attachShadow({mode: 'open'});
-        shadow.appendChild(getStyleLink());
+        shadow.adoptedStyleSheets = getStyleSheets();
 
         const button = Item.template.content.cloneNode(true);
         shadow.appendChild(button);
@@ -33,7 +38,8 @@ export class Item extends HTMLElement {
     }
 
     static create(options) {
-        const item = document.createElement(Item.tagName);
+        const type = options.type || Item;
+        const item = document.createElement(type.tagName);
         item.set(options);
         return item;
     }
@@ -203,7 +209,7 @@ export class Item extends HTMLElement {
     }
 };
 
-Item.tagName = 'wam-item';
+Object.defineProperty(Item, 'tagName', {value:'wam-item'});
 
 var template = null;
 Object.defineProperty(Item, 'template', {get:function(){

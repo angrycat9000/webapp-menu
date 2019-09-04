@@ -1,6 +1,4 @@
-import '../../style/example.scss';
-
-
+import Menu from '../dist/webapp-menu.js';
 
 function materialIcon(name) {
     const icon = document.createElement('i');
@@ -10,8 +8,6 @@ function materialIcon(name) {
 }
 
 function run() {
-    window.Menu = window.WebAppMenu;
-
     const container = document.createElement('main');
     const h1 = document.createElement('h1');
     h1.appendChild(document.createTextNode('Web App Menu Demo'));
@@ -22,7 +18,7 @@ function run() {
     document.body.appendChild(container);
 
     const items = [
-        {label:'Submenu', type:Menu.SubMenu},
+        {label:'Submenu', type:Menu.SubMenuItem},
         {label:'Action 1', label2:'Explanation of Action', icon:''},
         {label:'Action 2', icon:''},
         {label:'Action 3',}
@@ -47,6 +43,7 @@ function run() {
     const toolbar = document.createElement(Menu.Toolbar.tagName);
     toolbar.items.set(tools);
     toolbar.autoClose = false;
+    toolbar.useAnimation = false;
     toolbar.iconFactory =  materialIcon;
     toolbar.isOpen = true;
 

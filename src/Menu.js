@@ -6,6 +6,10 @@ import {getStyleLink} from './Style';
 import ItemCollection from './ItemCollection';
 import Attributes from './Attributes';
 
+import {reusableStyleSheetsFunction} from './Style';
+import style from '../style/menu.scss';
+const getStyleSheets = reusableStyleSheetsFunction(style);
+
 let id = 0;
 function nextId() {
     return `wam-id-${++id}`;
@@ -20,6 +24,7 @@ class Menu extends HTMLElement {
         super();
 
         const shadow = this.attachShadow({mode: 'open'});
+        shadow.adoptedStyleSheets = getStyleSheets();
         shadow.appendChild(getStyleLink());
         const outer = document.createElement('div');
         outer.style.display='none';

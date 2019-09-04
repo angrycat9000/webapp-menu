@@ -1,20 +1,4 @@
-$menu-border:1px solid #808080 !default;
-$menu-background:#e0e0e0 !default;
-$menu-text:#202020 !default;
-$menu-transition-duration: 0.4s !default;
-$menu-border-radius: 0.125rem !default;
-$menu-highlight-color: #40C4FF !default;
-
-$menu-hover-background: rgba($menu-highlight-color, 0.5) !default;
-$menu-pressed-background: $menu-highlight-color !default;
-
-@mixin focus() {
-  &:focus {
-      outline-width: 4px;
-      outline-offset:-4px;
-      outline-style: solid;
-  }
-}
+@import 'theme.scss';
 
 .menu {
   border-radius: $menu-border-radius;
@@ -27,9 +11,10 @@ $menu-pressed-background: $menu-highlight-color !default;
 
 @import 'animation.scss';
 
-@import 'item.scss';
-@import 'toolbar.scss';
-@import 'listcontainer.scss';
-@import 'position.scss';
-@import 'popup.scss';
-@import 'submenu.scss';
+wam-item [slot=label] {
+  & > *:nth-child(2) {
+    font-size:75%;
+    opacity:0.75;
+    margin-top:0.25rem;
+  }
+}

@@ -1,17 +1,15 @@
 import Menu from './Menu';
-import {Item} from  './Item';
-import ItemList from './ItemList';
+
+import {reusableStyleSheetsFunction} from './Style';
+import style from '../style/toolbar.scss';
+const getStyleSheets = reusableStyleSheetsFunction(style);
 
 class Toolbar extends Menu {
     constructor() {
         super();
-        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
-    
-    
-  
 
-        //this.itemParent.classList.add('menu-toolbar');
-        //this.itemParent.setAttribute('icononly','');
+        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
     }
 
 }

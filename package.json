@@ -2,12 +2,11 @@
   "name": "webapp-menu",
   "version": "1.0.0",
   "description": "Create accessible menus for web apps (eg. file, edit, context menus)",
-  "browser": "dist/webapp-menu.js",
-  "style": "dist/webapp-menu.css",
+  "main": "dist/webapp-menu.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "webpack-dev-server --open --config webpack.develop.config.js",
-    "build": "webpack --mode production --config webpack.library.config.js",
+    "develop": "rollup -w -c rollup.config.js",
+    "build": "rimraf dist && rollup -c rollup.config.js --configProduction",
     "prepare": "npm run build"
   },
   "repository": {
@@ -27,23 +26,17 @@
     "EventEmitter": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^2.0.2",
-    "css-loader": "^3.2.0",
-    "file-loader": "^4.2.0",
-    "html-webpack-plugin": "^4.0.0-beta.5",
-    "mini-css-extract-plugin": "^0.7.0",
+    "cssnano": "^4.1.10",
+    "es-dev-server": "^1.17.1",
     "node-sass": "^4.12.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "sass-loader": "^7.2.0",
-    "style-loader": "^0.23.1",
-    "svg-inline-loader": "^0.8.0",
-    "terser-webpack-plugin": "^1.4.1",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1"
+    "postcss": "^7.0.17",
+    "rimraf": "^3.0.0",
+    "rollup": "^1.20.3",
+    "rollup-plugin-license": "^0.12.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-sass": "^1.2.2",
+    "rollup-plugin-svg": "^2.0.0",
+    "rollup-plugin-terser": "^5.1.1"
   },
   "keywords": [
     "menu",

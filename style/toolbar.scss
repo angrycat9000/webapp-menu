@@ -1,34 +1,4 @@
-wam-toolbar {
-  wam-item {
-    min-width:3rem;
-  }
-
-  wam-item:first-child {
-    border-top-left-radius: $menu-border-radius;
-    border-bottom-left-radius: $menu-border-radius;
-  }
-
-  wam-item + wam-item  {
-    border-left: $menu-border;
-    border-top-left-radius:0;
-    border-bottom-left-radius:0;
-  }
-
-  wam-item:last-child,
-  .menu-item__last {
-    border-top-right-radius: $menu-border-radius;
-    border-bottom-right-radius: $menu-border-radius; 
-  }
-}
-
-:host-context(wam-toolbar) .menu-item-label {
-  display:none
-}
-
-:host-context(wam-toolbar[showtoolbarlabel], wam-toolbar[showtoolbarlabel]) .menu-item-label,
-:host-context(wam-item[showtoolbarlabel], wam-item[showtoolbarlabel]) .menu-item-label {
-  display:block;
-}
+@import 'theme.scss';
 
 .menu-toolbar.menu-outer {
   display:inline-block;
