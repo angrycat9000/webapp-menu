@@ -1,5 +1,6 @@
-import '../style/example.scss';
-import Menu from './api.js';
+import '../../style/example.scss';
+
+
 
 function materialIcon(name) {
     const icon = document.createElement('i');
@@ -9,14 +10,19 @@ function materialIcon(name) {
 }
 
 function run() {
+    window.Menu = window.WebAppMenu;
+
     const container = document.createElement('main');
+    const h1 = document.createElement('h1');
+    h1.appendChild(document.createTextNode('Web App Menu Demo'));
+    container.appendChild(h1);
     const p = document.createElement('p');
     p.appendChild(document.createTextNode('Use this toolbar to trigger the menu'));
     container.appendChild(p);
     document.body.appendChild(container);
 
     const items = [
-        {label:'Submenu', type:Menu.ItemType.Nested, action:showSubMenu},
+        {label:'Submenu', type:Menu.SubMenu},
         {label:'Action 1', label2:'Explanation of Action', icon:''},
         {label:'Action 2', icon:''},
         {label:'Action 3',}
@@ -27,21 +33,22 @@ function run() {
     document.body.appendChild(menu);
     
     const tools = [
-        {label:'Add', icon:'add'},
-        {label:'Upload', icon:'cloud_upload'},
-        {label:'Delete', icon:'delete'},
         {label:'Show Popup Menu', icon:'menu', showToolbarLabel:true, action:(e)=>{
             const rect = e.detail.item.getBoundingClientRect();
             const top = rect.top + rect.height + 8;
             menu.position = Menu.Position.DockablePopup(rect.left, top);
             menu.open();
-        }}
+        }},
+        {label:'Add', icon:'add'},
+        {label:'Upload', icon:'cloud_upload'},
+        {label:'Delete', icon:'delete'}
     ];
     
     const toolbar = document.createElement(Menu.Toolbar.tagName);
     toolbar.items.set(tools);
     toolbar.autoClose = false;
     toolbar.iconFactory =  materialIcon;
+    toolbar.isOpen = true;
 
     const customIcon = Menu.Item.create({label:'Custom Icon Test'});
     customIcon.innerHTML = '<span slot="icon">&copy;</span>';
@@ -71,6 +78,15 @@ function showSubMenu() {
         {label:'Sub menu action 6'},
     ]
 }
+
+function showMenu(e) {
+    const rect = e.detail.item.getBoundingClientRect();
+    const top = rect.top + rect.height + 8;
+    const menu = document.getElementById('popup-menu');
+    menu.position = Menu.Position.DockablePopup(rect.left, top);
+    menu.open();
+}
+
 
 if('loading' == document.readyState)
     window.addEventListener('DOMContentLoaded', run)

@@ -1,15 +1,6 @@
-import Icon from './Icon';
+import Attributes from './Attributes';
 import {getStyleLink} from './Style';
 
-/**
- * @enum
- * @readonly
- */
-export const ItemType = {
-    Action: 'action',
-    Nested: 'nested',
-    Back:  'back',
-};
 
 /**
  * @callback iconFactoryFunction
@@ -130,11 +121,8 @@ export class Item extends HTMLElement {
      * @property {string} showToolbarLabel
      * 
      */
-    get showToolbarLabel() {return this.hasAttribute('showtoolbarlabel');}
-    set showToolbarLabel(value) {
-        if(value) this.setAttribute('showtoolbarlabel', '');
-        else this.removeAttribute('showtoolbarlabel');
-    }
+    get showToolbarLabel() {return Attributes.getExists(this, 'showtoolbarlabel');}
+    set showToolbarLabel(value) {return Attributes.setExists(this, 'showtoolbarlabel', value);}
 
     updateFactoryIcon() {
         let oldIcon = this.querySelector('[slot=icon][data-icon-factory-arg]');
@@ -152,7 +140,7 @@ export class Item extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['disabled', 'isdefaultfocus'];
+        return ['disabled', 'isdefaultfocus', 'label'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -164,37 +152,41 @@ export class Item extends HTMLElement {
             case 'isdefaultfocus':
                 this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)
                 break;
+            case 'label':
+                const labelSlot = this.shadowRoot.querySelector('slot[name=label]');
+                while(labelSlot.firstChild)
+                    labelSlot.removeChild(labelSlot.firstChild);
+                labelSlot.appendChild(document.createTextNode(newValue))
         }
       }
 
     /** @property {boolean} disabled true if the item is disabled */
-    get disabled() {return this.hasAttribute('disabled')}
-    set disabled(value) {
-        if(value)
-            this.setAttribute('disabled','');
-        else
-            this.removeAttribute('disabled');
-    }
+    get disabled() {return Attributes.getExists(this, 'disabled')}
+    set disabled(value) {return Attributes.setExists(this ,'disabled', value)}
 
     /**
      * @property {boolean} isDefaultFocus True if the item is the one to recieve focus when the user
      *                                    tabs into it
      */
-    get isDefaultFocus() {return this.hasAttribute('isdefaultfocus')}
-    set isDefaultFocus(value) {
-        if(value)
-            this.setAttribute('isdefaultfocus','');
-        else
-            this.removeAttribute('isdefaultfocus');
+    get isDefaultFocus() {return Attributes.getExists(this, 'isdefaultfocus')}
+    set isDefaultFocus(value) {return Attributes.setExists(this ,'isdefaultfocus', value)}
+
+
+    /** 
+     * @property {string} label Set the value of the label.  This is overridden if there is an element
+     *                             with ```slot="label"``` provided as a child.
+     */
+    get label() {
+        const labelElement = this.querySelector('[slot=label]');
+        return labelElement ? labelElement.innerText : this.shadowRoot.querySelector('slot[name=label]').innerText
     }
+    set label(value) {return Attributes.setString(element, 'label', value)}
 
     clearSlot(name) {
         const items = this.querySelectorAll(`[slot=${name}]`);
         for(let item of items)
             this.removeChild(item);
     }
-
-
 
     /**
      * @param {Node} element
@@ -222,7 +214,7 @@ Object.defineProperty(Item, 'template', {get:function(){
     template.innerHTML = 
         `<button class="menu-item menu-item__action" role="menuitem" tabindex="-1">
             <span class="menu-item-icon" aria-hidden="true"><slot name="icon"></slot></span>
-            <span class="menu-item-label"><slot name="label"></slot></span>
+            <span class="menu-item-label"><slot name="label">!? Missing Label !?</slot></span>
         </button>`;
     return template;
 }});
@@ -242,3 +234,5 @@ function stringToNode(str, tag='span') {
     span.appendChild(document.createTextNode(str));
     return span;
 }
+
+export default Item;

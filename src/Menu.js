@@ -1,28 +1,16 @@
 import Animation from './Animation';
 import Position from './Position';
-import {Item} from './Item';
+import Item from './Item';
 import {addEventFunctions, addEventMember } from './Events';
 import {getStyleLink} from './Style';
 import ItemCollection from './ItemCollection';
+import Attributes from './Attributes';
 
-
-function getBooleanAttribute(element, attributeName, defaultValue) {
-    if( ! element.hasAttribute(attributeName))
-        return defaultValue;
-
-    const value = element.getAttribute(attributeName);
-    if(value == 'false' || value == 'no')
-        return false;
-    if(value == 'true' || value == 'yes')
-        return true;
-
-    return defaultValue;
+let id = 0;
+function nextId() {
+    return `wam-id-${++id}`;
 }
 
-function setBooleanAttribute(element, attributeName, value) {
-    const boolValue = ('yes' == value || 'true' == value) ? true : Boolean(value);
-    element.setAttribute(attributeName, boolValue);
-}
 
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
@@ -34,6 +22,7 @@ class Menu extends HTMLElement {
         const shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(getStyleLink());
         const outer = document.createElement('div');
+        outer.style.display='none';
         outer.className = 'menu menu-outer';
         outer.setAttribute('role', 'menu');
         const inner = document.createElement('div');
@@ -45,7 +34,6 @@ class Menu extends HTMLElement {
 
         this.items = new ItemCollection(this, inner);
 
-
         /*this.element = document.createElement('div');
         this.element.className = 'menu';
         this.element['data-menu'] = this;*/
@@ -54,10 +42,87 @@ class Menu extends HTMLElement {
         addEventMember(this);
 
         this.state = 'closed';
+        this._controlledBy = {};
+
         //this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
         this.position = Position.Static;
 
         this.addEventListener('focusout', this.onFocusOut.bind(this));
+    }
+
+
+
+    /** @property {Boolean} useAnimation */
+    get useAnimation() {return Attributes.getTrueFalse(this, 'useanimation', true)}
+    set useAnimation(value) {Attributes.setTrueFalse(this, 'useanimation', value)}
+
+    /** @property {boolean} autoClose */
+    get autoClose() {return Attributes.getTrueFalse(this, 'autoclose', true)}
+    set autoClose(value) {Attributes.setTrueFalse(this, 'autoclose', value)}
+
+    /**
+     * @property {boolean} isOpen
+     */
+    get isOpen() {return Attributes.getExists(this, 'open')};
+    set isOpen(value) {Attributes.setExists(this, 'open', value)}
+
+    
+    /**
+     * @property {HTMLElement} controlledBy Element that controls this this menu.
+     */
+    get controlledBy () {
+        const id = this.getAttribute('controlledBy');
+        if( ! id)
+            return null;
+        return document.getElementById(id);
+    }
+    set controlledBy(value) {
+        if( ! value)
+            Attributes.setString(this, 'controlledby', null)
+        else {
+            if( ! value.id)
+                value.id = nextId();
+            this.setAttribute('controlledBy', id);
+        }
+    }
+
+
+    /** @property {iconFactoryFunction} iconFactory */
+    get iconFactory() {return this._iconFactory}
+    set iconFactory(value) {
+        this._iconFactory = value;
+        for(let item of this.items)
+            item.updateFactoryIcon();
+    }
+
+
+    static get observedAttributes() {
+        return ['open', 'controlledby'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch(name) {
+            case 'open':
+                if(null != newValue && 'false' != newValue)
+                    this.open();
+                else
+                    this.close();
+                break;
+            case 'controlledby':
+                this.setControlledByElement(document.getElementById(newValue));
+                break;
+        }
+    }
+
+    /**
+     * @param {HTMLElement} element
+     * @return {Menu} Get the Menu object that this element is contained in
+     */
+    static fromElement(element) {
+        while(element &&  ! (element instanceof Menu)) {
+            element = element.parentElement;
+        }
+        return element;
     }
 
     onFocusOut() {
@@ -78,43 +143,17 @@ class Menu extends HTMLElement {
         })
     }
 
-
-    /** @property {Boolean} useAnimation */
-    get useAnimation() {return getBooleanAttribute(this, 'useanimation', true)}
-    set useAnimation(value) {setBooleanAttribute(this, 'useanimation', value)}
-
-    /** @property {boolean} autoClose */
-    get autoClose() {return getBooleanAttribute(this, 'autoclose', true)}
-    set autoClose(value) {setBooleanAttribute(this, 'autoclose', value)}
-
-    /** @property {iconFactoryFunction} iconFactory */
-    get iconFactory() {return this._iconFactory}
-    set iconFactory(value) {
-        this._iconFactory = value;
-        for(let item of this.items)
-            item.updateFactoryIcon();
-    }
-
-
     /**
-     * @param {HTMLElement} element
-     * @return {Menu} Get the Menu object that this element is contained in
-     */
-    static fromElement(element) {
-        while(element &&  ! (element instanceof Menu)) {
-            element = element.parentElement;
-        }
-        return element;
-    }
-
-
-    /**
-     * If the menu is opened, closed, or in transition
+     * If the menu is opened, closed, or in transition.  Public callers use isOpen
      * @property {string} state;
+     * @private
      */
     get state() {return this._state;}
     set state(value) {
         this._state = value;
+        this.isOpen = 'open' == value || 'opening' == value;
+        if(this.controlledBy)
+            this.controlledBy.setAttribute('aria-expanded', this.isOpen)
     }
 
     startTransition(transition) {
@@ -128,6 +167,7 @@ class Menu extends HTMLElement {
     handleWindowResized() {
         this.position.apply(this.element, this.host);
     }
+
 
     /**
      * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
@@ -153,6 +193,7 @@ class Menu extends HTMLElement {
             // don't append the element to the end if it already is in the parent
             menuElement.style.display = '';
 
+
             /*if(this.host != this.element.parentElement)
                 this.host.appendChild(this.element);
                 this.position.apply(this.element, this.host);
@@ -161,7 +202,7 @@ class Menu extends HTMLElement {
         anim.on('complete',()=>{
             this.state = 'open';
             if( ! suppressFocus)
-                this.setDefaultFocus();
+                this.setFocusOn(this.focusItem);
             this.events.emit('opened', {menu:this});
             this.windowResizeFunc = ()=>this.handleWindowResized();
             window.addEventListener('resize',this.windowResizeFunc);
@@ -247,12 +288,20 @@ class Menu extends HTMLElement {
         return focused;
     }
 
+    
     /**
-     * 
+     * @property {Item} focusItem 
      */
-    setDefaultFocus() {
-        let item =  this.querySelector('[isdefaultfocus]') || this.firstElementChild;
-        this.setFocusOn(item);
+    set focusItem(item) {
+        for(let element of this.items) {
+            if(item == element)
+                element.setAttribute('isdefaultfocus', '');
+            else
+                element.removeAttribute('isdefaultfocus')
+        }
+    }
+    get focusItem() {
+        return this.querySelector('[isdefaultfocus]') || this.firstElementChild;
     }
 
     /**
@@ -261,14 +310,9 @@ class Menu extends HTMLElement {
      * @param {HTMLElement} item
      */
     setFocusOn(item) {
-        for(let element of this.items) {
-            if(item === element) {
-                element.setAttribute('isdefaultfocus', '');
-                element.focus();
-            } else {
-                element.removeAttribute('isdefaultfocus')
-            }
-      }
+        this.focusItem = item;
+        if(item)
+            item.focus();
     }
 
     static onClick(e) {
@@ -358,6 +402,55 @@ class Menu extends HTMLElement {
             value = new Position(value);
 
         this._position = value;
+    }
+
+    /** @private */
+    releaseControlledByElement() {
+        const controlledBy = this.controlledBy;
+        if( ! controlledBy)
+            return;
+
+        const handlers = this.controlledByEventListeners;
+        controlledBy.removeAttribute('aria-haspopup');
+        controlledBy.removeAttribute('aria-expanded');
+        controlledBy.removeAttribute('aria-controls');
+        controlledBy.removeEventListener('click', handlers.onClick);
+        controlledBy.removeEventListener('keydown', handlers.onKeyDown);
+    }
+
+    /** @private  */
+    get controlledByEventListeners() {
+        if( ! this._controlledByEventListeners) {
+            this._controlledByEventListeners = {
+                onClick: (e)=>{this.isOpen = ! this.isOpen},
+                onKeyDown: (e)=>{
+                    if(e.key == 'ArrowDown' &&  ! this.isOpen) {
+                        this.focusItem = this.items.first;
+                        this.open();
+                    } else if(e.key == 'ArrowUp' && ! this.isOpen) {
+                        this.focusItem = this.items.last;
+                        this.open();
+                    }
+                }
+            };
+        }   
+        return this._controlledByEventListeners;
+    }
+
+    /** @private */
+    setControlledByElement(element) {
+        this.releaseControlledByElement();
+
+        if( ! this.id)
+            this.id = nextId();
+
+        const listeners = this.controlledByEventListeners;
+
+        element.setAttribute('aria-haspopup', 'true');
+        element.setAttribute('aria-expanded', this.isOpen);
+        element.setAttribute('aria-controls', this.id);
+        element.addEventListener('click', listeners.onClick);
+        element.addEventListener('keydown', listeners.onKeyDown);
     }
 
 }

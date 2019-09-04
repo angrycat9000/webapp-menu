@@ -1,4 +1,4 @@
-import {Item} from './Item';
+import Item from './Item';
 
 function convertToItem(obj) {
     return (obj instanceof Item) ? obj : Item.create(obj);
@@ -113,6 +113,22 @@ class ItemCollection {
             this.owner.appendChild(i);
 
         this.onChange();
+    }
+
+    get first() {
+        for(let c of this.owner.children) {
+            if(this instanceof Item)
+                return c;
+        }
+        return null;
+    }
+
+    get last() {
+        for(let c = this.owner.lastChild; c; c = c.previousSibling) {
+            if(c instanceof Item)
+                return c;
+        }
+        return null;
     }
 
     /** @property {boolean} hasIcons */

@@ -1,8 +1,9 @@
 import Menu from './Menu';
-import {ItemType, Item} from './Item';
+import Item from './Item';
 import Position from './Position';
 import Toolbar from './Toolbar';
 import Popup from './Popup';
+import SubMenuItem from './SubMenuItem';
 
-const menuExport = {ItemType, Item, Popup, Toolbar, Position, Menu};
+const menuExport = {Item, SubMenuItem, Popup, Toolbar, Position, Menu};
 export default menuExport;

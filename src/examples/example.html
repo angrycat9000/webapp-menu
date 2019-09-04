@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>WebApp Menu Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+<!--   <link href="example.css" rel="stylesheet">
+    <link href="webapp-menu.css" rel="stylesheet">
+    <script src="example.js"></script>
+    <script src="webapp-menu.js"></script>--->
+</head>
+
+<body>
+    <main>
+        <h1>WebApp Menu</h1>
+        <h2>Toolbar</h2>
+        <wam-toolbar showtoolbarlabel autoclose="false">
+            <wam-item label="Cut"></wam-item>
+            <wam-item label="Copy"></wam-item>
+            <wam-item label="Paste"></wam-item>
+        </wam-toolbar>
+
+    
+        <p>Use this toolbar to trigger the menu</p>
+        <wam-toolbar autoclose="false">
+            <wam-item>
+                <span slot="label">Add</span>
+                <i class="material-icons" slot="icon" data-icon-factory-arg="add">add</i>
+            </wam-item>
+            <wam-item>
+                <span slot="label">Upload</span>
+                <i class="material-icons" slot="icon" data-icon-factory-arg="cloud_upload">cloud_upload</i>
+            </wam-item>
+            <wam-item>
+                <span slot="label">Delete</span>
+                <i class="material-icons" slot="icon" data-icon-factory-arg="delete">delete</i>
+            </wam-item>
+            <wam-item showtoolbarlabel id="show-menu-button">
+                <span slot="label">Show Popup Menu</span>
+                <i class="material-icons" slot="icon" data-icon-factory-arg="menu">menu</i>
+            </wam-item>
+            <wam-item>
+                <span slot="icon">©</span>
+                <span slot="label">Copyright</span>
+            </wam-item>
+            <wam-item>
+                <div slot="label">
+                    <span>Test2 Label</span>
+                    <span>sub label</span>
+                </div>
+                <i class="material-icons" slot="icon" data-icon-factory-arg="add">add</i>
+            </wam-item>
+        </wam-toolbar>
+
+        <wam-popup id="popup-menu">
+            <wam-item>
+                <span slot="label">Submenu</span>
+            </wam-item>
+            <wam-item>
+                <div slot="label">
+                    <div>Action 1</div>
+                    <div>Explanation of Action</div>
+                </div>
+            </wam-item>
+            <wam-item label="Should not show because overridden">
+                <span slot="label">
+                    <span style="text-decoration:underline">A</span>ction 2</span>
+                </wam-item>
+            <wam-item><span slot="label">Action 3</span></wam-item>
+            <wam-item label="My Label"></wam-item>
+           <wam-submenu>
+                <span slot="label">Sub Menu Test</span>
+                <wam-item><span slot="label">Action 4</span></wam-item>
+                <wam-submenu>
+                        <span slot="label">Sub Menu</span>
+                        <wam-item label="Action 6"></wam-item>
+                        <wam-item><span slot="label">Action 7</span></wam-item>
+                        <wam-item><span slot="label">Action 8</span></wam-item>
+                </wam-submenu>
+                <wam-item><span slot="label">Action 5</span></wam-item>
+            </wmam-submenu>
+            <wam-submenu>
+                <span slot="label">Slot Test</span>
+                <wam-item><span slot="label">Action 6</span></wam-item>
+                <wam-item><span slot="label">Action 7</span></wam-item>
+                <wam-item><span slot="label">Action 8</span></wam-item>
+        </wam-popup>
+    </main>
+</body>
+
+</html>

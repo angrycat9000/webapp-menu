@@ -19,7 +19,7 @@ module.exports = {
     },
   },
   entry: {
-    example: Path.resolve(__dirname, 'src/example.js'),
+    demo: Path.resolve(__dirname, 'src/examples/demo.js'),
     "webapp-menu": Path.resolve(__dirname, 'src/bundle.js'),
   },
   output: {
@@ -36,8 +36,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       title:'WebApp Menu Development',
       inject:'head',
-      name:'[name].html',
-      meta:{viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no'}
+      filename:'demo.html',
+      chunks: ['demo', 'webapp-menu']
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/examples/simple-popup.html',
+      inject:'head',
+      filename:'simple-popup.html',
+      chunks: ['webapp-menu']
     })
   ],
   module: {
@@ -49,7 +55,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'svg-inline-loader'
+        loader: 'svg-inline-loader?removeSVGTagAttrs=false'
       }
     ]
   }
