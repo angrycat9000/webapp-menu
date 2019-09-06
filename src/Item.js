@@ -35,6 +35,9 @@ export class Item extends HTMLElement {
 
         /** @property {function} action */
         this.action = null;
+
+        /** @property {object} data */
+        this.data = null;
     }
 
     static create(options) {
@@ -201,11 +204,14 @@ export class Item extends HTMLElement {
         return ; 
     }
 
-    static fromElement(element) {
-        while(element && ! (element instanceof Item))
-            element = element.parentElement;
-        
-        return element instanceof Item ? element : null;
+    static fromPath(path) {
+        if( ! path)
+            return null;
+        for(let p = 0; p < path.length; p++) {
+            if(path[p] instanceof Item)
+                return path[p];
+        }
+        return null;
     }
 };
 

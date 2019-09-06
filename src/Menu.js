@@ -4,6 +4,7 @@ import Item from './Item';
 import {addEventFunctions, addEventMember } from './Events';
 import {getStyleLink} from './Style';
 import ItemCollection from './ItemCollection';
+import TabList from './TabList';
 import Attributes from './Attributes';
 
 import {reusableStyleSheetsFunction} from './Style';
@@ -25,10 +26,9 @@ class Menu extends HTMLElement {
 
         const shadow = this.attachShadow({mode: 'open'});
         shadow.adoptedStyleSheets = getStyleSheets();
-        shadow.appendChild(getStyleLink());
         const outer = document.createElement('div');
         outer.style.display='none';
-        outer.className = 'menu menu-outer';
+        outer.className = 'menu menu-outer menu-background';
         outer.setAttribute('role', 'menu');
         const inner = document.createElement('div');
         inner.className = 'menu-inner';
@@ -37,7 +37,7 @@ class Menu extends HTMLElement {
         outer.appendChild(inner);
         shadow.appendChild(outer);
 
-        this.items = new ItemCollection(this, inner);
+        this.items = new ItemCollection(this);
 
         /*this.element = document.createElement('div');
         this.element.className = 'menu';
@@ -55,9 +55,12 @@ class Menu extends HTMLElement {
         this.addEventListener('focusout', this.onFocusOut.bind(this));
     }
 
+    /** @property {TabList} */
+    get interactiveItems() {
+        return new TabList(this.items);
+    }
 
-
-    /** @property {Boolean} useAnimation */
+    /** @property {boolean} useAnimation */
     get useAnimation() {return Attributes.getTrueFalse(this, 'useanimation', true)}
     set useAnimation(value) {Attributes.setTrueFalse(this, 'useanimation', value)}
 
@@ -170,7 +173,8 @@ class Menu extends HTMLElement {
     }
 
     handleWindowResized() {
-        this.position.apply(this.element, this.host);
+        // TODO
+        //this.position.apply(this.element, this.host);
     }
 
 
@@ -253,33 +257,6 @@ class Menu extends HTMLElement {
         return this.startTransition(anim);
     }
 
-    /**
-     * @param {Item} current
-     * @return {Item} The next element in this.itemParent. If current is the last element it
-     *                       return the first element. If there is no current element it returns the
-     *                       first element
-     */
-    getNext(current) {
-        const index = this.items.indexOf(current);
-        if(index < 0)
-            return this.items.atIndex(0);
-        
-        return this.items.atIndex((index+1) % this.items.length);
-    }
-
-    /**
-     * @param {Item} current
-     * @return {Item} the next item in this.itemParent. If current is the first element it
-     *                       return the last element. If there is no current it returns the last element;
-     */
-    getPrevious(current) {
-        const index = this.items.indexOf(current);
-        const length = this.items.length;
-        if(index < 0)
-            return items.atIndex(length - 1);
-        
-        return this.items.atIndex((index - 1 + length) % length);
-    }
 
     /**
      * @return {HTMLElement|null} focused item in this menu or null if the focus is outside of this parent
@@ -298,7 +275,7 @@ class Menu extends HTMLElement {
      * @property {Item} focusItem 
      */
     set focusItem(item) {
-        for(let element of this.items) {
+        for(let element of this.interactiveItems) {
             if(item == element)
                 element.setAttribute('isdefaultfocus', '');
             else
@@ -306,7 +283,8 @@ class Menu extends HTMLElement {
         }
     }
     get focusItem() {
-        return this.querySelector('[isdefaultfocus]') || this.firstElementChild;
+        const items = this.interactiveItems;
+        return items.selected || items.first;
     }
 
     /**
@@ -327,7 +305,7 @@ class Menu extends HTMLElement {
     }
 
     onClick(e) {
-        const item = Item.fromElement(e.target);
+        const item = Item.fromPath(e.path);
         if(item)
             this.activate(item, e);
     }
@@ -349,12 +327,12 @@ class Menu extends HTMLElement {
         switch(e.key) {
             case 'ArrowLeft':
             case 'ArrowUp':
-                this.setFocusOn(this.getPrevious(item));
+                this.setFocusOn(this.interactiveItems.previous(item));
                 e.preventDefault();
                 break;
             case 'ArrowRight':
             case 'ArrowDown':
-                this.setFocusOn(this.getNext(item));
+                this.setFocusOn(this.interactiveItems.next(item));
                 e.preventDefault();
                 break;
             case 'Escape':
@@ -363,7 +341,7 @@ class Menu extends HTMLElement {
                 break;
             case ' ':
             case 'Enter':
-                this.activate(Item.fromElement(item), e);
+                this.activate(Item.fromPath(e.path), e);
                 e.preventDefault();
         }
     }
@@ -375,11 +353,14 @@ class Menu extends HTMLElement {
         if(item.disabled)
             return;
 
-        const event = new CustomEvent('menuitem', {detail: {
-            item: item,
-            menu: this,
-            source:initiatingEvent
-        }});
+        const event = new CustomEvent('wam-activate', {
+            bubbles:true,
+            detail: {
+                item: item,
+                menu: this,
+                source:initiatingEvent
+            }
+        });
 
 
         const myEvent = {
@@ -430,10 +411,10 @@ class Menu extends HTMLElement {
                 onClick: (e)=>{this.isOpen = ! this.isOpen},
                 onKeyDown: (e)=>{
                     if(e.key == 'ArrowDown' &&  ! this.isOpen) {
-                        this.focusItem = this.items.first;
+                        this.focusItem = this.interactiveItems.first;
                         this.open();
                     } else if(e.key == 'ArrowUp' && ! this.isOpen) {
-                        this.focusItem = this.items.last;
+                        this.focusItem = this.interactiveItems.last;
                         this.open();
                     }
                 }

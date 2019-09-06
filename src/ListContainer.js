@@ -12,8 +12,12 @@ class ListContainer extends Menu {
     /**
      * 
      */
-    constructor(list, options) {
+    constructor() {
         super(options);
+
+        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+        this.shadowRoot.querySelector('.menu').classList.add('menu-container');
+
 
         this.element.classList.add('menu-listcontainer');
         

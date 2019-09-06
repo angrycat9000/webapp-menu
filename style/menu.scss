@@ -2,11 +2,24 @@
 
 .menu {
   border-radius: $menu-border-radius;
-  border: $menu-border;    
-  background: $menu-background;
   padding:0;
   margin:0;
   position:relative;
+  display:inline-block;
+}
+
+.menu-background {
+  border-radius: $menu-border-radius;
+  border: $menu-border;    
+  background: $menu-background;
+}
+
+.menu-inner {
+  display:inline-block;
+}
+
+:host {
+  display:block;
 }
 
 @import 'animation.scss';

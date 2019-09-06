@@ -1,4 +1,5 @@
 import Menu from '../dist/webapp-menu.js';
+import './event-logger.js';
 
 function materialIcon(name) {
     const icon = document.createElement('i');
@@ -18,10 +19,11 @@ function run() {
     document.body.appendChild(container);
 
     const items = [
-        {label:'Submenu', type:Menu.SubMenuItem},
+       // {label:'Submenu', type:Menu.SubMenuItem},
         {label:'Action 1', label2:'Explanation of Action', icon:''},
         {label:'Action 2', icon:''},
-        {label:'Action 3',}
+        {label:'Action 3'},
+        {label:'Action 4'}
     ];
     const menu = Menu.Popup.create(items);
     //menu.autoClose = false;

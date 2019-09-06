@@ -6,7 +6,7 @@
     color: $menu-text;
     background:0;
     border:none;
-    padding:0 0.5rem;
+    padding:0 1rem;
     margin:0;
     height:3rem;
     display:flex;
@@ -28,6 +28,24 @@
       background: $menu-pressed-background;
     }
   }
+
+.round-top {
+  border-top-right-radius: $menu-border-radius;
+  border-top-left-radius: $menu-border-radius; 
+}
+.round-bottom {
+  border-bottom-right-radius: $menu-border-radius;
+  border-bottom-left-radius: $menu-border-radius; 
+}
+.round-left {
+  border-top-left-radius: $menu-border-radius;
+  border-bottom-left-radius: $menu-border-radius; 
+}
+.round-right {
+  border-top-right-radius: $menu-border-radius;
+  border-bottom-right-radius: $menu-border-radius; 
+}
+
 
 .menu-item-nestedIcon,
 .menu-item__back .menu-item-icon svg {
@@ -82,4 +100,12 @@
 :host-context(wam-toolbar[showtoolbarlabel]) .menu-item-label,
 :host-context(wam-item[showtoolbarlabel]) .menu-item-label {
   display:block;
+}
+
+/** for popup */
+
+//:host-context(wam-popup) .menu-item,
+:host-context(wam-popup):first-child .menu-item {
+  border-top-right-radius: $menu-border-radius;
+  border-top-left-radius: $menu-border-radius; 
 }
