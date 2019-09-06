@@ -12,6 +12,9 @@ class Toolbar extends Menu {
         this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
     }
 
+    get firstItemClasses() {return 'round-left'}
+    get lastItemClasses() {return 'round-right'}
+
 }
 
 Toolbar.tagName = 'wam-toolbar';

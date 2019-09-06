@@ -12,10 +12,12 @@ class TreeList extends Menu {
         super();
         const shadow = this.shadowRoot;
         shadow.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+
         const menuRoot = shadow.querySelector('.menu');
         menuRoot.classList.add('menu-treelist');
         menuRoot.classList.remove('menu-background');
         const background = document.createElement('div');
+
         background.className ='menu-background';
         shadow.insertBefore(background, shadow.firstElementChild);
 
@@ -137,6 +139,10 @@ class TreeList extends Menu {
         bg.style.height = frame.offsetHeight + 'px';   
         inner.style.left = (-offset) + 'px';
     }
+    
+    get firstItemClasses() {return 'round-top'}
+    get lastItemClasses() {return 'round-bottom'}
+
 }
 
 Object.defineProperty(TreeList, 'tagName', {value: 'wam-treelist'});

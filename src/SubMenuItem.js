@@ -27,14 +27,18 @@ export class SubMenuItem extends Item {
         inner.appendChild(back);
 
         const slot = document.createElement('slot');
-        //slot.setAttribute('name','menu');
+        slot.addEventListener('slotchange', this.setBorderRadii.bind(this));
         inner.appendChild(slot);
         outer.appendChild(inner);
         shadow.appendChild(outer);
 
         this.shadowRoot.querySelector('button').appendChild(Icon.Nested);
+        
+        /** */
         this.items = new ItemCollection(this, inner);
     }
+
+    get shadowMenu() {return this.shadowRoot.querySelector('[role=menu]');}
 
     /** @property {Item} backItem Back button item from the shadow DOM */
     get backItem() {
@@ -59,35 +63,28 @@ export class SubMenuItem extends Item {
         return false;
     }
 
-    set isOpen(value) {Attributes.setExists(this, 'open', value)}
-    get isOpen() {return Attributes.getExists(this, 'open')}
-
-
-    static get observedAttributes() {
-        return Item.observedAttributes.concat('open');
-    }
-
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case 'open':
-
-                this.applyOpenState(newValue !== null);
-                break;
-            default:
-                super.attributeChangedCallback(name, oldValue, newValue);
-                break;
-        }
-    }
-
-    applyOpenState(isOpen) {
-        const submenu = this.shadowRoot.querySelector('[role=menu]');
+    /** @property {boolean} isOpen */
+    get isOpen() {return this.shadowMenu.style.display != 'none';}
+    set isOpen(isOpen) {
+        const submenu = this.shadowMenu;
         const width = this.getBoundingClientRect().width;
-        if(isOpen) {
+        if( ! isOpen) {
+            submenu.style.display = 'none';
+        } else {
             submenu.style.display = '';
             submenu.style.left = width + 'px';
-        } else
-            submenu.style.display = 'none';
+            this.setBorderRadii();
+        }
+            
+    }
+
+    setBorderRadii() {
+        this.backItem.shadowItem.classList.add('round-top');
+        for(let item of this.items) {
+            item.shadowItem.classList.remove(['round-top', 'round-bottom', 'round-right', 'round-left']);
+        }
+        if(this.items.length > 0);
+            this.items.atIndex(this.items.length-1).shadowRoot.querySelector('.menu-item').classList.add('round-bottom');
     }
 }
 

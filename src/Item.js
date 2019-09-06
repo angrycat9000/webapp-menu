@@ -10,17 +10,9 @@ const getStyleSheets = reusableStyleSheetsFunction(itemStyle);
  * @return {HTMLElement}
  */
 
-/**
- * @callback itemActionFunction
- * @param {ItemActionEvent} event
- */
-
-
-
-
-/**
- * 
- */
+ /**
+  * Item in a menu or toolbar.
+  */
 export class Item extends HTMLElement {
     /** 
      */
@@ -198,12 +190,16 @@ export class Item extends HTMLElement {
     }
 
     /**
-     * @param {Node} element
+     * @property  {HTMLElement} shadowItem
+     * @readonly
      */
-    static isItem(element) {
-        return ; 
-    }
+    get shadowItem() {return this.shadowRoot.querySelector('.menu-item')}
 
+    /**
+     * Find the first Item in the path
+     * @param {Array<Node>} path
+     * @return {boolean}
+     */
     static fromPath(path) {
         if( ! path)
             return null;

@@ -37,6 +37,8 @@ class Menu extends HTMLElement {
         outer.appendChild(inner);
         shadow.appendChild(outer);
 
+        shadow.querySelector('slot').addEventListener('slotchange', this.setBorderRadii.bind(this));
+
         this.items = new ItemCollection(this);
 
         /*this.element = document.createElement('div');
@@ -73,7 +75,6 @@ class Menu extends HTMLElement {
      */
     get isOpen() {return Attributes.getExists(this, 'open')};
     set isOpen(value) {Attributes.setExists(this, 'open', value)}
-
     
     /**
      * @property {HTMLElement} controlledBy Element that controls this this menu.
@@ -165,9 +166,9 @@ class Menu extends HTMLElement {
     }
 
     startTransition(transition) {
-        if(this.useAnimation)
-            transition.play();
-        else
+        //if(this.useAnimation)
+        //    transition.play();
+        //else
             transition.fastForward();
         return transition;
     }
@@ -191,6 +192,8 @@ class Menu extends HTMLElement {
         this.state = 'opening';
 
         const menuElement = this.shadowRoot.querySelector('.menu');
+        menuElement.style.display = '';
+        
 
         let anim = new Animation.Transition(menuElement, 'menushow');
         anim.on('firstframe', (e)=>{
@@ -198,15 +201,9 @@ class Menu extends HTMLElement {
                 e.transition.stop();
                 return;
             }
-
-            // don't append the element to the end if it already is in the parent
             menuElement.style.display = '';
+            this.stackChanged();
 
-
-            /*if(this.host != this.element.parentElement)
-                this.host.appendChild(this.element);
-                this.position.apply(this.element, this.host);
-                */
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -439,6 +436,23 @@ class Menu extends HTMLElement {
         element.addEventListener('keydown', listeners.onKeyDown);
     }
 
+    /** @private */
+    get firstItemClasses() {return ''}
+
+    /** @private */
+    get lastItemClasses() {return ''}
+
+    setBorderRadii() {
+        const slotChildren = this.shadowRoot.querySelector('slot').assignedElements();
+        if(0 == slotChildren.length)
+            return;
+        for(let child of slotChildren) {
+            child.shadowItem.classList.remove(['round-top', 'round-bottom', 'round-right', 'round-left']);
+        }
+
+        slotChildren[0].shadowItem.classList.add(this.firstItemClasses);
+        slotChildren[slotChildren.length - 1].shadowItem.classList.add(this.lastItemClasses);
+    }
 }
 
 addEventFunctions(Menu.prototype);

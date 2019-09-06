@@ -19,6 +19,9 @@ class Popup extends Menu {
         popup.items.set(items);
         return popup;
     }
+
+    get firstItemClasses() {return 'round-top'}
+    get lastItemClasses() {return 'round-bottom'}
 }
 
 Popup.tagName = 'wam-popup';
