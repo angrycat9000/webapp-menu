@@ -30,7 +30,7 @@ class TreeList extends Menu {
         return treelist;
     }
 
-    get interactiveItems() {
+    get displayItems() {
         const source = this.topSubMenu ? [this.topSubMenu.backItem, ...this.topSubMenu.items] : this.items;
         return new TabList(source);
     }
@@ -53,6 +53,12 @@ class TreeList extends Menu {
             super.activate(item, sourceEvent);
     }
 
+    open(suppressFocus) {
+        const anim = super.open(suppressFocus);
+        if(anim)
+            anim.on('firstframe', this.stackChanged, this);
+        return anim;
+    }
 
     /**
      * 
@@ -112,7 +118,7 @@ class TreeList extends Menu {
         return focused;
     }
 
-    getMenuFrame(i) {
+    getMenuContentElement(i) {
         if(0 == i)
             return this.shadowRoot.querySelector('.menu-inner');
         if(i > this.stack.length)
@@ -130,18 +136,36 @@ class TreeList extends Menu {
 
         let offset = 0;
         for(let i = 0; i < this.stack.length; i++) {
-            offset += this.getMenuFrame(i).offsetWidth;
+            offset += this.getMenuContentElement(i).offsetWidth;
         }
         
-        const frame = this.getMenuFrame(this.stack.length);
+        const frame = this.getMenuContentElement(this.stack.length);
         const bg = this.shadowRoot.querySelector('.menu-background');
         bg.style.width = frame.offsetWidth + 'px';     
         bg.style.height = frame.offsetHeight + 'px';   
         inner.style.left = (-offset) + 'px';
     }
-    
-    get firstItemClasses() {return 'round-top'}
-    get lastItemClasses() {return 'round-bottom'}
+
+    updateItem(item, i , items) {
+        item.setAppearance({
+            hideIcon: ! this._hasIcons,
+            hideLabel: false,
+            roundTop: 0 == i,
+            roundBottom: i == items.length - 1
+        })
+    }
+
+    updateItems() {
+        this._hasIcons = false;
+        for(item of this.items) {
+            if(item.hasIcon) {
+                this._hasIcons = true;
+                break;
+            }
+        }
+        super.setItemStyles();
+    }
+
 
 }
 

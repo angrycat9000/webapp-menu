@@ -10,7 +10,7 @@ class TabList {
 
     get last() {return (0 == this.array.length) ? null : this.array[this.array.length-1];}
 
-    get selected() {return this.array.find(item=>item.isDefaultFocus)}
+    get defaultFocusItem() {return this.array.find(item=>item.isDefaultFocus)}
 
     next(item) {
         const index = this.array.indexOf(item);

@@ -2,7 +2,7 @@ import Animation from './Animation';
 import Position from './Position';
 import Item from './Item';
 import {addEventFunctions, addEventMember } from './Events';
-import {getStyleLink} from './Style';
+import {nextId} from './Id';
 import ItemCollection from './ItemCollection';
 import TabList from './TabList';
 import Attributes from './Attributes';
@@ -10,11 +10,6 @@ import Attributes from './Attributes';
 import {reusableStyleSheetsFunction} from './Style';
 import style from '../style/menu.scss';
 const getStyleSheets = reusableStyleSheetsFunction(style);
-
-let id = 0;
-function nextId() {
-    return `wam-id-${++id}`;
-}
 
 
 /**
@@ -37,8 +32,15 @@ class Menu extends HTMLElement {
         outer.appendChild(inner);
         shadow.appendChild(outer);
 
-        shadow.querySelector('slot').addEventListener('slotchange', this.setBorderRadii.bind(this));
+        shadow.querySelector('slot').addEventListener('slotchange', this.updateAllItems.bind(this));
 
+        /**
+         * Caller editable list of items. 
+         * 
+         * Subclasses may add or filter items with the Menu#displayItems and Menu#interativeItems properies.
+         * @see Menu#interactiveItems
+         * @property {ItemCollection} items 
+         */
         this.items = new ItemCollection(this);
 
         /*this.element = document.createElement('div');
@@ -57,10 +59,27 @@ class Menu extends HTMLElement {
         this.addEventListener('focusout', this.onFocusOut.bind(this));
     }
 
-    /** @property {TabList} */
-    get interactiveItems() {
-        return new TabList(this.items);
-    }
+    /** 
+     * Items that can be cycled through using the arrow keys.
+     * 
+     * Subclasses may use this to remove non-tabbable items (eg. seperators).  Typically
+     * a subset of Menu#displayedItems
+     * 
+     * @see Menu#items
+     * @see Menu#displayedItems
+     * @property {TabList} interactiveItems
+     */
+    get interactiveItems() {return this.displayItems;}
+
+    /**
+     * Items that are visible to the user. 
+     * 
+     * Subclasses may use this to add items like seperators or default options.
+     * 
+     * @see Menu#items
+     * @see Menu#displayedItems
+     */
+    get displayItems() {return new TabList(this.items);}
 
     /** @property {boolean} useAnimation */
     get useAnimation() {return Attributes.getTrueFalse(this, 'useanimation', true)}
@@ -202,8 +221,6 @@ class Menu extends HTMLElement {
                 return;
             }
             menuElement.style.display = '';
-            this.stackChanged();
-
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -273,15 +290,12 @@ class Menu extends HTMLElement {
      */
     set focusItem(item) {
         for(let element of this.interactiveItems) {
-            if(item == element)
-                element.setAttribute('isdefaultfocus', '');
-            else
-                element.removeAttribute('isdefaultfocus')
+            element.isDefaultFocus = (item == element);
         }
     }
     get focusItem() {
         const items = this.interactiveItems;
-        return items.selected || items.first;
+        return items.defaultFocusItem || items.first;
     }
 
     /**
@@ -436,22 +450,19 @@ class Menu extends HTMLElement {
         element.addEventListener('keydown', listeners.onKeyDown);
     }
 
-    /** @private */
-    get firstItemClasses() {return ''}
+    /**
+     * @param {Item} item
+     * @param {number} index
+     * @param {Array<Items>} items
+     */
+    updateItem(item, index, items) {}
 
-    /** @private */
-    get lastItemClasses() {return ''}
-
-    setBorderRadii() {
-        const slotChildren = this.shadowRoot.querySelector('slot').assignedElements();
-        if(0 == slotChildren.length)
-            return;
-        for(let child of slotChildren) {
-            child.shadowItem.classList.remove(['round-top', 'round-bottom', 'round-right', 'round-left']);
-        }
-
-        slotChildren[0].shadowItem.classList.add(this.firstItemClasses);
-        slotChildren[slotChildren.length - 1].shadowItem.classList.add(this.lastItemClasses);
+    /**
+     * 
+     */
+    updateAllItems() {
+        const items = Array.from(this.items);
+        items.forEach(this.updateItem, this);
     }
 }
 

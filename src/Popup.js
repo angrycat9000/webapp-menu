@@ -20,8 +20,25 @@ class Popup extends Menu {
         return popup;
     }
 
-    get firstItemClasses() {return 'round-top'}
-    get lastItemClasses() {return 'round-bottom'}
+    updateItem(item, i , items) {
+        item.setAppearance({
+            hideIcon: ! this._hasIcons,
+            hideLabel: false,
+            roundTop: 0 == i,
+            roundBottom: i == items.length - 1
+        })
+    }
+
+    updateItems() {
+        this._hasIcons = false;
+        for(item of this.items) {
+            if(item.hasIcon) {
+                this._hasIcons = true;
+                break;
+            }
+        }
+        super.setItemStyles();
+    }
 }
 
 Popup.tagName = 'wam-popup';

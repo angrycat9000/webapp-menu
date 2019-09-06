@@ -12,8 +12,14 @@ class Toolbar extends Menu {
         this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
     }
 
-    get firstItemClasses() {return 'round-left'}
-    get lastItemClasses() {return 'round-right'}
+    updateItem(item, i , items) {
+        item.setAppearance({
+            hideIcon: false,
+            hideLabel: ! item.hasAttribute('showtoolbarlabel'),
+            roundLeft: 0 == i,
+            roundRight: i == items.length - 1
+        });
+    }
 
 }
 

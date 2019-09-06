@@ -1,12 +1,12 @@
 @import 'theme.scss';
 
-.menu-item {
+.item {
     font-size:1rem;
     box-sizing: border-box;
     color: $menu-text;
     background:0;
     border:none;
-    padding:0 1rem;
+    padding:0 0.5rem;
     margin:0;
     height:3rem;
     display:flex;
@@ -29,83 +29,37 @@
     }
   }
 
-.round-top {
-  border-top-right-radius: $menu-border-radius;
-  border-top-left-radius: $menu-border-radius; 
-}
-.round-bottom {
-  border-bottom-right-radius: $menu-border-radius;
-  border-bottom-left-radius: $menu-border-radius; 
-}
-.round-left {
-  border-top-left-radius: $menu-border-radius;
-  border-bottom-left-radius: $menu-border-radius; 
-}
-.round-right {
-  border-top-right-radius: $menu-border-radius;
-  border-bottom-right-radius: $menu-border-radius; 
-}
-
-
-.menu-item-nestedIcon,
-.menu-item__back .menu-item-icon svg {
-  fill: currentColor;
-  width:2rem;
-  height:2rem;
-}
-
-.menu-item-icon {
-  height:2rem;
-  width:2rem;
+.icon {
+  height:1.5rem;
+  width:1.5rem;
   display:flex;
   align-items: center;
   justify-content: center;
   flex-grow:0;
   flex-shrink:0;
+  padding-left:0.5rem;
+
+  svg {
+    fill: currentColor;
+    width:1.5rem;
+    height:1.5rem;
+  }
 }
 
-.menu-item-label {
+.label {
   text-align:left;
   display:flex;
   flex-grow:1;
   flex-basis:100%;
+  padding: 0 0.5rem;
 }
 
-:host-context([data-hasicons=false]) .menu-item-icon {
-  display:none;
-}
+[data-icon="false"] .icon {display:none;}
 
-/*** For Toolbar ***/
+[data-label="false"] .label {display:none}
 
-:host-context(wam-toolbar wam-item:first-of-type) .menu-item {
-  border-top-left-radius: $menu-border-radius;
-  border-bottom-left-radius: $menu-border-radius;
-}
+[data-round-top-right] {border-top-right-radius: $menu-border-radius;}
+[data-round-top-left] {border-top-left-radius: $menu-border-radius; }
+[data-round-bottom-left] {border-bottom-left-radius: $menu-border-radius;}
+[data-round-bottom-right] {border-bottom-right-radius: $menu-border-radius;}
 
-:host-context(wam-toolbar wam-item + wam-item) .menu-item {
-  border-left: $menu-border;
-  border-top-left-radius:0;
-  border-bottom-left-radius:0;
-}
-
-:host-context(wam-toolbar wam-item:last-of-type) .menu-item {
-  border-top-right-radius: $menu-border-radius;
-  border-bottom-right-radius: $menu-border-radius; 
-}
-
-:host-context(wam-toolbar) .menu-item-label {
-  display:none
-}
-
-:host-context(wam-toolbar[showtoolbarlabel]) .menu-item-label,
-:host-context(wam-item[showtoolbarlabel]) .menu-item-label {
-  display:block;
-}
-
-/** for popup */
-
-//:host-context(wam-popup) .menu-item,
-:host-context(wam-popup):first-child .menu-item {
-  border-top-right-radius: $menu-border-radius;
-  border-top-left-radius: $menu-border-radius; 
-}

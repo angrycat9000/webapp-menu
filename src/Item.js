@@ -14,9 +14,7 @@ const getStyleSheets = reusableStyleSheetsFunction(itemStyle);
   * Item in a menu or toolbar.
   */
 export class Item extends HTMLElement {
-    /** 
-     */
-    constructor(options) {
+    constructor() {
         super();
 
         const shadow = this.attachShadow({mode: 'open'});
@@ -125,14 +123,47 @@ export class Item extends HTMLElement {
     get showToolbarLabel() {return Attributes.getExists(this, 'showtoolbarlabel');}
     set showToolbarLabel(value) {return Attributes.setExists(this, 'showtoolbarlabel', value);}
 
+    /**
+     * 
+     */
+    get hasIcon () {
+        return this.shadowRoot.querySelector('slot[name=icon]').assignedElements().length > 0;
+    }
+
+    /**
+     * @typedef ItemAppearance
+     * @property {boolean} hideIcon
+     * @property {boolean} hideLabel
+     * @property {boolean} roundTop
+     * @property {boolean} roundBottom
+     * @property {boolean} roundLeft
+     * @property {boolean} roundRight
+     */
+
+    /**
+     * Allow Menu containers to tweak the appearance of this item.  Unless you are implementing a
+     * new Menu subclass, you probably should not call this.
+     * @param {ItemAppearance} appearance
+     */
+    setAppearance(config){
+        const button = this.shadowItem;
+        Attributes.setTrueFalse(button, 'data-icon', ! config.hideIcon)
+        Attributes.setTrueFalse(button, 'data-label', ! config.hideLabel)
+        Attributes.setExists(button, 'data-round-top-right', config.roundTop || config.roundRight);
+        Attributes.setExists(button, 'data-round-top-left', config.roundTop || config.roundLeft);
+        Attributes.setExists(button, 'data-round-bottom-right', config.roundBottom || config.roundRight);
+        Attributes.setExists(button, 'data-round-bottom-left', config.roundBottom || config.roundLeft);
+    }
+
     updateFactoryIcon() {
-        let oldIcon = this.querySelector('[slot=icon][data-icon-factory-arg]');
+        const slotContents = this.shadowRoot.querySelector('slot[name=icon]').assignedElements();
+        if(0 == slotContents.length)
+            return;
+
+        const oldIcon = slotContents[0].getAttribute('data-icon-factory-arg');
         if( ! oldIcon)
             return;
-        
-        oldIcon = oldIcon.getAttribute('data-icon-factory-arg');
-        if( ! oldIcon)
-            return;
+
         this.setIcon(oldIcon);   
     }
 
@@ -167,10 +198,10 @@ export class Item extends HTMLElement {
 
     /**
      * @property {boolean} isDefaultFocus True if the item is the one to recieve focus when the user
-     *                                    tabs into it
+     *                                    tabs into the parent menu
      */
-    get isDefaultFocus() {return Attributes.getExists(this, 'isdefaultfocus')}
-    set isDefaultFocus(value) {return Attributes.setExists(this ,'isdefaultfocus', value)}
+    get isDefaultFocus() {return '0' == this.shadowItem.getAttribute('tabindex')}
+    set isDefaultFocus(value) {this.shadowItem.setAttribute('tabindex', value ? '0' : '-1')}
 
 
     /** 
@@ -190,10 +221,10 @@ export class Item extends HTMLElement {
     }
 
     /**
-     * @property  {HTMLElement} shadowItem
+     * @property  {HTMLElement} shadowItem The button in the ShadowDOM that represents this item.
      * @readonly
      */
-    get shadowItem() {return this.shadowRoot.querySelector('.menu-item')}
+    get shadowItem() {return this.shadowRoot.querySelector('button.item')}
 
     /**
      * Find the first Item in the path
@@ -220,9 +251,9 @@ Object.defineProperty(Item, 'template', {get:function(){
 
     template = document.createElement('template');
     template.innerHTML = 
-        `<button class="menu-item menu-item__action" role="menuitem" tabindex="-1">
-            <span class="menu-item-icon" aria-hidden="true"><slot name="icon"></slot></span>
-            <span class="menu-item-label"><slot name="label">!? Missing Label !?</slot></span>
+        `<button class="item" role="menuitem" tabindex="-1">
+            <span class="icon" aria-hidden="true"><slot name="icon"></slot></span>
+            <span class="label"><slot name="label">!? Missing Label !?</slot></span>
         </button>`;
     return template;
 }});

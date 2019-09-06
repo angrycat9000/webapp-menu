@@ -1,7 +1,7 @@
 import Item from './Item';
 import ItemCollection from './ItemCollection';
 import Icon from './Icon';
-import Attributes from './Attributes';
+import {nextId} from './Id';
 
 import {reusableStyleSheetsFunction} from './Style';
 import style from '../style/submenu.scss';
@@ -19,20 +19,23 @@ export class SubMenuItem extends Item {
         outer.className = 'submenu-outer';
         outer.style.display = 'none';
         outer.setAttribute('role', 'menu');
+        outer.id = nextId();
         const inner = document.createElement('div');
         inner.className = 'submenu-inner';
 
         const back = Item.create({icon:Icon.Back, label:'Back'});
-        back.shadowRoot.querySelector('button').setAttribute('aria-label', 'Back to previous level');
+        back.shadowItem.setAttribute('aria-label', 'Back to previous level');
         inner.appendChild(back);
 
         const slot = document.createElement('slot');
-        slot.addEventListener('slotchange', this.setBorderRadii.bind(this));
+        //slot.addEventListener('slotchange', this.updateItems.bind(this));
         inner.appendChild(slot);
         outer.appendChild(inner);
         shadow.appendChild(outer);
 
-        this.shadowRoot.querySelector('button').appendChild(Icon.Nested);
+        this.shadowItem.appendChild(Icon.Nested);
+        this.shadowItem.setAttribute('aria-controls', outer.id);
+        this.shadowItem.setAttribute('aria-expanded', false)
         
         /** */
         this.items = new ItemCollection(this, inner);
@@ -44,6 +47,8 @@ export class SubMenuItem extends Item {
     get backItem() {
         return this.shadowRoot.querySelector('wam-item');
     }
+
+    get displayItems() {return new TabList([this.backItem].concat(Array.from(this.items)))}
 
     /**
      * Determine if this is an action on the child items (instead of the open root item)
@@ -66,6 +71,7 @@ export class SubMenuItem extends Item {
     /** @property {boolean} isOpen */
     get isOpen() {return this.shadowMenu.style.display != 'none';}
     set isOpen(isOpen) {
+        this.shadowItem.setAttribute('aria-expanded', isOpen);
         const submenu = this.shadowMenu;
         const width = this.getBoundingClientRect().width;
         if( ! isOpen) {
@@ -73,18 +79,7 @@ export class SubMenuItem extends Item {
         } else {
             submenu.style.display = '';
             submenu.style.left = width + 'px';
-            this.setBorderRadii();
         }
-            
-    }
-
-    setBorderRadii() {
-        this.backItem.shadowItem.classList.add('round-top');
-        for(let item of this.items) {
-            item.shadowItem.classList.remove(['round-top', 'round-bottom', 'round-right', 'round-left']);
-        }
-        if(this.items.length > 0);
-            this.items.atIndex(this.items.length-1).shadowRoot.querySelector('.menu-item').classList.add('round-bottom');
     }
 }
 
