@@ -1,7 +1,6 @@
 import Attributes from './Attributes';
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import itemStyle from '../style/item.scss';
-const getStyleSheets = reusableStyleSheetsFunction(itemStyle);
 
 
 /**
@@ -18,7 +17,7 @@ export class Item extends HTMLElement {
         super();
 
         const shadow = this.attachShadow({mode: 'open'});
-        shadow.adoptedStyleSheets = getStyleSheets();
+        Item.stylesheet.addToShadow(shadow);
 
         const button = Item.template.content.cloneNode(true);
         shadow.appendChild(button);
@@ -226,23 +225,19 @@ export class Item extends HTMLElement {
      */
     get shadowItem() {return this.shadowRoot.querySelector('button.item')}
 
-    /**
-     * Find the first Item in the path
-     * @param {Array<Node>} path
-     * @return {boolean}
-     */
-    static fromPath(path) {
-        if( ! path)
-            return null;
-        for(let p = 0; p < path.length; p++) {
-            if(path[p] instanceof Item)
-                return path[p];
+    static fromEvent(event) {
+        const path = event.composedPath();
+        for(let element of path) {
+            if(element instanceof Item)
+                return element;
         }
         return null;
     }
 };
 
 Object.defineProperty(Item, 'tagName', {value:'wam-item'});
+
+Object.defineProperty(Item, 'stylesheet', {value: new ReusableStyleSheet(itemStyle)})
 
 var template = null;
 Object.defineProperty(Item, 'template', {get:function(){

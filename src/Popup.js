@@ -1,13 +1,14 @@
 import Menu from './Menu';
 
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import style from '../style/popup.scss';
-const getStyleSheets = reusableStyleSheetsFunction(style);
+
 
 class Popup extends Menu {
     constructor() {
         super();
-        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+
+        Popup.stylesheet.addToShadow(this.shadowRoot);
         this.shadowRoot.querySelector('.menu').classList.add('menu-popup');
     }
 
@@ -41,6 +42,8 @@ class Popup extends Menu {
     }
 }
 
-Popup.tagName = 'wam-popup';
+Object.defineProperty(Popup, 'tagName', {value: 'wam-popup'})
+
+Object.defineProperty(Popup, 'stylesheet', {value: new ReusableStyleSheet(style)});
 
 export default Popup;

@@ -1,5 +1,11 @@
-$menu-border:1px solid #808080 !default;
-$menu-background:#e0e0e0 !default;
+$light-bg: #fcfcfc;
+$dark-bg: #dadada;
+$mid-bg: #e9e9e9;
+
+
+
+$menu-border:1px solid #a0a0a0 !default;
+$menu-background: $mid-bg !default;
 $menu-text:#202020 !default;
 $menu-transition-duration: 0.4s !default;
 $menu-border-radius: 0.125rem !default;
@@ -7,5 +13,9 @@ $menu-highlight-color: #40C4FF !default;
 $menu-hover-background: rgba($menu-highlight-color, 0.5) !default;
 $menu-pressed-background: $menu-highlight-color !default;
 
+$menu-item-background:linear-gradient(135deg, rgba($light-bg,1) 10%, rgba($light-bg,0) 30%), 
+linear-gradient(315deg, rgba($dark-bg,1) 10%, rgba($dark-bg,0) 30%),
+$mid-bg !default;
 
 * {box-sizing:border-box;}
+

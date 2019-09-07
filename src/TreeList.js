@@ -3,15 +3,15 @@ import Item from './Item';
 import SubMenuItem from './SubMenuItem';
 import TabList from './TabList';
 
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import style from '../style/treelist.scss';
-const getStyleSheets = reusableStyleSheetsFunction(style);
+
 
 class TreeList extends Menu {
     constructor() {
         super();
         const shadow = this.shadowRoot;
-        shadow.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+        TreeList.stylesheet.addToShadow(shadow);
 
         const menuRoot = shadow.querySelector('.menu');
         menuRoot.classList.add('menu-treelist');
@@ -170,5 +170,7 @@ class TreeList extends Menu {
 }
 
 Object.defineProperty(TreeList, 'tagName', {value: 'wam-treelist'});
+
+Object.defineProperty(TreeList, 'stylesheet', {value: new ReusableStyleSheet(style)});
 
 export default TreeList

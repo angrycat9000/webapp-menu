@@ -3,9 +3,8 @@ import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 import {nextId} from './Id';
 
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';
-const getStyleSheets = reusableStyleSheetsFunction(style);
 
 
 export class SubMenuItem extends Item {
@@ -13,7 +12,7 @@ export class SubMenuItem extends Item {
         super();
 
         const shadow = this.shadowRoot;
-        shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, ...getStyleSheets()];
+        SubMenuItem.stylesheet.addToShadow(shadow);
         
         const outer = document.createElement('div');
         outer.className = 'submenu-outer';
@@ -84,5 +83,7 @@ export class SubMenuItem extends Item {
 }
 
 Object.defineProperty(SubMenuItem, 'tagName', {value:'wam-submenu'});
+
+Object.defineProperty(SubMenuItem, 'stylesheet', {value: new ReusableStyleSheet(style)})
 
 export default SubMenuItem;

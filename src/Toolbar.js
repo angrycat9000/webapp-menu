@@ -1,14 +1,14 @@
 import Menu from './Menu';
 
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import style from '../style/toolbar.scss';
-const getStyleSheets = reusableStyleSheetsFunction(style);
+
 
 class Toolbar extends Menu {
     constructor() {
         super();
 
-        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, ...getStyleSheets()];
+        Toolbar.stylesheet.addToShadow(this.shadowRoot);
         this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
     }
 
@@ -23,6 +23,8 @@ class Toolbar extends Menu {
 
 }
 
-Toolbar.tagName = 'wam-toolbar';
+Object.defineProperty(Toolbar, 'tagName', {value: 'wam-toolbar'})
+
+Object.defineProperty(Toolbar, 'stylesheet', {value: new ReusableStyleSheet(style)});
 
 export default Toolbar;

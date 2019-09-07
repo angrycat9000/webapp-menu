@@ -4,8 +4,8 @@
     font-size:1rem;
     box-sizing: border-box;
     color: $menu-text;
-    background:0;
-    border:none;
+    background: $menu-item-background;
+    border:0;
     padding:0 0.5rem;
     margin:0;
     height:3rem;
@@ -14,6 +14,10 @@
     justify-content:flex-start;
     min-width:3rem;
     width:100%;
+    
+    &::-moz-focus-inner {
+      outline:0;
+    }
 
     &:focus {
       outline-width: 4px;

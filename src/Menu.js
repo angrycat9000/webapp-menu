@@ -7,9 +7,8 @@ import ItemCollection from './ItemCollection';
 import TabList from './TabList';
 import Attributes from './Attributes';
 
-import {reusableStyleSheetsFunction} from './Style';
+import {ReusableStyleSheet} from './Style';
 import style from '../style/menu.scss';
-const getStyleSheets = reusableStyleSheetsFunction(style);
 
 
 /**
@@ -20,7 +19,7 @@ class Menu extends HTMLElement {
         super();
 
         const shadow = this.attachShadow({mode: 'open'});
-        shadow.adoptedStyleSheets = getStyleSheets();
+        Menu.stylesheet.addToShadow(shadow);
         const outer = document.createElement('div');
         outer.style.display='none';
         outer.className = 'menu menu-outer menu-background';
@@ -316,7 +315,7 @@ class Menu extends HTMLElement {
     }
 
     onClick(e) {
-        const item = Item.fromPath(e.path);
+        const item = Item.fromEvent(e);
         if(item)
             this.activate(item, e);
     }
@@ -352,7 +351,7 @@ class Menu extends HTMLElement {
                 break;
             case ' ':
             case 'Enter':
-                this.activate(Item.fromPath(e.path), e);
+                this.activate(Item.fromEvent(e), e);
                 e.preventDefault();
         }
     }
@@ -472,6 +471,8 @@ addEventFunctions(Menu.prototype);
  * Set this as a fallback for any newly created Menu objects to use as the icon factory
  */
 Menu.defaultIconFactory = null;
+
+Object.defineProperty(Menu, 'stylesheet', {value: new ReusableStyleSheet(style)})
 
 export default Menu;
 

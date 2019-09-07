@@ -10,7 +10,7 @@
 
 .menu-background {
   border-radius: $menu-border-radius;
-  border: $menu-border;    
+  //border: $menu-border;    
   background: $menu-background;
 }
 
@@ -19,7 +19,10 @@
 }
 
 :host {
-  display:block;
+  display:inline-block;
+  border-radius: $menu-border-radius;
+  border: $menu-border;    
+  background: $menu-background;
 }
 
 @import 'animation.scss';
