@@ -27,4 +27,22 @@ storiesOf('Popup', module)
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
         </wam-toolbar>`
-    })
+    }).add('Styles',()=> {
+        return `<wam-popup open style="
+            color:white;
+            font-family: 'Hepta Slab', serif;
+            
+            --menu-border-radius:16px;
+            --menu-border: 0;
+            --menu-background: #202020;
+            --menu-hover-background: #303030;
+            --menu-pressed-background: black;
+            --menu-item-background: transparent;
+            --menu-shadow: 2px 2px 4px 4px rgba(0,0,0,0.3);
+            --menu-focus-color: #40C4FF;
+        ">
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste"></wam-item>
+    </wam-toolbar>`
+    });

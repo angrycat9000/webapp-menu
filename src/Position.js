@@ -1,10 +1,32 @@
-function positionPopup(menu, container, x, y, verticalPadding=16) {
+function getWindowBounds() {
+
+    return {
+        left: window.scrollX,
+        right: window.innerWidth + window.scrollX,
+        top:window.scrollY,
+        bottom: window.innerHeight + window.scrollY,
+        width: window.innerWidth,
+        height: window.innerHeight,
+    }
+}
+
+
+export function positionForButton(menu, button, padding = 8) {
+    const container = getWindowBounds();
+    const buttonRect = button.getBoundingClientRect();
+    const offset = buttonRect.height / 2 + padding;
+    const y = buttonRect.top + buttonRect.height / 2;
+    const x = buttonRect.left;
+    const menuRect = menu.getBoundingClientRect();
+
+    return positionPopup(menuRect, container, x, y , offset);
+}
+
+
+function positionPopup(menu, containerRect, x, y, verticalPadding=16) {
     const yAbove = y - verticalPadding;
     const yBelow = y + verticalPadding;  
 
-    const menuWidth = menu.offsetWidth;
-    const menuHeight = menu.offsetHeight;
-    const containerRect= container.getBoundingClientRect();
     const bounds = {
         min: {x:containerRect.left, y:containerRect.top},
         max: {x:containerRect.right, y:containerRect.bottom}
@@ -16,24 +38,24 @@ function positionPopup(menu, container, x, y, verticalPadding=16) {
     bounds.max.x -= margin;
     bounds.max.y -= margin;
     
-    let point = {x:x - menuWidth / 2};
+    let point = {x:x};
     
     if(point.x < bounds.min.x)
       point.x = bounds.min.x;
-    if (point.x > bounds.max.x - menuWidth)
-      point.x = bounds.max.x - menuWidth;
+    if (point.x > bounds.max.x - menu.width)
+      point.x = bounds.max.x - menu.width;
     
-    let d2 = bounds.max.y - (yBelow + menuHeight);
-    let d1 = yAbove - (bounds.min.y + menuHeight);
+    let d2 = bounds.max.y - (yBelow + menu.height);
+    let d1 = yAbove - (bounds.min.y + menu.height);
     
     if(d2 >= 0)
       point.y = yBelow;
     else if (d1 >= 0)
-      point.y = yAbove - menuHeight;
+      point.y = yAbove - menu.height;
     else if( d1 > d2) 
       point.y = bounds.min.y;
     else
-      point.y = bounds.max.y - menuHeight;
+      point.y = bounds.max.y - menu.height;
   
     return {top: Math.round(point.y), left:Math.round(point.x), name:'popup'};
   }

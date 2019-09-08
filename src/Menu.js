@@ -1,5 +1,5 @@
 import Animation from './Animation';
-import Position from './Position';
+import {positionForButton} from './Position';
 import Item from './Item';
 import {addEventFunctions, addEventMember } from './Events';
 import {nextId} from './Id';
@@ -52,8 +52,6 @@ class Menu extends HTMLElement {
         this.state = 'closed';
         this._controlledBy = {};
 
-        //this.iconFactory = options.iconFactory || Menu.defaultIconFactory;
-        this.position = Position.Static;
 
         this.addEventListener('focusout', this.onFocusOut.bind(this));
     }
@@ -206,6 +204,17 @@ class Menu extends HTMLElement {
         if('open' == this.state|| 'opening' == this.state)
             return null;
 
+        const event = new CustomEvent('wam-open', {
+            bubbles:true,
+            cancelable:false,
+            detail: {
+                menu: this,
+            }
+        });
+
+
+        this.dispatchEvent(event);
+
         this.previousFocus = this.parentElement ? document.activeElement : null;
         this.state = 'opening';
 
@@ -220,6 +229,14 @@ class Menu extends HTMLElement {
                 return;
             }
             menuElement.style.display = '';
+            
+            if(this.controlledBy) {
+                const position = positionForButton(this, this.controlledBy);
+                this.style.top = position.top + 'px';
+                this.style.left = position.left + 'px';
+                this.style.position = 'absolute';
+            }
+
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -371,14 +388,6 @@ class Menu extends HTMLElement {
                 source:initiatingEvent
             }
         });
-
-
-        const myEvent = {
-            menu:this,
-            item:item,
-            event:initiatingEvent, 
-            preventClose:function(){closeMenu = false}
-        };
 
         if('function' == typeof item.action)
             item.action(event);

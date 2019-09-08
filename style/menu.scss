@@ -2,6 +2,9 @@
 
 .menu {
   border-radius: $menu-border-radius;
+  border: $menu-border;    
+  background: $menu-background;
+  box-shadow: $menu-shadow;
   padding:0;
   margin:0;
   position:relative;
@@ -19,10 +22,9 @@
 }
 
 :host {
-  display:inline-block;
   border-radius: $menu-border-radius;
-  border: $menu-border;    
-  background: $menu-background;
+  color: $menu-text-color;
+  font-family: $menu-font;
 }
 
 @import 'animation.scss';

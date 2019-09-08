@@ -10,3 +10,7 @@ wam-popup {
 }
 
 .menu-inner {width:100%}
+
+:host {
+  position:absolute;
+}
