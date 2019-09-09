@@ -15,11 +15,6 @@ class TreeList extends Menu {
 
         const menuRoot = shadow.querySelector('.menu');
         menuRoot.classList.add('menu-treelist');
-        menuRoot.classList.remove('menu-background');
-        const background = document.createElement('div');
-
-        background.className ='menu-background';
-        shadow.insertBefore(background, shadow.firstElementChild);
 
         this.stack = [];
     }
@@ -131,19 +126,20 @@ class TreeList extends Menu {
 
     stackChanged() {
         this.setFocusOn(this.focusItem);
-        const outer = this.shadowRoot.querySelector('.menu-outer');
-        const inner = this.shadowRoot.querySelector('.menu-inner');
+        const container = this.shadowRoot.querySelector('.menu-outer');
+        const slider = this.shadowRoot.querySelector('.menu-inner');
+        const scroller = this.getMenuContentElement(this.stack.length);
+        const desiredHeight = scroller.scrollHeight;
 
-        let offset = 0;
-        for(let i = 0; i < this.stack.length; i++) {
-            offset += this.getMenuContentElement(i).offsetWidth;
-        }
-        
-        const frame = this.getMenuContentElement(this.stack.length);
-        const bg = this.shadowRoot.querySelector('.menu-background');
-        bg.style.width = frame.offsetWidth + 'px';     
-        bg.style.height = frame.offsetHeight + 'px';   
-        inner.style.left = (-offset) + 'px';
+        let offset = container.clientWidth * this.stack.length;
+        slider.style.left = (-offset) + 'px';
+
+        const borderWidth = container.offsetWidth - container.clientWidth;
+
+        container.style.height = desiredHeight+'px';
+        const resolvedHeight = this.clientHeight - borderWidth;
+        scroller.style.height = resolvedHeight + 'px';
+        container.style.height = resolvedHeight + 'px';
     }
 
     updateItem(item, i , items) {

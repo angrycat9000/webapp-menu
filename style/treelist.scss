@@ -1,17 +1,21 @@
 @import 'theme.scss';
 
+$menu-width:18rem;
+$menu-max-height: 80vh;
+
 .menu-outer {
-    //overflow:hidden;
+    overflow: hidden;
+    display:block;
 }
 
 .menu-inner {
+    width:100%;
+    display:inline-block;
     position:relative;
 }
 
-.menu-background {
-    position:absolute;
-}
-
 :host {
-    width:18rem;
+    display: block;
+    width: $menu-width;
+    max-height: $menu-max-height;
 }
