@@ -6,6 +6,11 @@ import { terser } from "rollup-plugin-terser";
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 const license = require('rollup-plugin-license');
+const path = require('path');
+const fs = require('fs');
+
+const filePath = path.resolve('LICENSE');
+const licenseTxt = fs.readFileSync(filePath, 'utf-8');
 
 function getPlugins(isProd) {
   const sassOptions = {output:false};
@@ -22,18 +27,28 @@ function getPlugins(isProd) {
   if(isProd)
     plugins.push(terser());
 
-  plugins.push(license({
-    banner: {
-      commentStyle: 'regular', // The default
-      content: {
-        file: 'LICENSE',
-      },
+  plugins.push(
+    license({
+      banner: {
+      commentStyle: 'regular',
+      content: 
+        `<%= pkg.name %> <%= pkg.version %> [<%= pkg.homepage %>]
+        
+        ${licenseTxt}
+
+        
+        ============================    Dependencies     ==============================
+        
+        <% _.forEach(dependencies, function (dependency) { %>
+          <%= dependency.name %> <%= dependency.version %> [<%= dependency.homepage %>]
+          
+          <%= dependency.licenseText %>
+
+          ---------------------------------------------------------------------------
+        <% }) %>`,
+      }
     },
-    thirdParty: {
-      output: 'dist/dependencies.txt',
-      includePrivate: true, // Default is false.
-    },
-  }));
+  ));
 
   return plugins;
 }
