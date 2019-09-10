@@ -17,23 +17,54 @@ class CloseTriggerFlags {
         this._escape = this._lostFocus = this._itemActivate = true;
     }
 
+    /**
+     * Menu will close if the user presses the Escape key
+     * @property {boolean}
+     */
     get escape() {return this._escape}
     set escape(value) {this._escape = value; this.updateAttribute()}
 
+    /** 
+     * Menu will close if the focus moves outside of the menu
+     * @property {boolean}
+     */
     get lostFocus() {return this._lostFocus}
     set lostFocus(value) {this._lostFocus = value; this.updateAttribute()}
 
+    /**
+     * Menu will close when an item is activated.  
+     * Does not include items that perform internal menu navigation such as 
+     * opening a sub menu.
+     * @property {boolean}
+     */
     get itemActivate() {return this._itemActivate}
     set itemActivate(value) {this._itemActivate = value; this.updateAttribute()}
 
+    /** 
+     * Set the menu to close on any of the potential close events: escape, lost focus,
+     * or activating an item.
+     */
     all() {this._escape = this._lostFocus = this._itemActivate = true;}
+
+    /**
+     * Ignore the potential close events.  A call to  #Menu.close must
+     * be made to close the menu.
+     */
     none() {this._escape = this._lostFocus = this._itemActivate = false;}
 
+    /**
+     * Update the element attribute based on the internal values of this object.
+     *  @private
+     */
     updateAttribute() {
         const str = this.toString();
         this._parent.setAttribute('closeon', str);    
     }
 
+    /**
+     * Update the internal properties of this menu based on the element attribute value
+     * @private
+     */
     updateInternal() {
         this.fromString(this._parent.getAttribute('closeon'));
     }
@@ -85,6 +116,7 @@ class CloseTriggerFlags {
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
  */
 class Menu extends HTMLElement {
+
     constructor() {
         super();
 
@@ -127,6 +159,9 @@ class Menu extends HTMLElement {
 
         this._state = this._previousState = 'closed';
         this._controlledBy = {};
+
+
+        /** @property {PositionFunction} position */
         this._position = Position.None;
 
 
@@ -158,10 +193,6 @@ class Menu extends HTMLElement {
     /** @property {boolean} useAnimation */
     get useAnimation() {return Attributes.getTrueFalse(this, 'useanimation', true)}
     set useAnimation(value) {Attributes.setTrueFalse(this, 'useanimation', value)}
-
-    /** @property {boolean} autoClose */
-    //get autoClose() {return Attributes.getTrueFalse(this, 'autoclose', true)}
-    //set autoClose(value) {Attributes.setTrueFalse(this, 'autoclose', value)}
 
     /**
      * @property {boolean} isOpen
@@ -197,11 +228,15 @@ class Menu extends HTMLElement {
             item.updateFactoryIcon();
     }
 
-
+    /**
+     * Web component life cycle helper to define what attributes trigger #attributeChangedCallback
+     */
     static get observedAttributes() {
         return ['open', 'closeon', 'controlledby'];
     }
-
+    /**
+     * Web component life cycle when an attribute on the element is changed
+     */
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name) {
 
@@ -271,11 +306,10 @@ class Menu extends HTMLElement {
         return transition;
     }
 
-    handleWindowResized() {
-        // TODO
-        //this.position.apply(this.element, this.host);
+    applyPosition() {
+        if(this.position && 'function' == typeof this.position)
+            this.position(this);
     }
-
 
     /**
      * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
@@ -294,7 +328,6 @@ class Menu extends HTMLElement {
             }
         });
 
-
         this.dispatchEvent(event);
 
         this.previousFocus = this.parentElement ? document.activeElement : null;
@@ -305,15 +338,16 @@ class Menu extends HTMLElement {
         
 
         let anim = new Animation.Transition(menuElement, 'menushow');
+
         anim.on('firstframe', (e)=>{
             if('opening' !== this.state) {
                 e.transition.stop();
                 return;
             }
             menuElement.style.display = '';
-            
-            this.position.apply(this);
+            this.applyPosition();
         });
+
         anim.on('complete',()=>{
             this.state = 'open';
             if( ! suppressFocus)
@@ -376,6 +410,26 @@ class Menu extends HTMLElement {
         return focused;
     }
 
+
+    onWindowResize() {
+        if(this.isOpen)
+            this.applyPosition();
+    }
+
+    /**
+     * Web component life cycle when the element is added to the DOM
+     */
+    connectedCallback() {
+        this._resizeListener = this.onWindowResize.bind(this);
+        window.addEventListener('resize', this._resizeListener);
+    }
+
+    /**
+     * Web component life cycle when the element is removed from the DOM
+     */
+    disconnectedCallback() {
+        window.removeEventListener('resize', this._resizeListener);
+    }
     
     /**
      * @property {Item} focusItem 
@@ -473,12 +527,6 @@ class Menu extends HTMLElement {
         if(this.closeOn.itemActivate && closeMenu)
             this.close();    
     }
-
-    /**
-     * @type {Position} position
-     */
-    get position() {return this._position;}
-    set position(value) { this._position = Position.from(value);}
 
     /** @private */
     releaseControlledByElement() {
