@@ -152,6 +152,7 @@ export class Item extends HTMLElement {
         Attributes.setExists(button, 'data-round-top-left', config.roundTop || config.roundLeft);
         Attributes.setExists(button, 'data-round-bottom-right', config.roundBottom || config.roundRight);
         Attributes.setExists(button, 'data-round-bottom-left', config.roundBottom || config.roundLeft);
+        Attributes.setString(button, 'title', config.hideLabel ? this.label : '')
     }
 
     updateFactoryIcon() {
