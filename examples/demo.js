@@ -31,12 +31,7 @@ function run() {
     document.body.appendChild(menu);
     
     const tools = [
-        {label:'Show Popup Menu', icon:'menu', showToolbarLabel:true, action:(e)=>{
-            const rect = e.detail.item.getBoundingClientRect();
-            const top = rect.top + rect.height + 8;
-            menu.position = Menu.Position.DockablePopup(rect.left, top);
-            menu.open();
-        }},
+        {label:'Show Popup Menu', icon:'menu', showToolbarLabel:true, id:'show-menu'},
         {label:'Add', icon:'add'},
         {label:'Upload', icon:'cloud_upload'},
         {label:'Delete', icon:'delete'}
@@ -44,10 +39,11 @@ function run() {
     
     const toolbar = document.createElement(Menu.Toolbar.tagName);
     toolbar.items.set(tools);
-    toolbar.autoClose = false;
+    toolbar.closeOn.none();
+    toolbar.isOpen = true;
     toolbar.useAnimation = false;
     toolbar.iconFactory =  materialIcon;
-    toolbar.isOpen = true;
+
 
     const customIcon = Menu.Item.create({label:'Custom Icon Test'});
     customIcon.innerHTML = '<span slot="icon">&copy;</span>';
@@ -55,6 +51,8 @@ function run() {
     toolbar.appendChild(Menu.Item.create({label:'Test2 Label', label2:'sub label', icon:'add'}))
 
     container.appendChild(toolbar);
+
+    menu.controlledBy = toolbar.firstChild;
 
     /*const toolbar = new Menu.Toolbar(tools , {host:container, iconFactory:materialIcon});
     toolbar.element.id = 'toolbar';
@@ -67,24 +65,7 @@ function run() {
 
 }
 
-function showSubMenu() {
-    return [
-        {label:'Sub menu action 1'},
-        {label:'Sub menu action 2'},
-        {label:'Sub menu action 3'},
-        {label:'Sub menu action 4'},
-        {label:'Sub menu action 5'},
-        {label:'Sub menu action 6'},
-    ]
-}
 
-function showMenu(e) {
-    const rect = e.detail.item.getBoundingClientRect();
-    const top = rect.top + rect.height + 8;
-    const menu = document.getElementById('popup-menu');
-    menu.position = Menu.Position.DockablePopup(rect.left, top);
-    menu.open();
-}
 
 
 if('loading' == document.readyState)
