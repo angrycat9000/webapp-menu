@@ -183,7 +183,7 @@ class Menu extends HTMLElement {
         else {
             if( ! value.id)
                 value.id = nextId();
-            this.setAttribute('controlledBy', id);
+            this.setAttribute('controlledBy', value.id);
         }
     }
 
