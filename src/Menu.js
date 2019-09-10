@@ -1,5 +1,5 @@
 import Animation from './Animation';
-import {positionForButton} from './Position';
+import Position from './Position';
 import Item from './Item';
 import {addEventFunctions, addEventMember } from './Events';
 import {nextId} from './Id';
@@ -127,6 +127,7 @@ class Menu extends HTMLElement {
 
         this._state = this._previousState = 'closed';
         this._controlledBy = {};
+        this._position = Position.None;
 
 
         this.addEventListener('focusout', this.onFocusOut.bind(this));
@@ -311,13 +312,7 @@ class Menu extends HTMLElement {
             }
             menuElement.style.display = '';
             
-            if(this.controlledBy) {
-                const position = positionForButton(this, this.controlledBy);
-                this.style.top = position.top + 'px';
-                this.style.left = position.left + 'px';
-                this.style.position = 'absolute';
-            }
-
+            this.position.apply(this);
         });
         anim.on('complete',()=>{
             this.state = 'open';
@@ -480,15 +475,10 @@ class Menu extends HTMLElement {
     }
 
     /**
-     * @type {Position|ComputedPosition} position
+     * @type {Position} position
      */
     get position() {return this._position;}
-    set position(value) {
-        if( ! (value instanceof Position))
-            value = new Position(value);
-
-        this._position = value;
-    }
+    set position(value) { this._position = Position.from(value);}
 
     /** @private */
     releaseControlledByElement() {
@@ -502,6 +492,7 @@ class Menu extends HTMLElement {
         controlledBy.removeAttribute('aria-controls');
         controlledBy.removeEventListener('click', handlers.onClick);
         controlledBy.removeEventListener('keydown', handlers.onKeyDown);
+
     }
 
     /** @private  */
@@ -537,6 +528,9 @@ class Menu extends HTMLElement {
         element.setAttribute('aria-controls', this.id);
         element.addEventListener('click', listeners.onClick);
         element.addEventListener('keydown', listeners.onKeyDown);
+
+
+        this.position = Position.WithElement(element);
     }
 
     /**

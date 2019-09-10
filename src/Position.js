@@ -1,5 +1,7 @@
+/**
+ * @return {DOMRect}
+ */
 function getWindowBounds() {
-
     return {
         left: window.scrollX,
         right: window.innerWidth + window.scrollX,
@@ -10,8 +12,12 @@ function getWindowBounds() {
     }
 }
 
+function positionAtPoint(menu, x, y, verticalMargin=16) {
+    return positionPopup(menu, getWindowBounds(), x, y, verticalMargin, 'center');
+}
 
-export function positionForButton(menu, button, padding = 8) {
+
+function positionForButton(menu, button, padding = 8) {
     const container = getWindowBounds();
     const buttonRect = button.getBoundingClientRect();
     const offset = buttonRect.height / 2 + padding;
@@ -19,11 +25,13 @@ export function positionForButton(menu, button, padding = 8) {
     const x = buttonRect.left;
     const menuRect = menu.getBoundingClientRect();
 
-    return positionPopup(menuRect, container, x, y , offset);
+    return positionPopup(menuRect, container, x, y , offset, 'left');
 }
 
-
-function positionPopup(menu, containerRect, x, y, verticalPadding=16) {
+/**
+ * @return {PositionValue}
+ */
+function positionPopup(menuRect, containerRect, x, y, verticalPadding, align='left') {
     const yAbove = y - verticalPadding;
     const yBelow = y + verticalPadding;  
 
@@ -38,26 +46,29 @@ function positionPopup(menu, containerRect, x, y, verticalPadding=16) {
     bounds.max.x -= margin;
     bounds.max.y -= margin;
     
-    let point = {x:x};
+    let point = {
+        x: ('center' == align) ? x - menuRect.width / 2 : x
+    };
+
     
     if(point.x < bounds.min.x)
       point.x = bounds.min.x;
-    if (point.x > bounds.max.x - menu.width)
-      point.x = bounds.max.x - menu.width;
+    if (point.x > bounds.max.x - menuRect.width)
+      point.x = bounds.max.x - menuRect.width;
     
-    let d2 = bounds.max.y - (yBelow + menu.height);
-    let d1 = yAbove - (bounds.min.y + menu.height);
+    let d2 = bounds.max.y - (yBelow + menuRect.height);
+    let d1 = yAbove - (bounds.min.y + menuRect.height);
     
     if(d2 >= 0)
       point.y = yBelow;
     else if (d1 >= 0)
-      point.y = yAbove - menu.height;
+      point.y = yAbove - menuRect.height;
     else if( d1 > d2) 
       point.y = bounds.min.y;
     else
-      point.y = bounds.max.y - menu.height;
+      point.y = bounds.max.y - menuRect.height;
   
-    return {top: Math.round(point.y), left:Math.round(point.x), name:'popup'};
+    return {top: Math.round(point.y), left:Math.round(point.x), position:'absolute'};
   }
 
 function computeResponsivePosition(menu, container, left, top, verticalMargin, size, portrait, landscape) {
@@ -71,67 +82,62 @@ function computeResponsivePosition(menu, container, left, top, verticalMargin, s
 }
 
 /**
- * @typedef ComputedPosition
- * @property {string} [name] used to generate a CSS class in the form of menu-position__name
+ * @typedef PositionValue
+ * @property {string} [name]
  * @property {number|string} [left]
  * @property {number|string} [top]
  * @property {number|string} [right]
  * @property {number|string} [bottom]
  */
 
+ /**
+  * Compute a position for a the provided element.
+  * @typedef PositionFunction
+  * @param {HTMLElement} element
+  * @return {PositionValue}
+  */
+
 
 /**
- * Provides ability to defer computation of position until after the elementn has been added
+ * Provides ability to defer computation of position until after the element has been added
  * to the DOM.  This allows accessing the size of the element;
  */
 class Position {
     /**
-     * @param {function|ComputedPosition} data An object with the position data or a function that will
-     *                                         a ComputedPosition object.
+     * @param {PositionValue|PositionFunction} data 
      */
     constructor(data) {
         this.data = data;
     }
 
-    static cssClassName(name) {
-        return  name ? `menu-position__${name}` : '';
-    }
-
     /**
-     * 
+     *
      */
-    equal(other, menu, container) {
-        const myData = this.evaluate(menu, container);
-        const otherData = other.evaluate(menu, container);
-        return myData == otherData;
+    equal(other) {
+        if( this.data == other.data)
+            return true;
+        return false;
     }
 
     /**
      * @return {ComputedPosition}
      */
-    evaluate(menu, container) {
-       const data = 'function' === typeof this.data ? this.data(menu,container) : this.data;
-        // Sometimes a function will want to return one of the instance values on Position
-        // In that case, it needs to run again to get the computed position value.
-        if(data instanceof Position)
-            return data.evaluate(menu, container);
-        
-        return data;
+    evaluate(menu) {
+       return ('function' === typeof this.data) ? this.data(menu) : this.data;
     }
 
     /**
      * Apply this position to the menu element.
      * @param {HTMLElement} menu
-     * @param {HTMLElement} container
      */
-    apply(menu, container) {
-        const data = this.evaluate(menu, container);
+    apply(menu) {
+        const data = this.evaluate(menu);
 
-        const newCssClass = Position.cssClassName(data.name);
+        /*const newCssClass = Position.cssClassName(data.name);
         for(let cssClass of menu.classList) {
             if(cssClass.startsWith('menu-position__') && cssClass != newCssClass)
                 menu.classList.remove(cssClass);
-        }
+        }*/
     
         for(let prop of ['top', 'bottom', 'left', 'right']) {
             let value = data[prop]
@@ -142,60 +148,64 @@ class Position {
             menu.style[prop] = value;
         }
 
-        if(newCssClass)
+        menu.style.position = ('undefined' === typeof this.position) ? '' : this.position;
+
+
+        /*if(newCssClass)
             menu.classList.add(newCssClass);
+            */
     }
+
+    static from(object) {
+        if(object instanceof Position)
+            return object;
+        return new Position(object);
+    }
+
+    /** 
+     * Shows the menu left aligned to the given button above or below it.
+     * @param {HTMLElement} button
+     * @return {Position}
+     */
+    static WithElement(button) {
+        return new Position((menu)=>positionForButton(menu, button))
+    }
+
+    /** 
+     * @param {number} left
+     * @param {number} top
+     * @return {PositionValue}
+    */
+    static Absolute(left, top) {
+        return new Position({name:'absolute', position:'absolute', left:left, top:top});
+    }
+    
+    /** 
+     * Shows the menu centered above or below the point given by top and left
+     * @param {number} left
+     * @param {number} top
+     * @return {Position}
+     */
+    static AtPoint(left, top, verticalMargin = 16) {
+        return newPosition((menu)=>positionAtPoint(menu, left, top, verticalMargin))
+    }
+    
 }
 
-/**
- * @instance {Position} Static treat the menu as a static position and does not set the top, left, bottom, or right values on the element
- *                             Allow overriding the positioning by setting an id on the element and using CSS
- */
-Position.Static = new Position({name:'static'});
+/** @instance {Position} None Does not set any inline style values on the element */
+Position.None = new Position({name:'none'});
 
-/** 
- * @function Absolute
- * @param {number} left
- * @param {number} top
- * @return {Position}
-*/
-Position.Absolute = function(left, top) {
-    return new Position({name:'absolute', left:left, top:top})
-}
+/** @instance {PositionValue} DockedBottom keeps the menu locked to the bottom, left, and right sides of the screen*/
+Position.DockedBottom =  new Position({bottom:0, left:0, right:0,position:'fixed', name:'dockedBottom'});
 
-/** @instance {Position} DockedBottom keeps the menu locked to the bottom, left, and right sides of the screen*/
-Position.DockedBottom = new Position({name:'dockedBottom'});
+/** @instance {PositionValue} DockedRight keeps the menu locked to the top, right, and bottom sides of the screen */
+Position.DockedRight = new Position({bottom:0, top:0, right:0,position:'fixed', name:'dockedRight'})
 
-/** @instance {Position} DockedRight keeps the menu locked to the top, right, and bottom sides of the screen */
-Position.DockedRight = new Position({name:'dockedRight'});
+/** @instance {PositionValue} DockedLeft keeps the menu locked to the top, left, and bottom sides of the screen */
+Position.DockedLeft =  new Position({bottom:0, top:0, left:0,position:'fixed', name:'dockedLeft'})
 
-/** @instance {Position} DockedLeft keeps the menu locked to the top, left, and bottom sides of the screen */
-Position.DockedLeft = new Position({name:'dockedLeft'});
-
-/** 
- * @function DockablePopup shows the menu as a floating popup of if the container meets a minimum size.  Otherwise
- *                                    sets it as docked to the bottom or right
- * @param {number} left
- * @param {number} top
- * @param {number} verticalMargin amount of space between the point and the top or bottom of the menu.
- * @return {Position}
- */
-Position.DockablePopup = function(left, top, verticalMargin=16, size=400, portrait=Position.DockedBottom, landscape=Position.DockedRight) {
-    const f = (menu, container)=>computeResponsivePosition(menu, container, left, top, verticalMargin, size, portrait, landscape);
-    return new Position(f);
-}
-
-/** 
- * @function DockablePopup Shows the menu as a floating popup within the container
- * @param {number} left
- * @param {number} top
- * @param {number} verticalMargin amount of space between the point and the top or bottom of the menu.
- * @return {Position}
- */
-Position.Popup = function(left, top, verticalMargin = 16) {
-    const f = (menu, container)=>positionPopup(menu, container, left, top, verticalMargin);
-    return new Position(f);
-}
+/** @instance {PositionValue} DockedLeft keeps the menu locked to the top, left, and bottom sides of the screen */
+Position.DockedTop = new Position({bottom:0, top:0, left:0, position:'fixed', name:'dockedTop'})
 
 
 export default Position;
