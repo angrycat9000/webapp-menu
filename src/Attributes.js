@@ -41,7 +41,6 @@ function setExists(element, attributeName, value) {
         element.removeAttribute('open');
 }
 
-
 var Attributes = {
     getString,
     setString,

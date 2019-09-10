@@ -4,7 +4,7 @@ import Menu from '../dist/webapp-menu';
 
 storiesOf('Popup', module)
     .add('HTML Initalization', ()=>{
-        return `<wam-popup open>
+        return `<wam-popup open closeon="none">
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
@@ -17,18 +17,20 @@ storiesOf('Popup', module)
             {label:'Copy'},
             {label:'Paste'}
         ]);
+        popup.closeOn.none();
         popup.isOpen = true;
         return popup;
     })
     .add('ControlledBy', () => {
-        return `<button id="open-menu-button">Open</button>
+        return `<button id="open-menu-button" style="position:absolute; top:100px;left: 125px;">Open</button>
         <wam-popup controlledBy="open-menu-button">
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
         </wam-toolbar>`
     }).add('Styles',()=> {
-        return `<wam-popup open style="
+        return `<wam-popup open closeon="none"
+        style="
             color:white;
             font-family: 'Hepta Slab', serif;
             

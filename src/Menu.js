@@ -11,6 +11,76 @@ import {ReusableStyleSheet} from './Style';
 import style from '../style/menu.scss';
 
 
+class CloseTriggerFlags {
+    constructor(parent) {
+        this._parent = parent;
+        this._escape = this._lostFocus = this._itemActivate = true;
+    }
+
+    get escape() {return this._escape}
+    set escape(value) {this._escape = value; this.updateAttribute()}
+
+    get lostFocus() {return this._lostFocus}
+    set lostFocus(value) {this._lostFocus = value; this.updateAttribute()}
+
+    get itemActivate() {return this._itemActivate}
+    set itemActivate(value) {this._itemActivate = value; this.updateAttribute()}
+
+    all() {this._escape = this._lostFocus = this._itemActivate = true;}
+    none() {this._escape = this._lostFocus = this._itemActivate = false;}
+
+    updateAttribute() {
+        const str = this.toString();
+        this._parent.setAttribute('closeon', str);    
+    }
+
+    updateInternal() {
+        this.fromString(this._parent.getAttribute('closeon'));
+    }
+
+    fromString(str) {
+        if( ! str) {
+            this._escape = true;
+            this._lostFocus = true;
+            this._itemActivate = true;
+        }
+
+        const array = str.toLowerCase().split(',').map(s=>s.trim());
+        if(0 == array.length || (1 == array.length && 'none' == array[0])) {
+            this._escape = false;
+            this._lostFocus = false;
+            this._itemActivate = false;
+        } else if ( 1 == array.length && 'all' == array[0]) {
+            this._escape = true;
+            this._lostFocus = true;
+            this._itemActivate = true;
+        } else {
+            this._escape =  !! array.find(s=>s=='escape');
+            this._lostFocus = !! array.find(s=>s=='lostfocus');
+            this._itemActivate = !! array.find(s=>s=='itemactivate');
+        }
+    }
+
+    toString() {
+        const values = []
+        if(this.escape)
+            values.push('escape');
+
+        if(this.lostFocus)
+            values.push('lostfocus');
+
+        if(this.itemActivate)
+           values.push('itemactivate')
+
+        if(3 == values.length)
+            return 'all';
+        if(0 == values.length)
+            return 'none';
+
+        return values.join(',');
+    }
+}
+
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
  */
@@ -42,6 +112,12 @@ class Menu extends HTMLElement {
          */
         this.items = new ItemCollection(this);
 
+        /** 
+         * Events that will cause the menu to close
+         * @property {CloseTriggerFlags} closeOn
+         */
+        Object.defineProperty(this, 'closeOn', {value:new CloseTriggerFlags(this)});
+
         /*this.element = document.createElement('div');
         this.element.className = 'menu';
         this.element['data-menu'] = this;*/
@@ -49,7 +125,7 @@ class Menu extends HTMLElement {
         this.addEventListener('click', Menu.onClick);
         addEventMember(this);
 
-        this.state = 'closed';
+        this._state = this._previousState = 'closed';
         this._controlledBy = {};
 
 
@@ -83,8 +159,8 @@ class Menu extends HTMLElement {
     set useAnimation(value) {Attributes.setTrueFalse(this, 'useanimation', value)}
 
     /** @property {boolean} autoClose */
-    get autoClose() {return Attributes.getTrueFalse(this, 'autoclose', true)}
-    set autoClose(value) {Attributes.setTrueFalse(this, 'autoclose', value)}
+    //get autoClose() {return Attributes.getTrueFalse(this, 'autoclose', true)}
+    //set autoClose(value) {Attributes.setTrueFalse(this, 'autoclose', value)}
 
     /**
      * @property {boolean} isOpen
@@ -122,20 +198,25 @@ class Menu extends HTMLElement {
 
 
     static get observedAttributes() {
-        return ['open', 'controlledby'];
+        return ['open', 'closeon', 'controlledby'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name) {
+
             case 'open':
                 if(null != newValue && 'false' != newValue)
                     this.open();
                 else
                     this.close();
                 break;
+
             case 'controlledby':
                 this.setControlledByElement(document.getElementById(newValue));
                 break;
+
+            case 'closeon':
+                this.closeOn.updateInternal();    
         }
     }
 
@@ -152,7 +233,7 @@ class Menu extends HTMLElement {
 
     onFocusOut() {
         window.requestAnimationFrame(()=>{
-            if( ! this.autoClose  || 'open' != this.state) {
+            if( ! this.closeOn.lostFocus || 'open' != this.state) {
                 return;
             }
 
@@ -163,8 +244,7 @@ class Menu extends HTMLElement {
                 focused = focused.parentElement
             }
 
-            if('open' == this.state)
-                this.close();
+            this.close();
         })
     }
 
@@ -176,6 +256,7 @@ class Menu extends HTMLElement {
     get state() {return this._state;}
     set state(value) {
         this._state = value;
+        
         this.isOpen = 'open' == value || 'opening' == value;
         if(this.controlledBy)
             this.controlledBy.setAttribute('aria-expanded', this.isOpen)
@@ -363,8 +444,8 @@ class Menu extends HTMLElement {
                 e.preventDefault();
                 break;
             case 'Escape':
-                this.close();
-                //e.preventDefault();
+                if(this.closeOn.escape)
+                    this.close();
                 break;
             case ' ':
             case 'Enter':
@@ -394,7 +475,7 @@ class Menu extends HTMLElement {
 
         const closeMenu = item.dispatchEvent(event);
         
-        if(this.autoClose && closeMenu)
+        if(this.closeOn.itemActivate && closeMenu)
             this.close();    
     }
 
