@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "rollup -w -c rollup.config.js",
-    "build": "rimraf dist && rollup -c rollup.config.js --configProduction",
+    "build": "rimraf dist && rollup -c rollup.config.js --configProduction && npx build-storybook -o dist/storybook",
     "prepare": "npm run build",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

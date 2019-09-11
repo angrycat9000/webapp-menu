@@ -1,6 +1,7 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
 import wamlogger from './actionDecorator.js'
+import Menu from '../dist/webapp-menu.js';
 
 
 storiesOf('Popup', module)
@@ -49,4 +50,36 @@ storiesOf('Popup', module)
         <wam-item label="Copy"></wam-item>
         <wam-item label="Paste"></wam-item>
     </wam-toolbar>`
-    });
+    })
+    .add('Position At Point', ()=>{
+        const popup = document.createElement('wam-popup');
+        popup.items.set([
+            {label:'Cut'},
+            {label:'Copy'},
+            {label:'Paste'}
+        ]);
+        popup.style.fontSize = '1rem';
+        const div = document.createElement('div');
+        div.style.top = div.style.left = div.style.right = div.style.bottom = '0';
+        div.style.position = 'absolute';
+        div.style.fontSize = '4rem';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.justifyContent= 'center';
+        div.addEventListener('click',(e)=>{
+            let element = e.target;
+            while(element) {
+                if(element == popup)
+                    return;
+                element = element.parentElement;
+            }
+            
+            popup.position = Menu.Position.AtPoint(e.pageX, e.pageY, 8);
+            popup.open();
+        
+        })
+        div.appendChild(document.createTextNode('Click Me'));
+        div.appendChild(popup);
+
+        return div;
+    })
