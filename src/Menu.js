@@ -1,7 +1,6 @@
 import Animation from './Animation';
 import Position from './Position';
 import Item from './Item';
-import {addEventFunctions, addEventMember } from './Events';
 import {nextId} from './Id';
 import ItemCollection from './ItemCollection';
 import TabList from './TabList';
@@ -171,7 +170,6 @@ class Menu extends HTMLElement {
         this.element['data-menu'] = this;*/
         this.addEventListener('keydown', Menu.onKeyDown);
         this.addEventListener('click', Menu.onClick);
-        addEventMember(this);
 
         this._state = this._previousState = 'closed';
         this._controlledBy = {};
@@ -310,15 +308,16 @@ class Menu extends HTMLElement {
         this._state = value;
         
         this.isOpen = 'open' == value || 'opening' == value;
-        if(this.controlledBy)
-            this.controlledBy.setAttribute('aria-expanded', this.isOpen)
     }
 
     startTransition(transition) {
-        //if(this.useAnimation)
-        //    transition.play();
-        //else
-            transition.fastForward();
+        window.requestAnimationFrame(()=>{
+            if( ! this.useAnimation) {
+                transition.immediate();
+            } else {
+                transition.firstFrame();
+            }
+        });
         return transition;
     }
 
@@ -328,15 +327,13 @@ class Menu extends HTMLElement {
     }
 
     /**
-     * @param {Boolean} [suppressFocus] if true, do not set the focus when the menu opens.  Useful for when
-     *                     the menu is triggered via a pointer event instead of a keyboard event
      * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
-    open(suppressFocus=false) {
+    open() {
         if('open' == this.state|| 'opening' == this.state)
             return null;
 
-        const event = new CustomEvent('wam-open', {
+        const event = new CustomEvent('wam-menu-open', {
             bubbles:true,
             cancelable:false,
             detail: {
@@ -350,27 +347,34 @@ class Menu extends HTMLElement {
         this.state = 'opening';
 
         const menuElement = this.shadowRoot.querySelector('.menu');
-        menuElement.style.display = '';
-        
 
-        let anim = new Animation.Transition(menuElement, 'menushow');
 
+        let anim = new Animation.Transition(menuElement, 'animation-show');
+
+ 
         anim.on('firstframe', (e)=>{
             if('opening' !== this.state) {
                 e.transition.stop();
                 return;
             }
             menuElement.style.display = '';
+        }, null , 1);
+
+        anim.on('firstframe', (e)=>{
             this.applyPosition();
-        });
+            if(this.controlledBy)
+                this.controlledBy.setAttribute('aria-expanded', this.isOpen);
+        }, null, 10);
+    
+        anim.on('secondframe',()=>{
+            
+            //console.debug(window.getComputedStyle(menuElement).transform)
+           // menuElement.style.transform='scale(1,1)';
+        })
 
         anim.on('complete',()=>{
             this.state = 'open';
-            if( ! suppressFocus)
-                this.setFocusOn(this.focusItem);
-            this.events.emit('opened', {menu:this});
-            this.windowResizeFunc = ()=>this.handleWindowResized();
-            window.addEventListener('resize',this.windowResizeFunc);
+            this.setFocusOn(this.focusItem);
         })
 
         return this.startTransition(anim);
@@ -383,7 +387,7 @@ class Menu extends HTMLElement {
         if(this.state == 'closed' || this.state == 'closing')
             return null;
     
-        const event = new CustomEvent('wam-close', {
+        const event = new CustomEvent('wam-menu-close', {
             bubbles:true,
             cancelable:false,
             detail: {
@@ -394,7 +398,7 @@ class Menu extends HTMLElement {
 
         this.state = 'closing';
 
-        let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'menuhide');
+        let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'animation-hide');
         anim.on('firstframe',(e)=>{
             if(this.state !== 'closing') {
                 e.transition.stop();
@@ -416,7 +420,6 @@ class Menu extends HTMLElement {
             
             this.previousFocus = null;
             this.setFocusOn(null);
-            this.events.emit('closed', {menu:this});
         });
 
         return this.startTransition(anim);
@@ -535,7 +538,7 @@ class Menu extends HTMLElement {
         if(item.disabled)
             return;
 
-        const event = new CustomEvent('wam-activate', {
+        const event = new CustomEvent('wam-item-activate', {
             bubbles:true,
             detail: {
                 item: item,
@@ -621,8 +624,6 @@ class Menu extends HTMLElement {
         items.forEach(this.updateItem, this);
     }
 }
-
-addEventFunctions(Menu.prototype);
 
 /** 
  * Set this as a fallback for any newly created Menu objects to use as the icon factory

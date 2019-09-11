@@ -30,6 +30,12 @@ class Transition {
         this.finishedFunc = null;
         this._abort = false;
         addEventMember(this);
+    
+        /** 
+         * Ignore any transitions that occur on children if true.  
+         * @property {boolean} ignoreChildren 
+         */
+        this.ignoreChildren = true;
     }
 
     /**
@@ -46,7 +52,26 @@ class Transition {
      * of the event listeners to happen
      */
     fastForward() {
-        this.frame = window.requestAnimationFrame(()=>this.fastForwardFrames());
+        this.frame = window.requestAnimationFrame(()=>this.immediate());
+    }
+
+    /**
+     * Execute all the frame events immediately.  Does not wait for an animation frame.
+     */
+    immediate() {
+        this.frame = 0;
+        const event = transitionEvent(this);
+        event.isFastForward = true;
+
+        this.events.emit('firstframe', event);
+        if(this.wasStopped)
+            return;
+
+        this.events.emit('secondframe', event);
+        if(this.wasStopped)
+            return;
+
+        this.events.emit('complete', event);
     }
 
     /**
@@ -78,31 +103,15 @@ class Transition {
         this.target.classList.remove(this.getCSSClass('first'), this.getCSSClass('second'), this.getCSSClass('active'));
     }
 
-    fastForwardFrames() {
-        this.frame = 0;
-        const event = transitionEvent(this);
-        event.isFastForward = true;
-
-        this.events.emit('firstframe', event);
-        if(this.wasStopped)
-            return;
-
-        this.events.emit('secondframe', event);
-        if(this.wasStopped)
-            return;
-
-        this.events.emit('complete', event);
-    }
-
     getCSSClass(state) {
-        return `animation-${this.cssName}__${state}`;
+        return `${this.cssName}__${state}`;
     }
     
     firstFrame() {
         this.frame = 0;
         this.transitionStarted = false;
         this.startFunc = (e)=>{
-            if(e.target === this.target)
+            if(e.target === this.target ||  ! this.ignoreChildren)
                 this.transitionStarted = true;
         }
         this.target.addEventListener('transitionstart', this.startFunc);

@@ -19,3 +19,11 @@ $menu-max-height: 80vh;
     width: $menu-width;
     max-height: $menu-max-height;
 }
+
+.animation-stack__active {
+    transition: height $menu-transition-duration;
+
+    .menu-inner {
+        transition: transform $menu-transition-duration;
+    }
+}

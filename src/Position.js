@@ -13,8 +13,8 @@ function getWindowBounds() {
 }
 
 function positionAtPoint(menu, x, y, verticalMargin = 16) {
-  const position = positionPopup(menu, getWindowBounds(), x, y, verticalMargin, 'center');
-  apply(menu, position);
+  const position = positionPopup(menu.getBoundingClientRect(), getWindowBounds(), x, y, verticalMargin, 'center');
+  return apply(menu, position);
 }
 
 
@@ -27,7 +27,7 @@ function positionForButton(menu, button, padding = 8) {
   const menuRect = menu.getBoundingClientRect();
 
   const position = positionPopup(menuRect, container, x, y, offset, 'left');
-  apply(menu, position);
+  return apply(menu, position);
 }
 
 /**
@@ -79,7 +79,8 @@ function positionPopup(menuRect, containerRect, x, y, verticalPadding, align = '
   return {
     top: Math.round(point.y),
     left: Math.round(point.x),
-    position: 'absolute'
+    position: 'absolute',
+    transformOrigin: (point.y > y ? 'top ' : 'bottom ') + align
   };
 }
 
@@ -117,6 +118,15 @@ function apply(element, position) {
   }
 
   element.style.position = ('undefined' === typeof position.position) ? '' : position.position;
+
+
+  if(element.shadowRoot) {
+    const menu = element.shadowRoot.querySelector('.menu');
+    if(menu)
+      menu.style.transformOrigin = position.transformOrigin || '';
+  }
+
+  return position;
 }
 
 const Position = {

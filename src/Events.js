@@ -1,5 +1,4 @@
-//const EventEmitter = require('EventEmitter').default;
-import EventEmitter from 'EventEmitter';
+import EventEmitter from 'es-event-emitter/src/event-emitter';
 
 /**
 *
@@ -20,13 +19,13 @@ export function addEventFunctions(proto) {
 *
 */
 function on() {
-  this.events.on.apply(this.events, arguments);
+  return this.events.on.apply(this.events, arguments);
 }
 
 /**
 *
 */
 function off() {
-  this.events.off.apply(this.events, arguments);
+  return this.events.off.apply(this.events, arguments);
 }
   

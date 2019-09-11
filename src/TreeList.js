@@ -1,6 +1,7 @@
 import Menu from './Menu';
 import Item from './Item';
 import SubMenuItem from './SubMenuItem';
+import Animation from './Animation'
 import TabList from './TabList';
 
 import {ReusableStyleSheet} from './Style';
@@ -48,10 +49,17 @@ class TreeList extends Menu {
             super.activate(item, sourceEvent);
     }
 
-    open(suppressFocus) {
-        const anim = super.open(suppressFocus);
+    open() {
+        
+        const anim = super.open();
         if(anim)
-            anim.on('firstframe', this.stackChanged, this);
+            anim.on('firstframe', ()=>{
+                while(this.stack.length) {
+                    const closed = this.stack.pop();
+                    closed.isOpen = false;
+                }
+                this.stackChanged().immediate()
+            }, null, 5);
         return anim;
     }
 
@@ -70,12 +78,16 @@ class TreeList extends Menu {
 
         if( ! item.dispatchEvent(event))
             return;
+    
 
         this.stack.push(item);
         item.isOpen = true;
-        this.stackChanged();
+        return this.startTransition(this.stackChanged());
     }
 
+    /**
+     * @return {Transition}
+     */
     closeChild(sourceEvent) {
         if(0 == this.stack.length)
             return;
@@ -92,11 +104,16 @@ class TreeList extends Menu {
         });
 
         if( ! target.dispatchEvent(event))
-            return;
+            return null;
 
         const closed = this.stack.pop();
-        closed.isOpen = false;
-        this.stackChanged();
+
+        const anim = this.stackChanged();
+        anim.on('complete', ()=>{
+            closed.isOpen = false
+        }, null, 5);
+
+        return this.startTransition(anim);
     }
 
     getFocused() {
@@ -124,22 +141,40 @@ class TreeList extends Menu {
         
     }
 
-    stackChanged() {
-        this.setFocusOn(this.focusItem);
+    /**
+     * @param {function} beforeHeightResolved any code that needs to get run before
+     *                                          after the animation, but before the final 
+     *                                          height of the container is resolved
+     */
+    stackChanged(beforeComplete) {
         const container = this.shadowRoot.querySelector('.menu-outer');
         const slider = this.shadowRoot.querySelector('.menu-inner');
         const scroller = this.getMenuContentElement(this.stack.length);
-        const desiredHeight = scroller.scrollHeight;
 
-        let offset = container.clientWidth * this.stack.length;
-        slider.style.left = (-offset) + 'px';
+        const anim = new Animation.Transition(container, 'animation-stack');
+        anim.ignoreChildren = false;
+        anim.on('firstframe',()=>{
+            const offset = container.clientWidth * this.stack.length;
+            slider.style.transform = `translate3d(${(-offset)}px,0,0)`;
+            const desiredHeight = this.stack.length ? scroller.scrollHeight : scroller.offsetHeight;
+            container.style.height = desiredHeight + 'px';
+        })
+        anim.on('complete',()=>{
+            /* 
+               Resizes the current list to be the same height as the container so it scrolls properly.
+               This needs to be fired after the height transition for this.element has complete because
+               it uses the final value of the height.  That value isn't available until after the
+               transition has completed.  It might also have been capped by max-height
+            */
+            const borderWidth = container.offsetWidth - container.clientWidth;
+            const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
+            scroller.style.height = resolvedHeight + 'px';
+            container.style.height = resolvedHeight + 'px';
+            this.setFocusOn(this.focusItem);
+        }, null, 1)
 
-        const borderWidth = container.offsetWidth - container.clientWidth;
 
-        container.style.height = desiredHeight+'px';
-        const resolvedHeight = this.clientHeight - borderWidth;
-        scroller.style.height = resolvedHeight + 'px';
-        container.style.height = resolvedHeight + 'px';
+        return anim;
     }
 
     updateItem(item, i , items) {

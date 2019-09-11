@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/angrycat9000/webapp-menu#readme",
   "dependencies": {
-    "EventEmitter": "^1.0.0"
+    "es-event-emitter": "^1.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
@@ -34,11 +34,11 @@
     "@storybook/html": "^5.1.11",
     "babel-loader": "^8.0.6",
     "cssnano": "^4.1.10",
-    "es-dev-server": "^1.17.1",
+    "es-dev-server": "^1.17.2",
     "node-sass": "^4.12.0",
-    "postcss": "^7.0.17",
+    "postcss": "^7.0.18",
     "rimraf": "^3.0.0",
-    "rollup": "^1.20.3",
+    "rollup": "^1.21.2",
     "rollup-plugin-license": "^0.12.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-sass": "^1.2.2",

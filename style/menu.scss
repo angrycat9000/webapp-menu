@@ -27,12 +27,27 @@
   font-family: $menu-font;
 }
 
-@import 'animation.scss';
-
 wam-item [slot=label] {
   & > *:nth-child(2) {
     font-size:75%;
     opacity:0.75;
     margin-top:0.25rem;
   }
+}
+
+.menu.animation-show__second,
+.menu.animation-hide__second {
+  transition: opacity $menu-transition-duration, transform $menu-transition-duration;
+}
+
+.menu.animation-show__first,
+.menu.animation-hide__second {
+  transform: scale3d(0.8,0.8,1);
+  opacity:0
+}
+.menu.animation-show__second,
+.menu.animation-hide__first
+{
+  transform: scale3d(1,1,1);
+  opacity:1
 }
