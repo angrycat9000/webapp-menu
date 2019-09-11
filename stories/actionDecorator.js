@@ -7,5 +7,5 @@ const details = decorate([args => {
     return a;
 }]);
 
-const wamlogger = details.withActions('wam-activate','wam-open', 'wam-close','wam-submenu-open', 'wam-submenu-close');
+const wamlogger = details.withActions('wam-item-activate','wam-menu-open', 'wam-menu-close','wam-submenu-open', 'wam-submenu-close');
 export default wamlogger;
