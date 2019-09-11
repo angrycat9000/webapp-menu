@@ -6,7 +6,7 @@ function convertToItem(obj) {
 
 
 /**
- * 
+ * Provide access to the children of the menu via JavaScript.
  */
 class ItemCollection {
     constructor(owner, shadowContainer) {
@@ -95,6 +95,8 @@ class ItemCollection {
     }
 
     /** 
+     * Replace the existing items with the set provided.
+     * @see Item.set
      * @param {Array<Item|object>} items
      */
     set(items) {

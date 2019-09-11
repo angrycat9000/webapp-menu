@@ -9,8 +9,19 @@ import itemStyle from '../style/item.scss';
  * @return {HTMLElement}
  */
 
+
+ /**
+  * Occurs when an item in a toolbar is activated via a keypress or click.
+  * @event wam-activate
+  * @type {CustomEvent}
+  * @property {Item} detail.item
+  * @property {Menu} detail.menu
+  * @property {Event} detail.source
+  */
+
  /**
   * Item in a menu or toolbar.
+  * @fires wam-activate
   */
 export class Item extends HTMLElement {
     constructor() {
@@ -29,6 +40,9 @@ export class Item extends HTMLElement {
         this.data = null;
     }
 
+    /**
+     * Create an Item object from an object with a set of properties
+     */
     static create(options) {
         const type = options.type || Item;
         const item = document.createElement(type.tagName);
@@ -44,9 +58,10 @@ export class Item extends HTMLElement {
     /**
      * @param {object} props
      * @param {string} [props.label]
-     * @param {string} [props.label2]
      * @param {Node|string} [props.icon]
      * @param {boolean} [props.disabled]
+     * @param {boolean} [props.showToolbarLabel]
+     * @param {itemActivateFunction} [props.action]
      */
     set(props) {
         if( ! props)

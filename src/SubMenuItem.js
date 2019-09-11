@@ -6,7 +6,27 @@ import {nextId} from './Id';
 import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';
 
+/**
+ * Occurs when an submenu item is opened
+ * @event wam-submenu-open
+ * @type {CustomEvent}
+ * @property {Item} detail.item
+ * @property {Menu} detail.menu
+ * @property {Event} detail.source
+ */
 
+/**
+ * Occurs when an submenu item is closed
+ * @event wam-submenu-close
+ * @type {CustomEvent}
+ * @property {Item} detail.item
+ * @property {Menu} detail.menu
+ * @property {Event} detail.source
+ */
+
+/**
+ * 
+ */
 export class SubMenuItem extends Item {
     constructor() {
         super();

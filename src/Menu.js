@@ -113,7 +113,23 @@ class CloseTriggerFlags {
 }
 
 /**
- * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items
+ * Occurs when a menu element is opened.
+ * @event wam-open
+ * @type {CustomEvent}
+ * @property {Menu} detail.menu
+ */
+
+/**
+ * Occurs when a menu element is closed.
+ * @event wam-close
+ * @type {CustomEvent}
+ * @property {Menu} detail.menu
+ */
+
+/**
+ * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items.
+ * @fires wam-open
+ * @fires wam-close
  */
 class Menu extends HTMLElement {
 
