@@ -382,6 +382,15 @@ class Menu extends HTMLElement {
     close() {
         if(this.state == 'closed' || this.state == 'closing')
             return null;
+    
+        const event = new CustomEvent('wam-close', {
+            bubbles:true,
+            cancelable:false,
+            detail: {
+                menu: this,
+            }
+        });
+        this.dispatchEvent(event);
 
         this.state = 'closing';
 
