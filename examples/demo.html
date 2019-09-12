@@ -9,6 +9,44 @@
 </head>
 
 <body>
+    <wam-toolbar open closeon="none" >
+            <wam-item label="Show Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i></wam-item>
+            <wam-item label="Show TreeList" id="tree-list-button" showtoolbarlabel><i class="material-icons" slot="icon">account_tree</i></wam-item>
+            <wam-item label="Show Toolbar" id="toolbar-button" showtoolbarlabel><i class="material-icons" slot="icon">build</i></wam-item>
+            </wam-toolbar>
+            
+    <wam-treelist controlledby="tree-list-button">
+        <wam-item label="Generic Item"></wam-item>
+        <wam-submenu label="List of Fruits">
+            <wam-item label="Apple"></wam-item>
+            <wam-item label="Orange"></wam-item>
+            <wam-item label="Banana"></wam-item>
+            <wam-item label="Pear"></wam-item>
+            <wam-item label="Peach"></wam-item>
+        </wam-submenu>
+        <wam-submenu label="Lists of People">
+            <wam-submenu label="Actors">
+               <wam-item label="Elizabeth Taylor"></wam-item>
+               <wam-item label="Cary Grant"></wam-item>
+               <wam-item label="John Travolta"></wam-item>
+               <wam-item label="Morgan Freeman"></wam-item>
+            </wam-submenu>
+            <wam-submenu label="Musicians">
+                    <wam-item label="Frank Sinatra"></wam-item>
+                    <wam-item label="John Denver"></wam-item>
+                    <wam-item label="Cat Stevens"></wam-item>
+                    <wam-item label="Freddy Mercury"></wam-item>
+                 </wam-submenu>
+        </wam-submenu>
+    </wam-treelist>
+    
+    <wam-popup controlledby="popup-button">
+        <wam-item label="Item 1"></wam-item>
+        <wam-item label="Item 2"></wam-item>
+        <wam-item label="Item 3"></wam-item>
+    </wam-popup>
+              
+
 </body>
 
 </html>
