@@ -7,13 +7,13 @@ Quickly create accessible menus for in web apps.  Eg. context menu, file menu, e
 
 ## Screenshots
 
-![toolbar screenshot](screeenshots/toolbar.png)
+![toolbar screenshot](screenshots/toolbar.png)
 
-![context popup screenshot](screeenshots/toolbar.png)
+![context popup screenshot](screenshots/popup.png)
 
-![top level nested menu control screenshot](screeenshots/nested1.png)
+![top level nested menu control screenshot](screenshots/nested1.png)
 
-![nested sub menu expanded screenshot](screeenshots/nested1.png)
+![nested sub menu expanded screenshot](screenshots/nested2.png)
 
 ## Setup
 
