@@ -22,6 +22,7 @@ $menu-item-background: var(--menu-item-background,
     linear-gradient(135deg, rgba($light-bg,1) 10%, rgba($light-bg,0) 30%), 
     linear-gradient(315deg, rgba($dark-bg,1) 10%, rgba($dark-bg,0) 30%),
     $mid-bg );
-    
+
 $menu-shadow: var(--menu-shadow, none);
 $menu-focus-color: var(--menu-focus-color, #5B6FC8);
+$menu-focus-width: var(--menu-focus-width, 4px);

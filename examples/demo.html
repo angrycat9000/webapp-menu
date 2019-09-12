@@ -40,6 +40,11 @@
         wam-item [slot=label] span {
             text-decoration:underline;
         }
+
+        .custom-focus {
+            --menu-focus-color:red;
+            --menu-focus-width: 1px;
+        }
     </style>
 </head>
 
@@ -102,6 +107,7 @@
                 </div>
             </wam-item>
             <wam-item label="Different Border"></wam-item>
+            <wam-item label="Set Focus Style" class="custom-focus"></wam-item>
         </wam-popup>
 
 </body>
