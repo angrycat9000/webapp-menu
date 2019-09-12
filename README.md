@@ -7,21 +7,18 @@ Quickly create accessible menus for in web apps.  Eg. context menu, file menu, e
 
 ## Screenshots
 
-<div style="display:flex;flex-wrap:wrap">
-<div style="margin-right:1rem">
 Toolbar
 
 ![toolbar screenshot](screenshots/toolbar.png)
-</div><div style="margin-right:1rem">
+
 Popup
 
 ![context popup screenshot](screenshots/popup.png)
-</div><div style="margin-right:1rem">
+
 Nested Menu
 
-<img src="screenshots/nested1.png" style="vertical-align:top;margin-right:1rem;margin-bottom:1rem" alt="top level nested menu control screenshot"> <img src="screenshots/nested2.png" alt="nested sub menu expanded screenshot" style="vertical-align:top">
-</div>
-</div>
+![nested menu control screenshot](screenshots/nested-menu.png)
+
 
 ## Setup
 
