@@ -112,6 +112,14 @@ class CloseTriggerFlags {
 }
 
 /**
+ * @enum Direction
+ */
+export const Direction  = {
+    TopToBottom: 'v',
+    LeftToRight: 'h',
+};
+
+/**
  * Occurs when a menu element is opened.
  * @event wam-open
  * @type {CustomEvent}
@@ -130,7 +138,7 @@ class CloseTriggerFlags {
  * @fires wam-open
  * @fires wam-close
  */
-class Menu extends HTMLElement {
+export class Menu extends HTMLElement {
 
     constructor() {
         super();
@@ -158,6 +166,11 @@ class Menu extends HTMLElement {
          * @property {ItemCollection} items 
          */
         this.items = new ItemCollection(this);
+
+        /**
+         * @property {Direction}
+         */
+        this.direction = Direction.TopToBottom;
 
         /** 
          * Events that will cause the menu to close
@@ -280,6 +293,16 @@ class Menu extends HTMLElement {
         }
         return element;
     }
+    
+    isFocusWithin() {
+        let focused = document.activeElement;
+        while(focused) {
+            if(focused === this)
+                return true;
+            focused = focused.parentElement
+        }
+        return false;  
+    }
 
     onFocusOut() {
         window.requestAnimationFrame(()=>{
@@ -287,14 +310,8 @@ class Menu extends HTMLElement {
                 return;
             }
 
-            let focused = document.activeElement;
-            while(focused) {
-                if(focused === this)
-                    return;
-                focused = focused.parentElement
-            }
-
-            this.close();
+            if( ! this.isFocusWithin())
+                this.close();
         })
     }
 
@@ -365,12 +382,6 @@ class Menu extends HTMLElement {
             if(this.controlledBy)
                 this.controlledBy.setAttribute('aria-expanded', this.isOpen);
         }, null, 10);
-    
-        anim.on('secondframe',()=>{
-            
-            //console.debug(window.getComputedStyle(menuElement).transform)
-           // menuElement.style.transform='scale(1,1)';
-        })
 
         anim.on('complete',()=>{
             this.state = 'open';
@@ -415,7 +426,7 @@ class Menu extends HTMLElement {
             this.state = 'closed';
             this.shadowRoot.querySelector('.menu').style.display = 'none';
 
-            if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body))
+            if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body || this.isFocusWithin()))
                 this.previousFocus.focus();
             
             this.previousFocus = null;
@@ -498,36 +509,34 @@ class Menu extends HTMLElement {
     static onKeyDown(e) {
         let menu = Menu.fromElement(e.currentTarget);
         if(menu)
-            menu.onKeyPress(e);
+            menu.onKeyDown(e);
     }
 
     /**
      * 
      */
-    onKeyPress(e) {
+    onKeyDown(e) {
         let item = this.getFocused();
         if( ! item)
             return;
     
-        switch(e.key) {
-            case 'ArrowLeft':
-            case 'ArrowUp':
-                this.setFocusOn(this.interactiveItems.previous(item));
-                e.preventDefault();
-                break;
-            case 'ArrowRight':
-            case 'ArrowDown':
-                this.setFocusOn(this.interactiveItems.next(item));
-                e.preventDefault();
-                break;
-            case 'Escape':
-                if(this.closeOn.escape)
-                    this.close();
-                break;
-            case ' ':
-            case 'Enter':
-                this.activate(Item.fromEvent(e), e);
-                e.preventDefault();
+        if('ArrowLeft' == e.key && Direction.LeftToRight == this.direction) {
+            this.setFocusOn(this.interactiveItems.previous(item));
+            e.preventDefault();
+        } else if ('ArrowUp' == e.key && Direction.TopToBottom == this.direction) {
+            this.setFocusOn(this.interactiveItems.previous(item));
+            e.preventDefault();
+         } else if('ArrowRight' == e.key && Direction.LeftToRight == this.direction) {
+            this.setFocusOn(this.interactiveItems.next(item));
+            e.preventDefault();
+        } else if('ArrowDown' == e.key && Direction.TopToBottom == this.direction) {
+            this.setFocusOn(this.interactiveItems.next(item));
+            e.preventDefault();
+        } else if('Escape' == e.key && this.closeOn.escape) {
+            this.close();
+        } else if (' ' == e.key || 'Enter' == e.key) {
+            this.activate(Item.fromEvent(e), e);
+            e.preventDefault();
         }
     }
 
@@ -577,12 +586,21 @@ class Menu extends HTMLElement {
             this._controlledByEventListeners = {
                 onClick: (e)=>{this.isOpen = ! this.isOpen},
                 onKeyDown: (e)=>{
-                    if(e.key == 'ArrowDown' &&  ! this.isOpen) {
-                        this.focusItem = this.interactiveItems.first;
-                        this.open();
-                    } else if(e.key == 'ArrowUp' && ! this.isOpen) {
-                        this.focusItem = this.interactiveItems.last;
-                        this.open();
+                    if(this.isOpen )
+                        return;
+
+                    switch (e.key) {
+                        case ' ':
+                        case 'Enter':
+                        case 'ArrowDown':
+                            this.focusItem = this.interactiveItems.first;
+                            this.open();
+                            break;
+
+                        case 'ArrowUp': 
+                            this.focusItem = this.interactiveItems.last;
+                            this.open();
+                            break;
                     }
                 }
             };

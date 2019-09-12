@@ -49,6 +49,20 @@ class TreeList extends Menu {
             super.activate(item, sourceEvent);
     }
 
+    onKeyDown(e) {
+        super.onKeyDown(e);
+
+        let item = this.getFocused();
+        if( ! item)
+            return;
+
+        if('ArrowRight' == e.key && item instanceof SubMenuItem) {
+            this.activate(item, e);
+        } else if('ArrowLeft' == e.key && this.topSubMenu && item == this.topSubMenu.backItem) {
+            this.activate(item, e);
+        }
+    }
+
     open() {
         
         const anim = super.open();

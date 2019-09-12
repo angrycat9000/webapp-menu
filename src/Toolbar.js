@@ -1,4 +1,4 @@
-import Menu from './Menu';
+import {Menu, Direction} from './Menu';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/toolbar.scss';
@@ -9,7 +9,9 @@ class Toolbar extends Menu {
         super();
 
         Toolbar.stylesheet.addToShadow(this.shadowRoot);
-        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar')
+        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar');
+
+        this.direction = Direction.LeftToRight
     }
 
     updateItem(item, i , items) {
