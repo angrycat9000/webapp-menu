@@ -30,15 +30,15 @@ class Popup extends Menu {
         })
     }
 
-    updateItems() {
+    updateAllItems() {
         this._hasIcons = false;
-        for(item of this.items) {
+        for(let item of this.items) {
             if(item.hasIcon) {
                 this._hasIcons = true;
                 break;
             }
         }
-        super.setItemStyles();
+        super.updateAllItems();
     }
 }
 
