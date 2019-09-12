@@ -1,20 +1,61 @@
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>WebApp Menu Development</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <script type="module" src="../dist/webapp-menu.js"/></script>
+    <script type="module" src="../dist/webapp-menu.js" />
+    </script>
     <script src="demo.js" type="module"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,400i,700" />
+
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            max-width: 30rem;
+            margin: 2rem auto;
+        }
+
+        h1, h2, .custom-font {
+            font-family: 'Raleway'
+        }
+
+        .custom-color {
+            --menu-item-background:#e7ff87;
+            --menu-hover-background: #c4e640;
+        }
+
+        .custom-border {
+            --menu-border-radius: 8px;
+            --menu-border-width: 4px;
+            --menu-border-style: outset;
+            z-index:0; /* keep below other menus */
+        }
+
+        wam-item [slot=label] div:last-child {
+            font-size:80%;
+            opacity:0.7;
+        }
+        wam-item [slot=label] span {
+            text-decoration:underline;
+        }
+    </style>
 </head>
 
 <body>
-    <wam-toolbar open closeon="none" >
-            <wam-item label="Show Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i></wam-item>
-            <wam-item label="Show TreeList" id="tree-list-button" showtoolbarlabel><i class="material-icons" slot="icon">account_tree</i></wam-item>
-            <wam-item label="Show Toolbar" id="toolbar-button" showtoolbarlabel><i class="material-icons" slot="icon">build</i></wam-item>
-            </wam-toolbar>
-            
+    <h1>Demo of WebApp-Menu</h1>
+    <p>Use the toolbar below to explore the different components provided by WebApp-Menu.</p>
+
+    <wam-toolbar open closeon="none">
+        <wam-item label="Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i>
+        </wam-item>
+        <wam-item label="Nested Menu" id="tree-list-button" showtoolbarlabel><i class="material-icons"
+                slot="icon">account_tree</i></wam-item>
+        <wam-item label="Toolbar" id="toolbar-button" showtoolbarlabel><i class="material-icons"
+                slot="icon">build</i></wam-item>
+    </wam-toolbar>
+
     <wam-treelist controlledby="tree-list-button">
         <wam-item label="Generic Item"></wam-item>
         <wam-submenu label="List of Fruits">
@@ -26,26 +67,42 @@
         </wam-submenu>
         <wam-submenu label="Lists of People">
             <wam-submenu label="Actors">
-               <wam-item label="Elizabeth Taylor"></wam-item>
-               <wam-item label="Cary Grant"></wam-item>
-               <wam-item label="John Travolta"></wam-item>
-               <wam-item label="Morgan Freeman"></wam-item>
+                <wam-item label="Elizabeth Taylor"></wam-item>
+                <wam-item label="Cary Grant"></wam-item>
+                <wam-item label="John Travolta"></wam-item>
+                <wam-item label="Morgan Freeman"></wam-item>
             </wam-submenu>
             <wam-submenu label="Musicians">
-                    <wam-item label="Frank Sinatra"></wam-item>
-                    <wam-item label="John Denver"></wam-item>
-                    <wam-item label="Cat Stevens"></wam-item>
-                    <wam-item label="Freddy Mercury"></wam-item>
-                 </wam-submenu>
+                <wam-item label="Frank Sinatra"></wam-item>
+                <wam-item label="John Denver"></wam-item>
+                <wam-item label="Cat Stevens"></wam-item>
+                <wam-item label="Freddy Mercury"></wam-item>
+            </wam-submenu>
         </wam-submenu>
     </wam-treelist>
-    
+
     <wam-popup controlledby="popup-button">
-        <wam-item label="Item 1"></wam-item>
-        <wam-item label="Item 2"></wam-item>
-        <wam-item label="Item 3"></wam-item>
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste"></wam-item>
+        <wam-item label="Paste Special"></wam-item>
     </wam-popup>
-              
+
+
+    <h2>Customizing</h2>
+    <p>The controls support customization so you can match them to the look of your app</p>
+    <wam-popup open closeon="none" class="custom-border">
+            <wam-item label="Pick Fonts" class="custom-font"></wam-item>
+            <wam-item label="Add Icons"><i class="material-icons" slot="icon">add</i></wam-item>
+            <wam-item label="Change Colors" class="custom-color"></wam-item>
+            <wam-item label="Format Labels">
+                <div slot="label">
+                    <div><span>C</span>ustom Labels</div>
+                    <div>You control the formatting</div>
+                </div>
+            </wam-item>
+            <wam-item label="Different Border"></wam-item>
+        </wam-popup>
 
 </body>
 

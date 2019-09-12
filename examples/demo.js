@@ -21,7 +21,7 @@ function run() {
       { label: "Bold", icon: "format_bold" },
       { label: "Italics", icon: "format_italic" },
       { label: "Underline", icon: "format_underline" },
-      { label: "Clear Formatting", icon: "format_clear" }
+      { label: "Clear Formatting", icon: "format_clear", showToolbarLabel:true }
     ]);
     document.body.appendChild(toolbar);
   }

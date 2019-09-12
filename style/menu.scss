@@ -1,7 +1,8 @@
 @import 'theme.scss';
 
 .menu {
-  border-radius: $menu-border-radius;
+  //border-radius: calc(0.5rem + 1px);
+  border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
   border: $menu-border;    
   background: $menu-background;
   box-shadow: $menu-shadow;
@@ -9,12 +10,6 @@
   margin:0;
   position:relative;
   display:inline-block;
-}
-
-.menu-background {
-  border-radius: $menu-border-radius;
-  //border: $menu-border;    
-  background: $menu-background;
 }
 
 .menu-inner {
@@ -25,15 +20,9 @@
   border-radius: $menu-border-radius;
   color: $menu-text-color;
   font-family: $menu-font;
+  z-index: 1; // push above other things
 }
 
-wam-item [slot=label] {
-  & > *:nth-child(2) {
-    font-size:75%;
-    opacity:0.75;
-    margin-top:0.25rem;
-  }
-}
 
 .menu.animation-show__second,
 .menu.animation-hide__second {
