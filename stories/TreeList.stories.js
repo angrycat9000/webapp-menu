@@ -1,9 +1,7 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
-import wamlogger from './actionDecorator.js'
 
 storiesOf('TreeList', module)
-  .addDecorator(wamlogger)
   .add('HTML Initalization', () => 
   `<wam-treelist open closeon="none" >
     <wam-item label="Rock"></wam-item>

@@ -1,11 +1,8 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
-import wamlogger from './actionDecorator.js'
 import Menu from '../dist/webapp-menu.js';
 
-
 storiesOf('Popup', module)
-    .addDecorator(wamlogger)
     .add('HTML Initalization', ()=>{
         return `<wam-popup open closeon="none">
             <wam-item label="Cut"></wam-item>

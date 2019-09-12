@@ -6,10 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "rollup -w -c rollup.config.js",
-    "build": "rimraf dist && rollup -c rollup.config.js --configProduction && npx build-storybook -o dist/storybook",
+    "build:library": "rimraf dist && rollup -c rollup.config.js --configProduction",
+    "build": "npm run build:library && npm run build:storybook",
     "prepare": "npm run build",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build:storybook": "build-storybook -o dist/storybook"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
+    "@storybook/addon-a11y": "^5.1.11",
     "@storybook/addon-actions": "^5.1.11",
     "@storybook/addon-storysource": "^5.1.11",
     "@storybook/html": "^5.1.11",

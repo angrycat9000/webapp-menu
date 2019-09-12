@@ -1,9 +1,7 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
-import wamlogger from './actionDecorator.js'
 
 storiesOf('Toolbar', module)
-  .addDecorator(wamlogger)
   .add('HTML Initalization', () => 
     `<wam-toolbar open closeon="none">
         <wam-item label="Reply"><i class="material-icons" slot="icon">reply</i></wam-item>
