@@ -147,7 +147,7 @@ export class Menu extends HTMLElement {
         Menu.stylesheet.addToShadow(shadow);
         const outer = document.createElement('div');
         outer.style.display='none';
-        outer.className = 'menu menu-outer menu-background';
+        outer.className = 'menu menu-outer';
         outer.setAttribute('role', 'menu');
         const inner = document.createElement('div');
         inner.className = 'menu-inner';
