@@ -5,7 +5,15 @@ Quickly create accessible menus for in web apps.  Eg. context menu, file menu, e
 
  No framework dependencies.  It is written in with vanilla JS and can be used with any framework.
 
+## Screenshots
 
+![toolbar screenshot](screeenshots/toolbar.png)
+
+![context popup screenshot](screeenshots/toolbar.png)
+
+![top level nested menu control screenshot](screeenshots/nested1.png)
+
+![nested sub menu expanded screenshot](screeenshots/nested1.png)
 
 ## Setup
 
