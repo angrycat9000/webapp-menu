@@ -375,10 +375,12 @@ export class Menu extends HTMLElement {
             if(this.controlledBy)
                 this.controlledBy.setAttribute('aria-expanded', this.isOpen);
         });
-        
+        anim.on('secondframe',()=>{
+            this.setFocusOn(this.focusItem);
+        })
+
         anim.on('complete',()=>{
             this.state = 'open';
-            this.setFocusOn(this.focusItem);
         })
 
         return this.startTransition(anim);
@@ -412,18 +414,21 @@ export class Menu extends HTMLElement {
             window.removeEventListener('resize', this.windowResizeFunc);
             this.windowResizeFunc = null;
         });
+
+        anim.on('secondframe', ()=>{
+            if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body || this.isFocusWithin()))
+                this.previousFocus.focus();
+            
+            this.previousFocus = null;
+            this.setFocusOn(null);
+        })
+
         anim.on('complete', ()=>{
             if(this.state != 'closing')
                 return;
 
             this.state = 'closed';
             this.shadowRoot.querySelector('.menu').style.display = 'none';
-
-            if(this.previousFocus && ( ! document.activeElement || document.activeElement === document.body || this.isFocusWithin()))
-                this.previousFocus.focus();
-            
-            this.previousFocus = null;
-            this.setFocusOn(null);
         });
 
         return this.startTransition(anim);

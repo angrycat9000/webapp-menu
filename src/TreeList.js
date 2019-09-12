@@ -193,8 +193,11 @@ class TreeList extends Menu {
             const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
             scroller.style.height = resolvedHeight + 'px';
             container.style.height = resolvedHeight + 'px';
+
+            // If we set focus before the transition is complete, the browser tries to move the focus
+            // element into view immediatly which breaks the animation
             this.setFocusOn(this.focusItem);
-        }, null, 1)
+        })
 
 
         return anim;
