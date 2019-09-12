@@ -1,8 +1,11 @@
 # webapp-menu
 
-Create accessible menu for performing on page actions in web apps.  Eg. context menu, file menu, edit menu, toolbar.  The library handles adding the appropriate ```aria-``` attributes and the keyboard and focus interaction.  
+Quickly create accessible menus for in web apps.  Eg. context menu, file menu, edit menu, toolbar.  The library handles adding the appropriate ```aria-``` attributes and the keyboard and focus interaction.  
 
-**Note:** These menus are not intended for navigation between different web pages.
+
+ No framework dependencies.  It is written in with vanilla JS and can be used with any framework.
+
+
 
 ## Setup
 
@@ -11,7 +14,7 @@ Create accessible menu for performing on page actions in web apps.  Eg. context 
 Include the Javascript in your HTML as a module import.
 
 ```html
-<script type="module"  src="https://unpkg.com/webapp-menu.js"></script>
+<script type="module"  src="https://unpkg.com/webapp-menu@^2/dist/webapp-menu.js"></script>
 ```
 
 ### NPM
@@ -20,7 +23,7 @@ Include the Javascript in your HTML as a module import.
 npm install --save webapp-menu
 ```
 
-In your Javascript file include the module:
+Include the file in your code:
 
 ```javascript
 import Menu from 'webapp-menu';
