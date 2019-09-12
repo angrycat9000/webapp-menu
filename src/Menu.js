@@ -370,19 +370,12 @@ export class Menu extends HTMLElement {
 
  
         anim.on('firstframe', (e)=>{
-            if('opening' !== this.state) {
-                e.transition.stop();
-                return;
-            }
             menuElement.style.display = '';
-        }, null , 1);
-
-        anim.on('firstframe', (e)=>{
             this.applyPosition();
             if(this.controlledBy)
                 this.controlledBy.setAttribute('aria-expanded', this.isOpen);
-        }, null, 10);
-
+        });
+        
         anim.on('complete',()=>{
             this.state = 'open';
             this.setFocusOn(this.focusItem);

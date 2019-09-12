@@ -3,6 +3,7 @@ import svg from 'rollup-plugin-svg'
 import sass from 'rollup-plugin-sass'
 import resolve from 'rollup-plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
+import commonjs from 'rollup-plugin-commonjs'
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 const license = require('rollup-plugin-license');
@@ -20,6 +21,7 @@ function getPlugins(isProd) {
 
   let plugins = [
     resolve(),
+    commonjs(),
     svg(),
     sass(sassOptions),
   ];

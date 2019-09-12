@@ -64,16 +64,26 @@ class TreeList extends Menu {
     }
 
     open() {
-        
         const anim = super.open();
-        if(anim)
-            anim.on('firstframe', ()=>{
-                while(this.stack.length) {
-                    const closed = this.stack.pop();
-                    closed.isOpen = false;
-                }
-                this.stackChanged().immediate()
-            }, null, 5);
+        if( ! anim)
+            return null;
+
+        // replace default open first frame with one that clears out the open submenus
+        anim.off('firstframe');
+        anim.on('firstframe', ()=>{
+            this.shadowRoot.querySelector('.menu').style.display = '';
+
+            while(this.stack.length) {
+                const closed = this.stack.pop();
+                closed.isOpen = false;
+            }
+            this.stackChanged().immediate()
+
+            this.applyPosition();
+            if(this.controlledBy)
+                this.controlledBy.setAttribute('aria-expanded', this.isOpen);
+        });
+
         return anim;
     }
 
@@ -122,10 +132,7 @@ class TreeList extends Menu {
 
         const closed = this.stack.pop();
 
-        const anim = this.stackChanged();
-        anim.on('complete', ()=>{
-            closed.isOpen = false
-        }, null, 5);
+        const anim = this.stackChanged(closed);
 
         return this.startTransition(anim);
     }
@@ -160,7 +167,7 @@ class TreeList extends Menu {
      *                                          after the animation, but before the final 
      *                                          height of the container is resolved
      */
-    stackChanged(beforeComplete) {
+    stackChanged(itemToClose) {
         const container = this.shadowRoot.querySelector('.menu-outer');
         const slider = this.shadowRoot.querySelector('.menu-inner');
         const scroller = this.getMenuContentElement(this.stack.length);
@@ -180,6 +187,8 @@ class TreeList extends Menu {
                it uses the final value of the height.  That value isn't available until after the
                transition has completed.  It might also have been capped by max-height
             */
+            if(itemToClose)
+                itemToClose.isOpen = false;  
             const borderWidth = container.offsetWidth - container.clientWidth;
             const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
             scroller.style.height = resolvedHeight + 'px';

@@ -1,4 +1,4 @@
-import EventEmitter from 'es-event-emitter/src/event-emitter';
+import EventEmitter from 'tiny-emitter';
 
 /**
 *
