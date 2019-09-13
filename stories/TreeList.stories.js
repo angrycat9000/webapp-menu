@@ -1,9 +1,9 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
 
-storiesOf('TreeList', module)
+storiesOf('Component Specific|TreeList', module)
   .add('HTML Initalization', () => 
-  `<wam-treelist open closeon="none" >
+  `<wam-treelist open closeon="none" useanimation="false" >
     <wam-item label="Rock"></wam-item>
     <wam-submenu><span slot="label">Animal</span>
           <wam-item label="Cat"></wam-item>

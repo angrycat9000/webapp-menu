@@ -1,21 +1,11 @@
 import Menu from '../dist/webapp-menu.js';
 import './event-logger.js';
+import materialIcon from'../stories/materialIcon';
 
-function materialIcon(name) {
-    const icon = document.createElement('i');
-    icon.className = 'material-icons';
-    icon.innerHTML = name;
-    return icon;
-}
 
 function run() {
     const toolbar = document.createElement("wam-toolbar");
-    toolbar.iconFactory = icon => {
-      const element = document.createElement("i");
-      element.classList.add("material-icons");
-      element.innerHTML = icon;
-      return element;
-    };
+    toolbar.iconFactory = materialIcon;
     toolbar.controlledBy = document.getElementById("toolbar-button");
     toolbar.items.set([
       { label: "Bold", icon: "format_bold" },
