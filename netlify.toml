@@ -3,3 +3,11 @@
   for = "/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
+
+[[redirects]]
+  from = "/"
+  to = "/storybook/"
+
+[[redirects]]
+  from = "/index.html"
+  to = "/storybook/"
