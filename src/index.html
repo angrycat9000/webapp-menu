@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <title>WebApp Menu Development</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <script type="module" src="../dist/webapp-menu.js" />
-    </script>
-    <script src="demo.js" type="module"></script>
+    <script src="./webapp-menu.js" type="module"  /></script>
+    <script src="./index.js" type="module"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,400i,700" />
 
@@ -31,6 +30,7 @@
             --menu-border-width: 4px;
             --menu-border-style: outset;
             z-index:0; /* keep below other menus */
+            position:static; /* turn to a static element */
         }
 
         wam-item [slot=label] div:last-child {
@@ -52,7 +52,7 @@
     <h1>Demo of WebApp-Menu</h1>
     <p>Use the toolbar below to explore the different components provided by WebApp-Menu.</p>
 
-    <wam-toolbar open closeon="none">
+    <wam-toolbar open closeon="none" useanimation="false">
         <wam-item label="Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i>
         </wam-item>
         <wam-item label="Nested Menu" id="tree-list-button" showtoolbarlabel><i class="material-icons"
@@ -96,7 +96,7 @@
 
     <h2>Customizing</h2>
     <p>The controls support customization so you can match them to the look of your app</p>
-    <wam-popup open closeon="none" class="custom-border">
+    <wam-popup open closeon="none" useanimation="false" class="custom-border">
             <wam-item label="Pick Fonts" class="custom-font"></wam-item>
             <wam-item label="Add Icons"><i class="material-icons" slot="icon">add</i></wam-item>
             <wam-item label="Change Colors" class="custom-color"></wam-item>
@@ -109,6 +109,8 @@
             <wam-item label="Different Border"></wam-item>
             <wam-item label="Set Focus Style" class="custom-focus"></wam-item>
         </wam-popup>
+
+    <p>See more <a href="storybook/">examples of using webapp-menu</a>.</p>
 
 </body>
 

@@ -1,4 +1,3 @@
-import Menu from '../dist/webapp-menu.js';
 import './event-logger.js';
 import materialIcon from'../stories/materialIcon';
 

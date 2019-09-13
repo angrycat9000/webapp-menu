@@ -6,7 +6,9 @@ import { terser } from "rollup-plugin-terser";
 import commonjs from 'rollup-plugin-commonjs'
 import cssnano from 'cssnano';
 import postcss from 'postcss';
+import indexHTML from 'rollup-plugin-index-html';
 const license = require('rollup-plugin-license');
+
 const path = require('path');
 const fs = require('fs');
 
@@ -20,6 +22,7 @@ function getPlugins(isProd) {
   }
 
   let plugins = [
+    indexHTML(),
     resolve(),
     commonjs(),
     svg(),
@@ -56,10 +59,10 @@ function getPlugins(isProd) {
 }
 
 const config = {
-  input: './src/api.js',
+  input: './src/index.html',
   output: {
-    file:'dist/webapp-menu.js',
-    //dir: 'dist',
+    //file:'dist/webapp-menu.js',
+    dir: 'dist',
     format: 'esm',
     sourcemap: true,
   },
