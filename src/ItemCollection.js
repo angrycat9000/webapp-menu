@@ -50,7 +50,7 @@ class ItemCollection {
     insertBefore(newItem, exisiting) {
         const nextItem = 'number' == typeof exisiting ?  this.atIndex(exisiting) : existing;
         const newNode = convertToItem(newItem);
-        return this.owner.insertBefore(newItem, nextItem);
+        return this.owner.insertBefore(newNode, nextItem);
     }
 
     /**
