@@ -88,9 +88,12 @@ class ItemCollection {
      * Remove all items
      */
     removeAll() {
-        for(let e of this.owner.children) {
-            if( e instanceof Item)
-                this.owner.removeChild(e);
+        let node =this.owner.firstChild;
+        while(node) {
+            const next = node.nextSibling;
+            if(node instanceof Item)
+                this.owner.removeChild(node);
+            node = next;
         }
     }
 
