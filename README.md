@@ -4,12 +4,6 @@ Quickly create accessible menus for in web apps.  Eg. context menu, file menu, e
 
 No framework dependencies.  It is written in with vanilla JS and can be used with any framework.
 
-<<<<<<< HEAD
-[**Live Example**](https://codepen.io/markdane/pen/YzKQejQ)
-
-## Setup
-=======
->>>>>>> component
 
 ## Screenshots & Demo
 
@@ -19,18 +13,9 @@ Toolbar
 
 [![toolbar screenshot](screenshots/toolbar.png)](https://webapp-menu.netlify.com/)
 
-<<<<<<< HEAD
-Install the 1.0 version of webapp-menu.  Version 2.0 is planned to have breaking changes to move to the web component model
-```
-npm install --save webapp-menu@^1.0.0
-```
-
-In your Javascript file include:
-=======
 Popup
 
 [![context popup screenshot](screenshots/popup.png)](https://webapp-menu.netlify.com/)
->>>>>>> component
 
 Nested Menu
 
@@ -43,24 +28,14 @@ Nested Menu
 
 Include the Javascript in your HTML as a module import.
 
-<<<<<<< HEAD
-const menu = new WebAppMenu.ListContainer(items);
-menu.show();
-=======
 ```html
 <script type="module"  src="https://unpkg.com/webapp-menu@^2/dist/webapp-menu.js"></script>
->>>>>>> component
 ```
 
 ### NPM
 
-<<<<<<< HEAD
-const toolbar = new WebAppMenu.Toolbar(items);
-toolbar.show();
-=======
 ```
 npm install --save webapp-menu
->>>>>>> component
 ```
 
 Include the file in your code:
@@ -73,11 +48,7 @@ import Menu from 'webapp-menu';
 
 The menu components can be configured using either HTML or JavaScript.
 
-<<<<<<< HEAD
-See the in code documentation for more information.
-=======
 See the [storybook examples](https://webapp-menu.netlify.com/storybook/) for more details.
->>>>>>> component
 
 ### Using HTML
 
@@ -104,12 +75,8 @@ const items = [
     {label:'Text with Icon', icon:'hello.png'},
 ];
 
-<<<<<<< HEAD
-const toolbar = new WebAppMenu.Toolbar(items, {iconFactory:myIconFactory});
-```
-=======
 const menu = document.createElement('wam-popup');
 menu.iconFactory = iconFactory;
 menu.items.set(items);
 menu.controlledBy = ocument.getElementById('some-button-id');
->>>>>>> component
+```
