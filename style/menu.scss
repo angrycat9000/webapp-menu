@@ -1,29 +1,42 @@
-$menu-border:1px solid #808080 !default;
-$menu-background:#e0e0e0 !default;
-$menu-text:#202020 !default;
-$menu-transition-duration: 0.4s !default;
-$menu-border-radius: 0.25rem !default;
-$menu-highlight-color: #40C4FF !default;
+@import 'theme.scss';
 
-$menu-hover-background: rgba($menu-highlight-color, 0.5) !default;
-$menu-pressed-background: $menu-highlight-color !default;
-
-@mixin focus() {
-  &:focus {
-      outline-width: 4px;
-      outline-offset:-4px;
-      outline-style: solid;
-  }
+.menu {
+  //border-radius: calc(0.5rem + 1px);
+  border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
+  border: $menu-border;    
+  background: $menu-background;
+  box-shadow: $menu-shadow;
+  padding:0;
+  margin:0;
+  position:relative;
+  display:inline-block;
 }
 
-@import 'animation.scss';
+.menu-inner {
+  display:inline-block;
+}
 
-@import 'item.scss';
-@import 'toolbar.scss';
-@import 'listcontainer.scss';
-@import 'position.scss';
+:host {
+  border-radius: $menu-border-radius;
+  color: $menu-text-color;
+  font-family: $menu-font;
+  z-index: 1; // push above other things
+}
 
 
+.menu.animation-show__second,
+.menu.animation-hide__second {
+  transition: opacity $menu-transition-duration, transform $menu-transition-duration;
+}
 
-
-
+.menu.animation-show__first,
+.menu.animation-hide__second {
+  transform: scale3d(0.8,0.8,1);
+  opacity:0
+}
+.menu.animation-show__second,
+.menu.animation-hide__first
+{
+  transform: scale3d(1,1,1);
+  opacity:1
+}

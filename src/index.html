@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>WebApp Menu Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+    <script src="./webapp-menu.js" type="module"  /></script>
+    <script src="./index.js" type="module"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,400i,700" />
+
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            max-width: 30rem;
+            margin: 2rem auto;
+        }
+
+        h1, h2, .custom-font {
+            font-family: 'Raleway'
+        }
+
+        .custom-color {
+            --menu-item-background:#e7ff87;
+            --menu-hover-background: #c4e640;
+        }
+
+        .custom-border {
+            --menu-border-radius: 8px;
+            --menu-border-width: 4px;
+            --menu-border-style: outset;
+            z-index:0; /* keep below other menus */
+            position:static; /* turn to a static element */
+        }
+
+        wam-item [slot=label] div:last-child {
+            font-size:80%;
+            opacity:0.7;
+        }
+        wam-item [slot=label] span {
+            text-decoration:underline;
+        }
+
+        .custom-focus {
+            --menu-focus-color:red;
+            --menu-focus-width: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Demo of WebApp-Menu</h1>
+    <p>Use the toolbar below to explore the different components provided by WebApp-Menu.</p>
+    <p>You can download webapp-menu from <a href="https://www.npmjs.com/package/webapp-menu">NPM</a> or from 
+        <a href="https://github.com/angrycat9000/webapp-menu">GitHub</a>.</p>
+
+    <wam-toolbar open closeon="none" useanimation="false">
+        <wam-item label="Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i>
+        </wam-item>
+        <wam-item label="Nested Menu" id="tree-list-button" showtoolbarlabel><i class="material-icons"
+                slot="icon">account_tree</i></wam-item>
+        <wam-item label="Toolbar" id="toolbar-button" showtoolbarlabel><i class="material-icons"
+                slot="icon">build</i></wam-item>
+    </wam-toolbar>
+
+    <wam-treelist controlledby="tree-list-button">
+        <wam-item label="Generic Item"></wam-item>
+        <wam-submenu label="List of Fruits">
+            <wam-item label="Apple"></wam-item>
+            <wam-item label="Orange"></wam-item>
+            <wam-item label="Banana"></wam-item>
+            <wam-item label="Pear"></wam-item>
+            <wam-item label="Peach"></wam-item>
+        </wam-submenu>
+        <wam-submenu label="Lists of People">
+            <wam-submenu label="Actors">
+                <wam-item label="Elizabeth Taylor"></wam-item>
+                <wam-item label="Cary Grant"></wam-item>
+                <wam-item label="John Travolta"></wam-item>
+                <wam-item label="Morgan Freeman"></wam-item>
+            </wam-submenu>
+            <wam-submenu label="Musicians">
+                <wam-item label="Frank Sinatra"></wam-item>
+                <wam-item label="John Denver"></wam-item>
+                <wam-item label="Cat Stevens"></wam-item>
+                <wam-item label="Freddy Mercury"></wam-item>
+            </wam-submenu>
+        </wam-submenu>
+    </wam-treelist>
+
+    <wam-popup controlledby="popup-button">
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste"></wam-item>
+        <wam-item label="Paste Special"></wam-item>
+    </wam-popup>
+
+
+    <h2>Customizing</h2>
+    <p>The controls support customization so you can match them to the look of your app</p>
+    <wam-popup open closeon="none" useanimation="false" class="custom-border">
+            <wam-item label="Pick Fonts" class="custom-font"></wam-item>
+            <wam-item label="Add Icons"><i class="material-icons" slot="icon">add</i></wam-item>
+            <wam-item label="Change Colors" class="custom-color"></wam-item>
+            <wam-item label="Format Labels">
+                <div slot="label">
+                    <div><span>C</span>ustom Labels</div>
+                    <div>You control the formatting</div>
+                </div>
+            </wam-item>
+            <wam-item label="Different Border"></wam-item>
+            <wam-item label="Set Focus Style" class="custom-focus"></wam-item>
+        </wam-popup>
+
+    <p>See more <a href="storybook/">examples of using webapp-menu</a>.</p>
+
+</body>
+
+</html>

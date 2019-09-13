@@ -1,37 +1,10 @@
-.menu-toolbar {
-    display:inline-block; // shrink wrap;
-    border-radius: $menu-border-radius;
-    border: $menu-border;    
-    background: $menu-background;
-    padding:0;
-    margin:0;
+@import 'theme.scss';
 
-    .menu-itemlist {
-        display:flex;
-        flex-direction:row;
-    }
-  
-    .menu-item {
-      min-width:3rem;
-      justify-content:center;
-    }
-  
-    .menu-item-label {display:none;}
-  
-    .menu-item:first-child {
-      border-top-left-radius: $menu-border-radius;
-      border-bottom-left-radius: $menu-border-radius;
-    }
-  
-    .menu-item:last-child,
-    .menu-item__last {
-      border-top-right-radius: $menu-border-radius;
-      border-bottom-right-radius: $menu-border-radius; 
-    }
-  
-    .menu-item + .menu-item {
-      border-left: $menu-border;
-      border-top-left-radius:0;
-      border-bottom-left-radius:0;
-    }
-  }
+.menu-toolbar.menu-outer {
+  display:inline-block;
+}
+
+.menu-toolbar .menu-inner {
+  display:flex;
+  flex-direction:row;
+}

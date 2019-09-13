@@ -1,0 +1,28 @@
+$light-bg: #fcfcfc;
+$dark-bg: #dadada;
+$mid-bg: #e9e9e9;
+
+$menu-highlight-color: #40C4FF !default;
+$menu-transition-duration: 0.4s !default;
+
+
+$menu-text-color:#202020;
+$menu-font: sans-serif;
+
+$menu-border-radius: var(--menu-border-radius, 0.125rem);
+$menu-border-width: var(--menu-border-width, 1px);
+$menu-border-style: var(--menu-border-style, solid);
+$menu-border-color: var(--menu-border-color, #a0a0a0);
+$menu-border: $menu-border-width $menu-border-style $menu-border-color;
+
+$menu-background: var(--menu-background, $mid-bg);
+$menu-hover-background: var(--menu-hover-background, rgba($menu-highlight-color, 0.5));
+$menu-pressed-background: var(--menu-pressed-background, $menu-highlight-color);
+$menu-item-background: var(--menu-item-background, 
+    linear-gradient(135deg, rgba($light-bg,1) 10%, rgba($light-bg,0) 30%), 
+    linear-gradient(315deg, rgba($dark-bg,1) 10%, rgba($dark-bg,0) 30%),
+    $mid-bg );
+
+$menu-shadow: var(--menu-shadow, none);
+$menu-focus-color: var(--menu-focus-color, #5B6FC8);
+$menu-focus-width: var(--menu-focus-width, 4px);

@@ -1,14 +1,7 @@
-import Icon from './Icon';
+import Attributes from './Attributes';
+import {ReusableStyleSheet} from './Style';
+import itemStyle from '../style/item.scss';
 
-/**
- * @enum
- * @readonly
- */
-export const ItemType = {
-    Action: 'action',
-    Nested: 'nested',
-    Back:  'back',
-};
 
 /**
  * @callback iconFactoryFunction
@@ -16,118 +9,280 @@ export const ItemType = {
  * @return {HTMLElement}
  */
 
-/**
- * @callback itemActionFunction
- * @param {ItemActionEvent} event
- */
 
-/**
- * 
- */
-export class Item {
-    /** 
-     * @param {string} options.label
-     * @param {string} [options.label2]
-     * @param {string} [options.id]
-     * @param {string|Element} [options.icon]
-     * @param {itemActionFunction} [options.action]
-     * @param {*} [options.data] member to save caller defined data related to this item
-     * @param {ItemType} [options.type] defaults to ItemType.Action
+ /**
+  * Occurs when an item in a toolbar is activated via a keypress or click.
+  * @event wam-activate
+  * @type {CustomEvent}
+  * @property {Item} detail.item
+  * @property {Menu} detail.menu
+  * @property {Event} detail.source
+  */
 
-     */
-    constructor(options) {
-        if( ! options.label)
-            throw new Error('Menu.Item must have a label');
+ /**
+  * Item in a menu or toolbar.
+  * @fires wam-activate
+  */
+export class Item extends HTMLElement {
+    constructor() {
+        super();
 
-        this.id = options.id || '';
-        this.label = options.label;
-        this.label2 = options.label2;
-        this.id = options.id;
-        this.icon = options.icon || null;
-        this.action = options.action || null;
-        this.data = options.data || null;
-        this.type = options.type || ItemType.Action;
+        const shadow = this.attachShadow({mode: 'open'});
+        Item.stylesheet.addToShadow(shadow);
 
-        this.element = this.createElement();
-    }
+        const button = Item.template.content.cloneNode(true);
+        shadow.appendChild(button);
 
-    createElement() {
-        if(this.element)
-            return this.element;
+        /** @property {function} action */
+        this.action = null;
 
-        let element = document.createElement('button');
-        element.className  = `menu-item menu-item__${this.type}`;
-        element.setAttribute('role','menuitem'); 
-
-        if(ItemType.Back == this.type) {
-            element.setAttribute('aria-label', "Back to previous level: "+this.label); // screen reader will read 'back to previous level' and visible text
-        } else {
-            element.setAttribute('aria-label', this.label); // add aria-label on the BUTTONS containing icons that don't have visible text
-        }
-
-        let icon = document.createElement('span');
-        icon.className = "menu-item-icon";
-        icon.setAttribute('aria-hidden','true'); //otherwise screen readers could speak the icon's name
-        if(this.icon instanceof Element)
-            icon.appendChild(this.icon);
-        element.appendChild(icon);
-
-
-        let labelContainer = document.createElement('span');
-        labelContainer.className = 'menu-item-label';
-        if( ! this.label2)
-            labelContainer.appendChild(document.createTextNode(this.label));
-        else {
-            let label1 = document.createElement('span');
-            label1.appendChild(document.createTextNode(this.label));
-            labelContainer.appendChild(label1);
-
-            let label2 = document.createElement('span');
-            label2.appendChild(document.createTextNode(this.label2));
-            labelContainer.appendChild(label2);
-        }
-        element.appendChild(labelContainer);
-
-        if(ItemType.Nested == this.type) {
-            const nestedIcon = Icon.Nested;
-            nestedIcon.classList.add('menu-item-nestedIcon');
-            element.appendChild(nestedIcon);
-            element.setAttribute('aria-haspopup','true'); //since this opens a submenu, it needs aria-haspopup
-        }
-
-        if(this.id)
-            element.setAttribute('data-menu-item-id', this.id);
-        element['data-menu-item'] = this;
-        return this.element = element;
+        /** @property {object} data */
+        this.data = null;
     }
 
     /**
-     * @param {iconFactoryFunction}
+     * Create an Item object from an object with a set of properties
      */
-    convertIconStringToElement(factory) {
-        if( ! this.icon || 'string' != typeof this.icon || ! factory)
+    static create(options) {
+        const type = options.type || Item;
+        const item = document.createElement(type.tagName);
+        item.set(options);
+        return item;
+    }
+
+    focus() {
+        const button =  this.shadowRoot.querySelector('button');
+        button.focus();
+    }
+
+    /**
+     * @param {object} props
+     * @param {string} [props.label]
+     * @param {Node|string} [props.icon]
+     * @param {boolean} [props.disabled]
+     * @param {boolean} [props.showToolbarLabel]
+     * @param {itemActivateFunction} [props.action]
+     */
+    set(props) {
+        if( ! props)
+            return;
+ 
+        if('undefined' != props.label || 'undefined' != props.label2)
+            this.setLabel(props.label, props.label2);
+        
+        if('undefined' != props.icon)
+            this.setIcon(props.icon);
+
+        for(let prop of ['disabled', 'showToolbarLabel', 'action']) {
+            if('undefined' != typeof props[prop])
+                this[prop] = props[prop];
+        }
+    }
+
+    /**
+     * @param {Node|string} label
+     * @param {Node|string} [label2]
+     */
+    setLabel(label, label2) {
+        this.clearSlot('label');
+
+        if( ! label && ! label2)
             return;
 
-        let iconElement = factory(this.icon);
-        const iconContainer = this.element.querySelector('.menu-item-icon');
-        if(iconContainer.firstElementChild)
-            iconContainer.removeChild(iconContainer.firstElementChild)
-        iconContainer.appendChild(iconElement);
-    }
-
-    /** @property {Boolean} disabled true if the item is disabled */
-    get disabled() {return this.element.hasAttribute('disabled')}
-    set disabled(value) {
-        if(value)
-            this.element.setAttribute('disabled','');
-        else
-            this.element.removeAttribute('disabled');
-    }
-
-    static fromElement(element) {
-        while(element && ! element['data-menu-item'] && ! element.classList.contains('menu-container')) {
-            element = element.parentElement;
+        if( ! label2) {
+            const l0 = stringToNode(label);
+            l0.setAttribute('slot', 'label');
+            this.appendChild(l0);
+            return;
         }
-        return element ? element['data-menu-item'] : null;
+
+        const l0 = document.createElement('div');
+        l0.setAttribute('slot', 'label');
+        l0.appendChild(stringToNode(label))
+        l0.appendChild(stringToNode(label2))
+
+        this.appendChild(l0);
+    }
+
+    /**
+     * @param {Node|string} icon
+     */
+    setIcon(icon) {
+        this.clearSlot('icon');
+        if( ! icon)
+            return;
+
+        if(icon instanceof Node) {
+            icon.setAttribute('slot', 'icon');
+            this.appendChild(icon);
+            return;
+        }
+
+        let iconElement;
+        if(this.parentElement && this.parentElement.iconFactory) {
+            iconElement = this.parentElement.iconFactory(icon);
+        } else {
+            iconElement = document.createElement('span');
+        }
+
+        iconElement.setAttribute('slot', 'icon');
+        iconElement.setAttribute('data-icon-factory-arg', icon);
+        this.appendChild(iconElement);
+    }
+
+    /** 
+     * @property {string} showToolbarLabel
+     * 
+     */
+    get showToolbarLabel() {return Attributes.getExists(this, 'showtoolbarlabel');}
+    set showToolbarLabel(value) {return Attributes.setExists(this, 'showtoolbarlabel', value);}
+
+    /**
+     * 
+     */
+    get hasIcon () {
+        return this.shadowRoot.querySelector('slot[name=icon]').assignedElements().length > 0;
+    }
+
+    /**
+     * @typedef ItemAppearance
+     * @property {boolean} hideIcon
+     * @property {boolean} hideLabel
+     * @property {boolean} roundTop
+     * @property {boolean} roundBottom
+     * @property {boolean} roundLeft
+     * @property {boolean} roundRight
+     */
+
+    /**
+     * Allow Menu containers to tweak the appearance of this item.  Unless you are implementing a
+     * new Menu subclass, you probably should not call this.
+     * @param {ItemAppearance} appearance
+     */
+    setAppearance(config){
+        const button = this.shadowItem;
+        Attributes.setTrueFalse(button, 'data-icon', ! config.hideIcon)
+        Attributes.setTrueFalse(button, 'data-label', ! config.hideLabel)
+        Attributes.setExists(button, 'data-round-top-right', config.roundTop || config.roundRight);
+        Attributes.setExists(button, 'data-round-top-left', config.roundTop || config.roundLeft);
+        Attributes.setExists(button, 'data-round-bottom-right', config.roundBottom || config.roundRight);
+        Attributes.setExists(button, 'data-round-bottom-left', config.roundBottom || config.roundLeft);
+        Attributes.setString(button, 'title', config.hideLabel ? this.label : '')
+    }
+
+    updateFactoryIcon() {
+        const slotContents = this.shadowRoot.querySelector('slot[name=icon]').assignedElements();
+        if(0 == slotContents.length)
+            return;
+
+        const oldIcon = slotContents[0].getAttribute('data-icon-factory-arg');
+        if( ! oldIcon)
+            return;
+
+        this.setIcon(oldIcon);   
+    }
+
+    connectedCallback() {
+        this.updateFactoryIcon();
+    }
+
+    static get observedAttributes() {
+        return ['disabled', 'isdefaultfocus', 'label'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        const hasValue = newValue !== null;
+        switch (name) {
+            case 'disabled':
+                this.shadowRoot.querySelector('button').setAttribute('disabled', newValue);
+                break;
+            case 'isdefaultfocus':
+                this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)
+                break;
+            case 'label':
+                const labelSlot = this.shadowRoot.querySelector('slot[name=label]');
+                while(labelSlot.firstChild)
+                    labelSlot.removeChild(labelSlot.firstChild);
+                labelSlot.appendChild(document.createTextNode(newValue))
+        }
+      }
+
+    /** @property {boolean} disabled true if the item is disabled */
+    get disabled() {return Attributes.getExists(this, 'disabled')}
+    set disabled(value) {return Attributes.setExists(this ,'disabled', value)}
+
+    /**
+     * @property {boolean} isDefaultFocus True if the item is the one to recieve focus when the user
+     *                                    tabs into the parent menu
+     */
+    get isDefaultFocus() {return '0' == this.shadowItem.getAttribute('tabindex')}
+    set isDefaultFocus(value) {this.shadowItem.setAttribute('tabindex', value ? '0' : '-1')}
+
+
+    /** 
+     * @property {string} label Set the value of the label.  This is overridden if there is an element
+     *                             with ```slot="label"``` provided as a child.
+     */
+    get label() {
+        const labelElement = this.querySelector('[slot=label]');
+        return labelElement ? labelElement.innerText : this.shadowRoot.querySelector('slot[name=label]').innerText
+    }
+    set label(value) {return Attributes.setString(element, 'label', value)}
+
+    clearSlot(name) {
+        const items = this.querySelectorAll(`[slot=${name}]`);
+        for(let item of items)
+            this.removeChild(item);
+    }
+
+    /**
+     * @property  {HTMLElement} shadowItem The button in the ShadowDOM that represents this item.
+     * @readonly
+     */
+    get shadowItem() {return this.shadowRoot.querySelector('button.item')}
+
+    static fromEvent(event) {
+        const path = event.composedPath();
+        for(let element of path) {
+            if(element instanceof Item)
+                return element;
+        }
+        return null;
     }
 };
+
+Object.defineProperty(Item, 'tagName', {value:'wam-item'});
+
+Object.defineProperty(Item, 'stylesheet', {value: new ReusableStyleSheet(itemStyle)})
+
+var template = null;
+Object.defineProperty(Item, 'template', {get:function(){
+    if(template)
+        return template;
+
+    template = document.createElement('template');
+    template.innerHTML = 
+        `<button class="item" role="menuitem" tabindex="-1">
+            <span class="icon" aria-hidden="true"><slot name="icon"></slot></span>
+            <span class="label"><slot name="label">!? Missing Label !?</slot></span>
+        </button>`;
+    return template;
+}});
+
+
+
+/**
+ * @param {Node|string} str
+ * @return {Node}
+ * @private
+ */
+function stringToNode(str, tag='span') {
+    if(str instanceof Node) 
+        return str;
+        
+    const span = document.createElement(tag);
+    span.appendChild(document.createTextNode(str));
+    return span;
+}
+
+export default Item;

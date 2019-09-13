@@ -1,26 +1,36 @@
-import Menu from './Menu';
-import {Item} from  './Item';
-import ItemList from './ItemList';
+import {Menu, Direction} from './Menu';
+
+import {ReusableStyleSheet} from './Style';
+import style from '../style/toolbar.scss';
+
 
 class Toolbar extends Menu {
-    /**
-     * @param {Array<Item>} items
-     * @param {HTMLElement} [options.parent]
-     * @param {iconFactoryFunction} [options.iconFactory]
-     */
-    constructor(items, options={}) {
-        super(options);
+    constructor() {
+        super();
 
-        this.element.classList.add('menu-toolbar');
-        this.element.setAttribute('role', 'menu');
+        Toolbar.stylesheet.addToShadow(this.shadowRoot);
+        this.shadowRoot.querySelector('.menu').classList.add('menu-toolbar');
 
-        this.items = new ItemList(items, this.iconFactory);
-        this.element.appendChild(this.items.element);
+        this.direction = Direction.LeftToRight
     }
 
-    get itemParent() {
-        return this.items.element;
+    static create(items) {
+        return Menu.create(Toolbar, items);
     }
+
+    updateItem(item, i , items) {
+        item.setAppearance({
+            hideIcon: false,
+            hideLabel: ! item.hasAttribute('showtoolbarlabel'),
+            roundLeft: 0 == i,
+            roundRight: i == items.length - 1
+        });
+    }
+
 }
+
+Object.defineProperty(Toolbar, 'tagName', {value: 'wam-toolbar'})
+
+Object.defineProperty(Toolbar, 'stylesheet', {value: new ReusableStyleSheet(style)});
 
 export default Toolbar;
