@@ -606,11 +606,13 @@ export class Menu extends HTMLElement {
                         case 'ArrowDown':
                             this.focusItem = this.interactiveItems.first;
                             this.open();
+                            e.preventDefault();
                             break;
 
                         case 'ArrowUp': 
                             this.focusItem = this.interactiveItems.last;
                             this.open();
+                            e.preventDefault();
                             break;
                     }
                 }
