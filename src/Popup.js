@@ -13,12 +13,7 @@ class Popup extends Menu {
     }
 
     static create(items) {
-        const popup = document.createElement(Popup.tagName);
-        //if( ! (popup instanceof Popup))
-        //    throw new Error(`Popup (${Popup.tagName}) not registered as custom element`);
-
-        popup.items.set(items);
-        return popup;
+        return Menu.create(Popup, items)
     }
 
     updateItem(item, i , items) {

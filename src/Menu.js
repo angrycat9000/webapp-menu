@@ -178,9 +178,6 @@ export class Menu extends HTMLElement {
          */
         Object.defineProperty(this, 'closeOn', {value:new CloseTriggerFlags(this)});
 
-        /*this.element = document.createElement('div');
-        this.element.className = 'menu';
-        this.element['data-menu'] = this;*/
         this.addEventListener('keydown', Menu.onKeyDown);
         this.addEventListener('click', Menu.onClick);
 
@@ -193,6 +190,22 @@ export class Menu extends HTMLElement {
 
 
         this.addEventListener('focusout', this.onFocusOut.bind(this));
+    }
+
+    /**
+     * @param {class} type
+     * @param {Array<Item>} items
+     */
+    static create(type, items) {
+        if( ! type.tagName)
+            throw new Error('Type to create must extend Menu and must have a tagName attribute');
+
+        const menu = document.createElement(type.tagName);
+        
+        if(Array.isArray(items))
+            menu.items.set(items)
+
+        return menu;
     }
 
     /** 

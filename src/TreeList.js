@@ -21,9 +21,7 @@ class TreeList extends Menu {
     }
 
     static create(items) {
-        const treelist = document.createElement(TreeList.tagName);
-        treelist.items.set(items);
-        return treelist;
+        return Menu.create(TreeList, items);
     }
 
     get displayItems() {

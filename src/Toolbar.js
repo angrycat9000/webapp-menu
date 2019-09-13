@@ -14,6 +14,10 @@ class Toolbar extends Menu {
         this.direction = Direction.LeftToRight
     }
 
+    static create(items) {
+        return Menu.create(Toolbar, items);
+    }
+
     updateItem(item, i , items) {
         item.setAppearance({
             hideIcon: false,
