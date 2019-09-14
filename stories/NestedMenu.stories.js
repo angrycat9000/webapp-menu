@@ -1,9 +1,9 @@
 import { document, console } from 'global';
 import { storiesOf } from '@storybook/html';
 
-storiesOf('Component Specific|TreeList', module)
+storiesOf('Component Specific|NestedMenu', module)
   .add('HTML Initalization', () => 
-  `<wam-treelist open closeon="none" useanimation="false" >
+  `<wam-nestedmenu open closeon="none" useanimation="false" >
     <wam-item label="Rock"></wam-item>
     <wam-submenu><span slot="label">Animal</span>
           <wam-item label="Cat"></wam-item>
@@ -21,4 +21,4 @@ storiesOf('Component Specific|TreeList', module)
       <wam-item label="Ivy"></wam-item>
       <wam-item label="Morning Glory"></wam-item>
     </wam-submenu>
-    </wam-treelist>`)
+    </wam-nestedmenu>`)

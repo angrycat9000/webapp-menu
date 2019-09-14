@@ -57,13 +57,13 @@
     <wam-toolbar open closeon="none" useanimation="false">
         <wam-item label="Popup" id="popup-button" showtoolbarlabel><i class="material-icons" slot="icon">menu</i>
         </wam-item>
-        <wam-item label="Nested Menu" id="tree-list-button" showtoolbarlabel><i class="material-icons"
+        <wam-item label="Nested Menu" id="nested-button" showtoolbarlabel><i class="material-icons"
                 slot="icon">account_tree</i></wam-item>
         <wam-item label="Toolbar" id="toolbar-button" showtoolbarlabel><i class="material-icons"
                 slot="icon">build</i></wam-item>
     </wam-toolbar>
 
-    <wam-treelist controlledby="tree-list-button">
+    <wam-nestedmenu controlledby="nested-button">
         <wam-item label="Generic Item"></wam-item>
         <wam-submenu label="List of Fruits">
             <wam-item label="Apple"></wam-item>
@@ -86,7 +86,7 @@
                 <wam-item label="Freddy Mercury"></wam-item>
             </wam-submenu>
         </wam-submenu>
-    </wam-treelist>
+    </wam-nestedmenu>
 
     <wam-popup controlledby="popup-button">
         <wam-item label="Cut"></wam-item>
