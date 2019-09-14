@@ -38,7 +38,7 @@ function setExists(element, attributeName, value) {
     if(value)
         element.setAttribute(attributeName, '');
     else
-        element.removeAttribute('open');
+        element.removeAttribute(attributeName);
 }
 
 var Attributes = {

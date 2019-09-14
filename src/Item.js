@@ -227,7 +227,7 @@ export class Item extends HTMLElement {
         const labelElement = this.querySelector('[slot=label]');
         return labelElement ? labelElement.innerText : this.shadowRoot.querySelector('slot[name=label]').innerText
     }
-    set label(value) {return Attributes.setString(element, 'label', value)}
+    set label(value) {return Attributes.setString(this, 'label', value)}
 
     clearSlot(name) {
         const items = this.querySelectorAll(`[slot=${name}]`);

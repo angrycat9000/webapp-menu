@@ -182,7 +182,6 @@ export class Menu extends HTMLElement {
         this.addEventListener('click', Menu.onClick);
 
         this._state = this._previousState = 'closed';
-        this._controlledBy = {};
 
 
         /** @property {PositionFunction} position */
@@ -578,17 +577,19 @@ export class Menu extends HTMLElement {
 
     /** @private */
     releaseControlledByElement() {
-        const controlledBy = this.controlledBy;
-        if( ! controlledBy)
+        const handlers = this._controlledByEventListeners;
+        if( ! handlers || ! handlers.target)
             return;
 
-        const handlers = this.controlledByEventListeners;
+        const controlledBy = handlers.target;
         controlledBy.removeAttribute('aria-haspopup');
         controlledBy.removeAttribute('aria-expanded');
         controlledBy.removeAttribute('aria-controls');
         controlledBy.removeEventListener('click', handlers.onClick);
         controlledBy.removeEventListener('keydown', handlers.onKeyDown);
 
+        handlers.target = null;
+        this.position = Position.None;
     }
 
     /** @private  */
@@ -625,17 +626,20 @@ export class Menu extends HTMLElement {
     setControlledByElement(element) {
         this.releaseControlledByElement();
 
+        if( !element)
+            return;
+
         if( ! this.id)
             this.id = nextId();
 
         const listeners = this.controlledByEventListeners;
 
+        listeners.target = element;
         element.setAttribute('aria-haspopup', 'true');
         element.setAttribute('aria-expanded', this.isOpen);
         element.setAttribute('aria-controls', this.id);
         element.addEventListener('click', listeners.onClick);
         element.addEventListener('keydown', listeners.onKeyDown);
-
 
         this.position = Position.WithElement(element);
     }
