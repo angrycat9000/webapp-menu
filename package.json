@@ -5,7 +5,7 @@
   "main": "dist/webapp-menu.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "rollup -w -c rollup.config.js",
+    "develop": "rollup -w -c rollup.config.js & es-dev-server --app-index dist/index.html  --watch --open",
     "build:library": "rimraf dist && rollup -c rollup.config.js --configProduction",
     "build": "npm run build:library && npm run build:storybook",
     "prepare": "npm run build:library",
