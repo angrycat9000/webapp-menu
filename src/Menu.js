@@ -317,14 +317,14 @@ export class Menu extends HTMLElement {
     }
 
     onFocusOut() {
-        window.requestAnimationFrame(()=>{
+        window.setTimeout(()=>{
             if( ! this.closeOn.lostFocus || 'open' != this.state) {
                 return;
             }
 
             if( ! this.isFocusWithin())
                 this.close();
-        })
+        }, 1)
     }
 
     /**
