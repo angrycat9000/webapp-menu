@@ -62,6 +62,8 @@ export class Item extends HTMLElement {
      * @param {boolean} [props.disabled]
      * @param {boolean} [props.showToolbarLabel]
      * @param {itemActivateFunction} [props.action]
+     * @param {object} [props.data]
+     * @param {string} [props.id]
      */
     set(props) {
         if( ! props)
@@ -73,7 +75,7 @@ export class Item extends HTMLElement {
         if('undefined' != props.icon)
             this.setIcon(props.icon);
 
-        for(let prop of ['disabled', 'showToolbarLabel', 'action']) {
+        for(let prop of ['disabled', 'showToolbarLabel', 'action', 'data', 'id']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
