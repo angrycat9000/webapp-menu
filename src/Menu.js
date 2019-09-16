@@ -13,7 +13,7 @@ import style from '../style/menu.scss';
 class CloseTriggerFlags {
     constructor(parent) {
         this._parent = parent;
-        this._escape = this._lostFocus = this._itemActivate = true;
+        this._escape = this._pointerDownOutside = this._itemActivate = true;
     }
 
     /**
@@ -26,9 +26,16 @@ class CloseTriggerFlags {
     /** 
      * Menu will close if the focus moves outside of the menu
      * @property {boolean}
+     * @deprecated
      */
-    get lostFocus() {return this._lostFocus}
-    set lostFocus(value) {this._lostFocus = value; this.updateAttribute()}
+    get lostFocus() {return false}
+    set lostFocus(value) {}
+
+    /**
+     * 
+     */
+    get pointerDownOutside() {return this._pointerDownOutside}
+    set pointerDownOutside(value) {this._pointerDownOutside = value; this.updateAttributes()}
 
     /**
      * Menu will close when an item is activated.  
@@ -43,13 +50,13 @@ class CloseTriggerFlags {
      * Set the menu to close on any of the potential close events: escape, lost focus,
      * or activating an item.
      */
-    all() {this._escape = this._lostFocus = this._itemActivate = true;}
+    all() {this._escape = this._pointerDownOutside = this._itemActivate = true;}
 
     /**
      * Ignore the potential close events.  A call to  #Menu.close must
      * be made to close the menu.
      */
-    none() {this._escape = this._lostFocus = this._itemActivate = false;}
+    none() {this._escape = this._pointerDownOutside = this._itemActivate = false;}
 
     /**
      * Update the element attribute based on the internal values of this object.
@@ -71,22 +78,22 @@ class CloseTriggerFlags {
     fromString(str) {
         if( ! str) {
             this._escape = true;
-            this._lostFocus = true;
+            this._pointerDownOutside = true;
             this._itemActivate = true;
         }
 
         const array = str.toLowerCase().split(',').map(s=>s.trim());
         if(0 == array.length || (1 == array.length && 'none' == array[0])) {
             this._escape = false;
-            this._lostFocus = false;
+            this._pointerDownOutside = false;
             this._itemActivate = false;
         } else if ( 1 == array.length && 'all' == array[0]) {
             this._escape = true;
-            this._lostFocus = true;
+            this._pointerDownOutside = true;
             this._itemActivate = true;
         } else {
             this._escape =  !! array.find(s=>s=='escape');
-            this._lostFocus = !! array.find(s=>s=='lostfocus');
+            this._pointerDownOutside = !! array.find(s=>s=='pointerdownoutside');
             this._itemActivate = !! array.find(s=>s=='itemactivate');
         }
     }
@@ -96,8 +103,8 @@ class CloseTriggerFlags {
         if(this.escape)
             values.push('escape');
 
-        if(this.lostFocus)
-            values.push('lostfocus');
+        if(this.pointerDownOutside)
+            values.push('pointerdownoutside');
 
         if(this.itemActivate)
            values.push('itemactivate')
@@ -182,13 +189,15 @@ export class Menu extends HTMLElement {
         this.addEventListener('click', Menu.onClick);
 
         this._state = this._previousState = 'closed';
+        this._windowResizeFunc = (e)=>{this.onWindowResize(e)}
+        this._windowPointerFunc = (e)=>{this.onWindowPointerDown(e)}
 
 
         /** @property {PositionFunction} position */
         this._position = Position.None;
 
 
-        this.addEventListener('focusout', this.onFocusOut.bind(this));
+        
     }
 
     /**
@@ -258,6 +267,13 @@ export class Menu extends HTMLElement {
         }
     }
 
+    get position() {return this._position}
+    set position(value) {
+        this._position = value;
+        if(this.isOpen)
+            this.applyPosition();
+    }
+
 
     /** @property {iconFactoryFunction} iconFactory */
     get iconFactory() {return this._iconFactory}
@@ -316,15 +332,9 @@ export class Menu extends HTMLElement {
         return false;  
     }
 
-    onFocusOut() {
-        window.setTimeout(()=>{
-            if( ! this.closeOn.lostFocus || 'open' != this.state) {
-                return;
-            }
-
-            if( ! this.isFocusWithin())
-                this.close();
-        }, 1)
+    onPointerDownOutside() {
+        if(this.closeOn.pointerDownOutside && 'open' == this.state )
+            this.close();
     }
 
     /**
@@ -386,6 +396,10 @@ export class Menu extends HTMLElement {
             this.applyPosition();
             if(this.controlledBy)
                 this.controlledBy.setAttribute('aria-expanded', this.isOpen);
+
+            window.addEventListener('resize', this._windowResizeFunc);
+            window.addEventListener('touchstart', this._windowPointerFunc);
+            window.addEventListener('mousedown', this._windowPointerFunc);
         });
         anim.on('secondframe',()=>{
             this.setFocusOn(this.focusItem);
@@ -423,8 +437,9 @@ export class Menu extends HTMLElement {
                 return;
             }
             
-            window.removeEventListener('resize', this.windowResizeFunc);
-            this.windowResizeFunc = null;
+            window.removeEventListener('resize', this._windowResizeFunc);
+            window.removeEventListener('touchstart', this._windowPointerFunc);
+            window.removeEventListener('mousedown', this._windowPointerFunc);
         });
 
         anim.on('secondframe', ()=>{
@@ -459,6 +474,11 @@ export class Menu extends HTMLElement {
         return focused;
     }
 
+
+    onWindowPointerDown(e) {
+        if(this.closeOn.pointerDownOutside && this !== Menu.fromElement(e.target))
+            this.close();
+    }
 
     onWindowResize() {
         if(this.isOpen)

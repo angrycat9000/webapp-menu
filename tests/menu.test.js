@@ -81,20 +81,20 @@ describe('Menu', () => {
         it('intialize to true', async()=>{
             const el = (await fixture(`<wam-popup></wam-popup`));
             expect(el.closeOn.escape).to.be.true;
-            expect(el.closeOn.lostFocus).to.be.true;
+            expect(el.closeOn.pointerDownOutside).to.be.true;
             expect(el.closeOn.itemActivate).to.be.true;
         });
         it('set attribute = none', async()=>{
             const el = (await fixture(`<wam-popup closeon="none"></wam-popup`));
             expect(el.closeOn.escape).to.be.false;
-            expect(el.closeOn.lostFocus).to.be.false;
+            expect(el.closeOn.pointerDownOutside).to.be.false;
             expect(el.closeOn.itemActivate).to.be.false;
         });
         it('none()', async()=>{
             const el = (await fixture(`<wam-popup></wam-popup`));
             el.closeOn.none();
             expect(el.closeOn.escape).to.be.false;
-            expect(el.closeOn.lostFocus).to.be.false;
+            expect(el.closeOn.pointerDownOutside).to.be.false;
             expect(el.closeOn.itemActivate).to.be.false;
         });
     })
