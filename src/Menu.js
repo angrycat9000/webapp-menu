@@ -351,11 +351,10 @@ export class Menu extends HTMLElement {
 
     startTransition(transition) {
         window.requestAnimationFrame(()=>{
-            if( ! this.useAnimation) {
+            if( ! this.useAnimation)
                 transition.immediate();
-            } else {
+            else
                 transition.firstFrame();
-            }
         });
         return transition;
     }
@@ -389,8 +388,6 @@ export class Menu extends HTMLElement {
 
 
         let anim = new Animation.Transition(menuElement, 'animation-show');
-
- 
         anim.on('firstframe', (e)=>{
             menuElement.style.display = '';
             this.applyPosition();
@@ -432,11 +429,6 @@ export class Menu extends HTMLElement {
 
         let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'animation-hide');
         anim.on('firstframe',(e)=>{
-            if(this.state !== 'closing') {
-                e.transition.stop();
-                return;
-            }
-            
             window.removeEventListener('resize', this._windowResizeFunc);
             window.removeEventListener('touchstart', this._windowPointerFunc);
             window.removeEventListener('mousedown', this._windowPointerFunc);

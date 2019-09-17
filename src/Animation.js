@@ -28,7 +28,6 @@ class Transition {
         this.cssName = cssName;
         this.startFunc = null;
         this.finishedFunc = null;
-        this._abort = false;
         addEventMember(this);
     
         /** 
@@ -42,8 +41,7 @@ class Transition {
      * Start the transition on the next animation frame
      */
     play() {
-        this._abort = false;
-        this.frame = window.requestAnimationFrame((e)=>this.firstFrame(e));
+        this.frame = window.requestAnimationFrame(()=>this.firstFrame());
     }
 
     /**
@@ -64,27 +62,9 @@ class Transition {
         event.isFastForward = true;
 
         this.events.emit('firstframe', event);
-        if(this.wasStopped)
-            return;
-
         this.events.emit('secondframe', event);
-        if(this.wasStopped)
-            return;
-
         this.events.emit('complete', event);
     }
-
-    /**
-     * Cancels the transition
-     */
-    stop() {
-        this._abort = true;
-        this.cleanup();
-        this.events.emit('stopped', event);
-    }
-
-    /** @property {Boolean} wasStopped true of stop() was called */
-    get wasStopped() {return this._abort;}
 
     cleanup() {
         if(this.frame) {
@@ -116,13 +96,15 @@ class Transition {
         }
         this.target.addEventListener('transitionstart', this.startFunc);
 
+        this.finishedFunc = this.complete.bind(this);
+        this.target.addEventListener('transitionend', this.finishedFunc);
+        this.target.addEventListener('transitioncanceled',this.finishedFunc);
+
         this.target.classList.add(this.getCSSClass('first'), this.getCSSClass('active'));
         this.events.emit('firstframe', transitionEvent(this));
 
-        if(this.wasStopped)
-            return;
-        
-        this.frame = window.requestAnimationFrame(()=>this.secondFrame());
+        if( ! this.wasStopped)
+            this.frame = window.requestAnimationFrame(()=>this.secondFrame());
     }
 
     secondFrame() {
@@ -130,13 +112,9 @@ class Transition {
         this.target.classList.remove(this.getCSSClass('first'))
         this.target.classList.add(this.getCSSClass('second'))
         this.events.emit('secondframe', transitionEvent(this));
-        if(this.wasStopped)
-            return;
 
-        this.finishedFunc = this.complete.bind(this);
-        this.target.addEventListener('transitionend', this.finishedFunc);
-        this.target.addEventListener('transitioncanceled',this);
-        this.frame = window.requestAnimationFrame(()=>this.thirdFrame())
+        if( ! this.wasStopped)
+            this.frame = window.requestAnimationFrame(()=>this.thirdFrame())
     }
 
     // Not needed for animation. Used to check if a transition has really started. Bails out
@@ -154,7 +132,7 @@ class Transition {
     }
 
     complete(e) {
-        if(e.target !== this.target)
+        if(this.ignoreChildren && e.target !== this.target)
             return;
         
         this.cleanup();

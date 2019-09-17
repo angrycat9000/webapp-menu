@@ -95,6 +95,7 @@ export class SubMenuItem extends Item {
         const width = this.getBoundingClientRect().width;
         if( ! isOpen) {
             submenu.style.display = 'none';
+            this.shadowRoot.querySelector('.submenu-inner').style.height  ='';
         } else {
             submenu.style.display = '';
             submenu.style.left = width + 'px';
