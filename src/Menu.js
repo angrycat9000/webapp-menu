@@ -571,6 +571,7 @@ export class Menu extends HTMLElement {
 
         const event = new CustomEvent('wam-item-activate', {
             bubbles:true,
+            cancelable: true,
             detail: {
                 item: item,
                 menu: this,

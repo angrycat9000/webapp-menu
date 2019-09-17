@@ -97,3 +97,16 @@ storiesOf('Common|Functions', module)
         bar.closeOn.none();
         return bar;
       })
+      .add('wam-item-activate preventDefault', ()=>{
+        const items = [
+          {label:'Close'},
+          {label:'Leave Open', id:'leave-open'},
+        ];
+        const bar = Menu.Popup.create(items);
+        bar.isOpen = true;
+        bar.addEventListener('wam-item-activate', (e)=>{
+            if('leave-open' == e.detail.item.id)
+                e.preventDefault();
+        })
+        return bar;
+      })
