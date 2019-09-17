@@ -22,8 +22,8 @@ function positionForButton(menu, button, padding = 8) {
   const container = getWindowBounds();
   const buttonRect = button.getBoundingClientRect();
   const offset = buttonRect.height / 2 + padding;
-  const y = buttonRect.top + buttonRect.height / 2;
-  const x = buttonRect.left;
+  const y = buttonRect.top + buttonRect.height / 2 + window.scrollY;
+  const x = buttonRect.left + window.scrollX;
   const menuRect = menu.getBoundingClientRect();
 
   const position = positionPopup(menuRect, container, x, y, offset, 'left');

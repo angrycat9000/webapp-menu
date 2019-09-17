@@ -61,26 +61,24 @@ class NestedMenu extends Menu {
         }
     }
 
+    popAll() {
+        const container = this.shadowRoot.querySelector('.menu-outer');
+        container.style.height = '';
+        const slider = this.shadowRoot.querySelector('.menu-inner');
+        slider.style.transform = `translate3d(0,0,0)`;
+
+        while(this.stack.length) {
+            const closed = this.stack.pop();
+            closed.isOpen = false;
+        }
+    }
+
     open() {
         const anim = super.open();
         if( ! anim)
             return null;
 
-        // replace default open first frame with one that clears out the open submenus
-        anim.off('firstframe');
-        anim.on('firstframe', ()=>{
-            this.shadowRoot.querySelector('.menu').style.display = '';
-
-            while(this.stack.length) {
-                const closed = this.stack.pop();
-                closed.isOpen = false;
-            }
-            this.stackChanged().immediate()
-
-            this.applyPosition();
-            if(this.controlledBy)
-                this.controlledBy.setAttribute('aria-expanded', this.isOpen);
-        });
+        this.popAll();
 
         return anim;
     }
@@ -100,7 +98,6 @@ class NestedMenu extends Menu {
 
         if( ! item.dispatchEvent(event))
             return;
-    
 
         this.stack.push(item);
         item.isOpen = true;
@@ -173,10 +170,19 @@ class NestedMenu extends Menu {
         const anim = new Animation.Transition(container, 'animation-stack');
         anim.ignoreChildren = false;
         anim.on('firstframe',()=>{
-            const offset = container.clientWidth * this.stack.length;
+            // Set the height in frame one so it will never be unset
+            // in frame two.  The animation only works going from one height
+            // value to another.  Not from unset to a value
+            container.style.height = container.offsetHeight;
+        })
+        anim.on('secondframe',()=>{
+            const width = container.clientWidth;
+            const offset = width * this.stack.length;
+            let desiredHeight = this.stack.length ? scroller.scrollHeight : scroller.offsetHeight;
+            const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
+            container.style.maxHeight = Math.ceil(maxHeight) + 'px';
+            container.style.height = Math.ceil(desiredHeight) + 'px';
             slider.style.transform = `translate3d(${(-offset)}px,0,0)`;
-            const desiredHeight = this.stack.length ? scroller.scrollHeight : scroller.offsetHeight;
-            container.style.height = desiredHeight + 'px';
         })
         anim.on('complete',()=>{
             /* 
