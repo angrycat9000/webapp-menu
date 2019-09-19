@@ -12,6 +12,11 @@ function getWindowBounds() {
   }
 }
 
+function positionAtPointWithin(menu, x, y, containerElement, verticalMargin) {
+  const position = positionPopup(menu.getBoundingClientRect(), containerElement.getBoundingClientRect(), x, y, verticalMargin, 'center');
+  return apply(menu, position);
+}
+
 function positionAtPoint(menu, x, y, verticalMargin = 16) {
   const position = positionPopup(menu.getBoundingClientRect(), getWindowBounds(), x, y, verticalMargin, 'center');
   return apply(menu, position);
@@ -162,13 +167,26 @@ const Position = {
   None: (e) => apply(e, {}),
 
   /** 
-   * Shows the menu centered above or below the point given by top and left
+   * Shows the menu centered above or below the point given by top and left.  
+   * Contained within the window viewport
    * @param {number} left
    * @param {number} top
    * @return {PositionFunction}
    */
   AtPoint: function (left, top, verticalMargin = 16) {
     return (menu) => positionAtPoint(menu, left, top, verticalMargin)
+  },
+
+  /**
+   * Show the menu centered above or below the point but contained
+   * within the provided element
+   * @param {number} left
+   * @param {number} top
+   * @param {HTMLElement} container
+   * @return {PositionFunction}
+   */
+  AtPointWithin: function(left, top, container, verticalMargin = 16) {
+    return (menu)=> positionAtPointWithin(menu, left, top, container, verticalMargin)
   }
 
 }
