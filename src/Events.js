@@ -1,5 +1,4 @@
-const EventEmitter = require('EventEmitter').default;
-//import EventEmitter from 'EventEmitter';
+import EventEmitter from 'tiny-emitter';
 
 /**
 *
