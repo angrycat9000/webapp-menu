@@ -39,11 +39,11 @@ describe('Item', () => {
         });
     });
     describe('icon', ()=>{
-        it('hasIcon()', async()=>{
+        it('no icon', async()=>{
             const el = (await fixture(`<wam-item></wam-item>`));
             expect(el.hasIcon).to.be.false;
         })
-        it('hasIcon()', async()=>{
+        it('with icon', async()=>{
             const el = (await fixture(`<wam-item><img slot="icon"></wam-item>`));
             expect(el.hasIcon).to.be.true;
         })
