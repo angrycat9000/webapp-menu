@@ -78,5 +78,5 @@ const items = [
 const menu = document.createElement('wam-popup');
 menu.iconFactory = iconFactory;
 menu.items.set(items);
-menu.controlledBy = ocument.getElementById('some-button-id');
+menu.controlledBy = document.getElementById('some-button-id');
 ```
