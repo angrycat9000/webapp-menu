@@ -87,18 +87,21 @@ export class SubMenuItem extends Item {
         return false;
     }
 
+    get scrollTop() {return this.shadowRoot.querySelector('.submenu-inner').scrollTop;}
+    set scrollTop(value) {this.shadowRoot.querySelector('.submenu-inner').scrollTop = value;}
+
     /** @property {boolean} isOpen */
     get isOpen() {return this.shadowMenu.style.display != 'none';}
     set isOpen(isOpen) {
         this.shadowItem.setAttribute('aria-expanded', isOpen);
         const submenu = this.shadowMenu;
-        const width = this.getBoundingClientRect().width;
+        //const width = this.getBoundingClientRect().width;
         if( ! isOpen) {
             submenu.style.display = 'none';
             this.shadowRoot.querySelector('.submenu-inner').style.height  ='';
         } else {
             submenu.style.display = '';
-            submenu.style.left = width + 'px';
+            //submenu.style.left = width + 'px';
         }
     }
 }

@@ -167,7 +167,7 @@ class NestedMenu extends Menu {
         const slider = this.shadowRoot.querySelector('.menu-inner');
         const scroller = this.getMenuContentElement(this.stack.length);
 
-        const anim = new Animation.Transition(container, 'animation-stack');
+        const anim = new Animation.Transition(slider, 'animation-stack');
         anim.ignoreChildren = false;
         anim.on('firstframe',()=>{
             // Set the height in frame one so it will never be unset
@@ -182,9 +182,11 @@ class NestedMenu extends Menu {
             const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
             container.style.maxHeight = Math.ceil(maxHeight) + 'px';
             container.style.height = Math.ceil(desiredHeight) + 'px';
+            container.classList.add('animate-height');
             slider.style.transform = `translate3d(${(-offset)}px,0,0)`;
         })
         anim.on('complete',()=>{
+            container.classList.remove('animate-height');
             /* 
                Resizes the current list to be the same height as the container so it scrolls properly.
                This needs to be fired after the height transition for this.element has complete because
@@ -197,6 +199,7 @@ class NestedMenu extends Menu {
             const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
             scroller.style.height = resolvedHeight + 'px';
             container.style.height = resolvedHeight + 'px';
+            
 
             // If we set focus before the transition is complete, the browser tries to move the focus
             // element into view immediatly which breaks the animation

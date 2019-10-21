@@ -22,9 +22,9 @@ $menu-max-height: 80vh;
 }
 
 .animation-stack__active {
-    transition: height $menu-transition-duration;
+    transition: transform $menu-transition-duration;
+}
 
-    .menu-inner {
-        transition: transform $menu-transition-duration;
-    }
+.animate-height {
+    transition: height $menu-transition-duration;
 }
