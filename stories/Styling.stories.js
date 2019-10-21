@@ -3,7 +3,7 @@ import Menu from '../dist/webapp-menu';
 
 
 function styleComponents(style) {
-    return ()=>`<style>wam-popup, wam-toolbar { position:static; ${style} }
+    return ()=>`<style>wam-popup, wam-toolbar, wam-nestedmenu{ position:static; ${style} }
     .samples{display:flex; align-items:flex-start; flex-wrap:wrap;}
     .samples > * {margin-left:1rem;}</style>
     <div class="samples">
@@ -17,6 +17,17 @@ function styleComponents(style) {
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
      </wam-toolbar>
+     <wam-nestedmenu open closeon="none" useanimation="no">
+        <wam-submenu label="Letters">
+            <wam-item label="Letter A"></wam-item>
+            <wam-item label="Letter B"></wam-item>
+        </wam-submenu>
+        <wam-submenu label="Numbers">
+            <wam-item label="Number 1"></wam-item>
+            <wam-item label="Number 2"></wam-item>
+            <wam-item label="Number 3"></wam-item>
+         </wam-submenu>
+    </wam-nestedmenu>
      </div>`;
 }
 
@@ -24,11 +35,13 @@ storiesOf('Common|Style', module)
     .add('Border Color', styleComponents('--menu-border-color:red'))
     .add('Border Width', styleComponents('--menu-border-width:4px'))
     .add('Border Style', styleComponents('--menu-border-style:outset'))
+    .add('Border Radius', styleComponents('--menu-border-radius:1rem'))
     .add('Focus Ring Color', styleComponents('--menu-focus-color:red'))
     .add('Focus Ring Size', styleComponents('--menu-focus-width:1px'))
     .add('Item Background', styleComponents('--menu-item-background:orange'))
     .add('Menu Background', styleComponents('--menu-background:red; --menu-item-background:linear-gradient(90deg, rgba(249,249,249,1) 0%, rgba(249,249,249,0) 50%)'))
     .add('Item Hover', styleComponents('--menu-hover-background:red'))
     .add('Item Active', styleComponents('--menu-pressed-background:red'))
-    .add('Text Color', styleComponents('color:red;'))
+    .add('Text Color', styleComponents('color:red; fill:red'))
+    .add('Font', styleComponents('font-family:serif'))
     .add('Shadow', styleComponents('--menu-shadow: 4px 4px 4px 2px rgba(0,0,0,0.3)'))
