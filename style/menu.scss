@@ -1,7 +1,6 @@
 @import 'theme.scss';
 
 .menu {
-  //border-radius: calc(0.5rem + 1px);
   border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
   border: $menu-border;    
   background: $menu-background;
@@ -31,8 +30,8 @@
 
 .menu.animation-show__first,
 .menu.animation-hide__second {
-  transform: scale3d(0.8,0.8,1);
-  opacity:0
+  transform: var(#{--menu-transition-transform}, scale3d(0.8,0.8,1));
+  opacity: var(#{--menu-transition-opacity}, 0);
 }
 .menu.animation-show__second,
 .menu.animation-hide__first

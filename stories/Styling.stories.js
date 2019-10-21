@@ -45,3 +45,12 @@ storiesOf('Common|Style', module)
     .add('Text Color', styleComponents('color:red; fill:red'))
     .add('Font', styleComponents('font-family:serif'))
     .add('Shadow', styleComponents('--menu-shadow: 4px 4px 4px 2px rgba(0,0,0,0.3)'))
+    .add('Open Close Transition', ()=>
+        `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
+        <wam-popup controlledBy="open-menu-button" 
+            style="--menu-transition-transform:translateX(100%); 
+                   --menu-transition-opacity: 0.5">
+            <wam-item label="Cut"></wam-item>
+            <wam-item label="Copy"></wam-item>
+            <wam-item label="Paste"></wam-item>
+        </wam-popup>`)
