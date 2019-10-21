@@ -2,6 +2,7 @@ import Item from './Item';
 import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 import {nextId} from './Id';
+import TabList from './TabList';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';

@@ -35,6 +35,12 @@ class NestedMenu extends Menu {
         return this.stack[this.stack.length - 1];
     }
 
+    get currentMenu() {
+        if(0 == this.stack.length)
+            return this;
+        return this.stack[this.stack.length - 1];
+    }
+
     activate(item, sourceEvent) {
         if(item.disabled)
             return;
@@ -154,7 +160,6 @@ class NestedMenu extends Menu {
         
         const frame = this.stack[i-1];
         return frame.shadowRoot.querySelector('.submenu-inner');
-        
     }
 
     /**
@@ -178,7 +183,8 @@ class NestedMenu extends Menu {
         anim.on('secondframe',()=>{
             const width = container.clientWidth;
             const offset = width * this.stack.length;
-            let desiredHeight = this.stack.length ? scroller.scrollHeight : scroller.offsetHeight;
+            const lastVisibleItem = this.currentMenu.displayItems.last;
+            let desiredHeight = lastVisibleItem.offsetTop + lastVisibleItem.getBoundingClientRect().height;
             const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
             container.style.maxHeight = Math.ceil(maxHeight) + 'px';
             container.style.height = Math.ceil(desiredHeight) + 'px';
