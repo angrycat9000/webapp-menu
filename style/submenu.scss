@@ -3,12 +3,14 @@
     top:0;
     width:100%;
     transform: translateX(100%);
+    box-sizing:border-box;
 }
 
 .submenu-inner{
     width:100%;
     overflow-y:auto;
     padding-top: 3rem;
+    box-sizing:border-box;
 }
 
 .back {

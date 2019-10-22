@@ -3,6 +3,7 @@ import Item from './Item';
 import SubMenuItem from './SubMenuItem';
 import Animation from './Animation'
 import TabList from './TabList';
+import Attributes from './Attributes';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/nestedmenu.scss';
@@ -69,7 +70,7 @@ class NestedMenu extends Menu {
 
     popAll() {
         const container = this.shadowRoot.querySelector('.menu-outer');
-        container.style.height = '';
+        container.style.height = this.autoResize ? '' : '100%';
         const slider = this.shadowRoot.querySelector('.menu-inner');
         slider.style.transform = `translate3d(0,0,0)`;
 
@@ -171,6 +172,7 @@ class NestedMenu extends Menu {
         const container = this.shadowRoot.querySelector('.menu-outer');
         const slider = this.shadowRoot.querySelector('.menu-inner');
         const scroller = this.getMenuContentElement(this.stack.length);
+        const resize = this.autoResize;
 
         const anim = new Animation.Transition(slider, 'animation-stack');
         anim.ignoreChildren = false;
@@ -178,40 +180,47 @@ class NestedMenu extends Menu {
             // Set the height in frame one so it will never be unset
             // in frame two.  The animation only works going from one height
             // value to another.  Not from unset to a value
-            container.style.height = container.offsetHeight;
+            if(resize)
+                container.style.height = container.clientHeight;
+
         })
         anim.on('secondframe',()=>{
             const width = container.clientWidth;
             const offset = width * this.stack.length;
-            const lastVisibleItem = this.currentMenu.displayItems.last;
-            let desiredHeight = lastVisibleItem.offsetTop + lastVisibleItem.getBoundingClientRect().height;
-            const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
-            container.style.maxHeight = Math.ceil(maxHeight) + 'px';
-            container.style.height = Math.ceil(desiredHeight) + 'px';
-            container.classList.add('animate-height');
+
+            if(resize) {
+                const lastVisibleItem = this.currentMenu.displayItems.last;
+                const desiredHeight = lastVisibleItem.offsetTop + lastVisibleItem.getBoundingClientRect().height;
+                const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
+                container.style.maxHeight = Math.ceil(maxHeight) + 'px';
+                container.style.height = Math.ceil(desiredHeight) + 'px';
+                container.classList.add('animate-height');
+            }
+   
             slider.style.transform = `translate3d(${(-offset)}px,0,0)`;
         })
-        anim.on('complete',()=>{
-            container.classList.remove('animate-height');
+        anim.on('complete',()=>{            
+            if(itemToClose)
+                itemToClose.isOpen = false;  
+
             /* 
                Resizes the current list to be the same height as the container so it scrolls properly.
                This needs to be fired after the height transition for this.element has complete because
                it uses the final value of the height.  That value isn't available until after the
                transition has completed.  It might also have been capped by max-height
             */
-            if(itemToClose)
-                itemToClose.isOpen = false;  
-            const borderWidth = container.offsetWidth - container.clientWidth;
-            const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
+           const borderWidth = container.offsetWidth - container.clientWidth;
+           const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
+            if(resize) {
+                container.classList.remove('animate-height');
+                container.style.height = resolvedHeight + 'px';
+            }
             scroller.style.height = resolvedHeight + 'px';
-            container.style.height = resolvedHeight + 'px';
-            
 
             // If we set focus before the transition is complete, the browser tries to move the focus
             // element into view immediatly which breaks the animation
             this.setFocusOn(this.focusItem);
         })
-
 
         return anim;
     }
@@ -236,7 +245,22 @@ class NestedMenu extends Menu {
         super.setItemStyles();
     }
 
+    /** @property {boolean} autoResize Will the menu grow bigger or smaller for sub menus*/
+    get autoResize() {return Attributes.getTrueFalse(this, 'autoresize', true)}
+    set autoResize(value) {Attributes.setTrueFalse(this, 'autoresize', value, true)}
 
+    static get observedAttributes() {
+        return Menu.observedAttributes.concat(['autoresize']);
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        if('autoresize' == name && 'false' == newValue) {
+            const container = this.shadowRoot.querySelector('.menu-outer');
+            if( ! container.style.height)
+                container.style.height = '100%';
+        }
+    }
 }
 
 Object.defineProperty(NestedMenu, 'tagName', {value: 'wam-nestedmenu'});
