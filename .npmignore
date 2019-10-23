@@ -1,3 +1,14 @@
 node_modules
 package-lock.json
 rollup.config.js
+netlify.toml
+karma.conf.js
+tests
+screenshots
+examples
+stories
+.storybook
+dist/index*
+style
+src
+icons
