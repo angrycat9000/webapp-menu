@@ -1,5 +1,5 @@
 [build]
-  command = "npm build:site"
+  command = "npm run build:site"
   publish = "dist"
 
 [[headers]]
