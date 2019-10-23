@@ -1,7 +1,26 @@
 import { html, fixture, expect, nextFrame } from '@open-wc/testing';
 
-import Menu from '../dist/webapp-menu';
+import '../dist/webapp-menu';
 
+const menu = 
+  `<wam-nestedmenu useanimation="false" open>
+    <wam-submenu id="smaller" label="small">
+      <wam-item label="a"></wam-item>
+    </wam-submenu>
+    <wam-submenu id="bigger" label="large">
+      <wam-item label="b"></wam-item>
+      <wam-item label="c"></wam-item>
+      <wam-item label="d"></wam-item>
+      <wam-item label="e"></wam-item>
+      <wam-item label="f"></wam-item>
+    </wam-submenu>
+    <wam-item label="filler"><wam-item>
+  </wam-nestedmenu>`;
+
+
+const itemHeight = 48;
+const border = 2;
+function sizeOfItems(n) {return n * itemHeight + border}
 
 describe('NestedMenu', () => {  
   describe('autoresize attribute', ()=>{ 
@@ -29,5 +48,31 @@ describe('NestedMenu', () => {
       expect(el.autoResize).to.be.false;
       expect(el).dom.to.equal('<wam-nestedmenu autoresize="false"></wam-nestedmenu>');
     });
+  })
+  describe('Resizing', ()=>{
+    it('small to large', async ()=>{
+      const el = (await fixture(menu));
+
+    
+      expect(el.clientHeight).to.equal(sizeOfItems(el.displayItems.length));
+
+      const child = el.querySelector('#bigger');
+      await new Promise((resolve, reject)=>{el.openChild(child).on('complete', resolve);})
+      await nextFrame();
+      
+      expect(el.clientHeight).to.equal(sizeOfItems(child.displayItems.length))
+    })
+    it('large to small', async ()=>{
+      const el = (await fixture(menu));
+
+
+      expect(el.clientHeight).to.equal(sizeOfItems(el.displayItems.length));
+
+      const child = el.querySelector('#smaller');
+      await new Promise((resolve, reject)=>{el.openChild(child).on('complete', resolve);})
+      await nextFrame();
+     
+      expect(el.clientHeight).to.equal(sizeOfItems(child.displayItems.length))
+    })
   })
 })

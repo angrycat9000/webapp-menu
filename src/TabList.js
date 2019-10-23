@@ -6,6 +6,8 @@ class TabList {
         
     }
 
+    get length() {return this.array.length}
+
     get first() {return (0 == this.array.length) ? null : this.array[0];}
 
     get last() {return (0 == this.array.length) ? null : this.array[this.array.length-1];}

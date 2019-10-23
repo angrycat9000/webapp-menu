@@ -18,6 +18,11 @@ class NestedMenu extends Menu {
         const menuRoot = shadow.querySelector('.menu');
         menuRoot.classList.add('menu-nestedmenu');
 
+        const scroller = document.createElement('div');
+        scroller.className = 'top-level-scroller';
+        menuRoot.appendChild(scroller);
+        scroller.appendChild(shadow.querySelector('.menu-inner'));
+
         this.stack = [];
     }
 
@@ -78,6 +83,8 @@ class NestedMenu extends Menu {
             const closed = this.stack.pop();
             closed.isOpen = false;
         }
+
+        container.setAttribute('data-depth', this.stack.length);
     }
 
     open() {
@@ -155,7 +162,7 @@ class NestedMenu extends Menu {
 
     getMenuContentElement(i) {
         if(0 == i)
-            return this.shadowRoot.querySelector('.menu-inner');
+            return this.shadowRoot.querySelector('.top-level-scroller');
         if(i > this.stack.length)
             return 0;
         
@@ -174,15 +181,26 @@ class NestedMenu extends Menu {
         const scroller = this.getMenuContentElement(this.stack.length);
         const resize = this.autoResize;
 
+        const tls = this.shadowRoot.querySelector('.top-level-scroller');
+        const scrollTop =  -1 * tls.scrollTop || tls.style.top || '0';
+
         const anim = new Animation.Transition(slider, 'animation-stack');
         anim.ignoreChildren = false;
         anim.on('firstframe',()=>{
+            // For sub menus, the top-level-scroller should be disabled
+            // to prevent double scrollbars.  Keep the same visual
+            // position by changing the relative position by the scrollTop
+            if(this.stack.length) {
+                tls.style.top = tls.scrollTop ? `-${tls.scrollTop}px` : '';
+                tls.style.position = 'relative';
+                tls.style.overflowY = 'visible';
+            }
+
             // Set the height in frame one so it will never be unset
             // in frame two.  The animation only works going from one height
             // value to another.  Not from unset to a value
             if(resize)
                 container.style.height = container.clientHeight;
-
         })
         anim.on('secondframe',()=>{
             const width = container.clientWidth;
@@ -194,7 +212,8 @@ class NestedMenu extends Menu {
                 const maxHeight = window.innerHeight - this.getBoundingClientRect().top - 8;
                 container.style.maxHeight = Math.ceil(maxHeight) + 'px';
                 container.style.height = Math.ceil(desiredHeight) + 'px';
-                container.classList.add('animate-height');
+                if(this.useAnimation)
+                    container.classList.add('animate-height');
             }
    
             slider.style.transform = `translate3d(${(-offset)}px,0,0)`;
@@ -209,17 +228,27 @@ class NestedMenu extends Menu {
                it uses the final value of the height.  That value isn't available until after the
                transition has completed.  It might also have been capped by max-height
             */
-           const borderWidth = container.offsetWidth - container.clientWidth;
-           const resolvedHeight = Math.min(this.clientHeight - borderWidth, container.clientHeight);
+            const resolvedHeight = container.clientHeight;
             if(resize) {
                 container.classList.remove('animate-height');
                 container.style.height = resolvedHeight + 'px';
             }
             scroller.style.height = resolvedHeight + 'px';
 
+            // After the transition is complete, enable scrolling on the top level.
+            // The previous scroll offset was stored as a relative top position.
+            // Needs to be after to prevent scrollbars from showing during the transition
+            if(0 == this.stack.length) {
+                const top = tls.style.top ? tls.style.top.match(/\d+/)[0] : '0';
+                tls.style.top = '';
+                tls.style.position = '';
+                tls.style.overflowY = 'auto';
+                tls.scrollTop =  top;
+            }
+
             // If we set focus before the transition is complete, the browser tries to move the focus
             // element into view immediatly which breaks the animation
-            this.setFocusOn(this.focusItem);
+            this.setFocusOn(itemToClose || this.focusItem);
         })
 
         return anim;

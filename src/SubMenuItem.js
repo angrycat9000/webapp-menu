@@ -3,6 +3,7 @@ import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 import {nextId} from './Id';
 import TabList from './TabList';
+import NestedMenu from './NestedMenu';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';
@@ -71,6 +72,14 @@ export class SubMenuItem extends Item {
 
     get displayItems() {return new TabList([this.backItem].concat(Array.from(this.items)))}
 
+    get topMenu() {
+        let e = this.parentElement;
+        while(e && ! (e instanceof NestedMenu))
+            e = e.parentElement;
+
+        return e;
+    }
+
     /**
      * Determine if this is an action on the child items (instead of the open root item)
      * @param {Array<Node>} targetPath
@@ -97,13 +106,14 @@ export class SubMenuItem extends Item {
     set isOpen(isOpen) {
         this.shadowItem.setAttribute('aria-expanded', isOpen);
         const submenu = this.shadowMenu;
-        //const width = this.getBoundingClientRect().width;
+
         if( ! isOpen) {
             submenu.style.display = 'none';
             this.shadowRoot.querySelector('.submenu-inner').style.height  ='';
         } else {
+            const top = this.topMenu.shadowRoot.querySelector('.top-level-scroller').scrollTop;
             submenu.style.display = '';
-            //submenu.style.left = width + 'px';
+            submenu.style.top = top + 'px';
         }
     }
 }
