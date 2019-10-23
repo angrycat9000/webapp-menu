@@ -51,9 +51,10 @@ class NestedMenu extends Menu {
         if(item.disabled)
             return;
 
-        if(item instanceof SubMenuItem) 
-            this.openChild(item);
-        else if(this.topSubMenu && item == this.topSubMenu.backItem)
+        if(item instanceof SubMenuItem) {
+            if(-1 != this.interactiveItems.array.indexOf(item)) // don't open if this this is a parent item
+             this.openChild(item);
+        } else if(this.topSubMenu && item == this.topSubMenu.backItem)
             this.closeChild(item, sourceEvent);
         else
             super.activate(item, sourceEvent);
