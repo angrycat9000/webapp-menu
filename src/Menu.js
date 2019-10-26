@@ -35,7 +35,7 @@ class CloseTriggerFlags {
      * 
      */
     get pointerDownOutside() {return this._pointerDownOutside}
-    set pointerDownOutside(value) {this._pointerDownOutside = value; this.updateAttributes()}
+    set pointerDownOutside(value) {this._pointerDownOutside = value; this.updateAttribute()}
 
     /**
      * Menu will close when an item is activated.  
