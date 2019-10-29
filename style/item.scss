@@ -60,6 +60,13 @@
   padding: 0 0.25rem;
 }
 
+[aria-disabled="true"] {
+  .label, .icon {
+    opacity:0.8;
+    font-style:italic;
+  }
+}
+
 [data-icon="false"] .icon {display:none;}
 
 [data-label="false"] .label {display:none}

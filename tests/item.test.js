@@ -48,4 +48,18 @@ describe('Item', () => {
             expect(el.hasIcon).to.be.true;
         })
     })
+    describe('disabled item focusable', async ()=>{
+        const el = (await fixture(`<wam-item disabled></wam-item>`));
+        el.focus();
+        await nextFrame();
+
+        expect.document.activeElement == el;
+    })
+    describe('disabled item focusable', async ()=>{
+        const el = (await fixture(`<wam-item disabled></wam-item>`));
+        el.focus();
+        await nextFrame();
+
+        expect.document.activeElement == el;
+    })
 });

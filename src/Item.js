@@ -196,7 +196,7 @@ export class Item extends HTMLElement {
         const hasValue = newValue !== null;
         switch (name) {
             case 'disabled':
-                this.shadowRoot.querySelector('button').setAttribute('disabled', newValue);
+                this.shadowRoot.querySelector('button').setAttribute('aria-disabled', hasValue);
                 break;
             case 'isdefaultfocus':
                 this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)

@@ -110,3 +110,11 @@ storiesOf('Common|Functions', module)
         })
         return bar;
       })
+      .add('disabled item', ()=>{
+          return `
+            <wam-popup open useanimation="false"  closeon="none">
+                <wam-item label="Cut"></wam-item>
+                <wam-item label="Copy"></wam-item>
+                <wam-item label="Paste" disabled></wam-item>
+            </wam-popup>`
+      })
