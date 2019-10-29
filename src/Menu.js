@@ -186,6 +186,7 @@ export class Menu extends HTMLElement {
         Object.defineProperty(this, 'closeOn', {value:new CloseTriggerFlags(this)});
 
         this.addEventListener('keydown', Menu.onKeyDown);
+        this.addEventListener('keypress', Menu.onKeyPress);
         this.addEventListener('click', Menu.onClick);
 
         this._state = this._previousState = 'closed';
@@ -528,10 +529,22 @@ export class Menu extends HTMLElement {
             this.activate(item, e);
     }
 
+    static onKeyPress(e) {
+        e.currentTarget.onKeyPress(e)
+    }
+
+    onKeyPress(e) {
+        const key = e.key.toLowerCase();
+        const matching = this.interactiveItems.array.filter(i=>i.label[0].toLowerCase() == key);
+        if(0 == matching.length)
+            return;
+        const tablist = new TabList(matching);
+        const next = tablist.next(tablist.defaultFocusItem);
+        this.setFocusOn(next);
+    }
+
     static onKeyDown(e) {
-        let menu = Menu.fromElement(e.currentTarget);
-        if(menu)
-            menu.onKeyDown(e);
+        e.currentTarget.onKeyDown(e)
     }
 
     /**
