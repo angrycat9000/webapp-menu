@@ -60,6 +60,22 @@ describe('Menu', () => {
             expect(p).dom.to.equal('<wam-popup></wam-popup>' , {ignoreAttributes: ['id']});
             expect(b).dom.to.equal('<button id="b"></button>');
         })
+        it('Hook button on add', async()=>{
+            const el = (await fixture(`<div><button id="b"></button><wam-popup></wam-popup></div>`));
+            const button = el.firstElementChild;
+            const popup = el.lastElementChild;
+            el.removeChild(popup);
+            popup.controlledBy = button;
+            el.appendChild(popup);
+            expect(b).dom.to.equal(`<button id="b" aria-haspopup="true" aria-controls="${popup.id}" aria-expanded="${popup.isOpen}"></button>`)
+        })
+        it('Cleanup button on remove', async()=>{
+            const el = (await fixture(`<div><button id="b"></button><wam-popup controlledby="b"></wam-popup></div>`));
+            const button = el.firstElementChild;
+            const popup = el.lastElementChild;
+            el.removeChild(popup);
+            expect(button).dom.to.equal(`<button id="b"></button>`)
+        })
     })
     describe('useAnimation', ()=>{
         it('initalize to true', async ()=>{

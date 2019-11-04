@@ -484,6 +484,10 @@ export class Menu extends HTMLElement {
     connectedCallback() {
         this._resizeListener = this.onWindowResize.bind(this);
         window.addEventListener('resize', this._resizeListener);
+
+        const controlledBy = this.getAttribute('controlledBy');
+        if(controlledBy)
+            this.setControlledByElement(document.getElementById(controlledBy));
     }
 
     /**
@@ -491,6 +495,7 @@ export class Menu extends HTMLElement {
      */
     disconnectedCallback() {
         window.removeEventListener('resize', this._resizeListener);
+        this.releaseControlledByElement()
     }
     
     /**
