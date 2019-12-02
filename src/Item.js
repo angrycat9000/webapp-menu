@@ -143,7 +143,7 @@ export class Item extends HTMLElement {
      * 
      */
     get hasIcon () {
-        return this.shadowRoot.querySelector('slot[name=icon]').assignedElements().length > 0;
+        return null !==  this.querySelector('[slot=icon]');
     }
 
     /**
@@ -173,11 +173,11 @@ export class Item extends HTMLElement {
     }
 
     updateFactoryIcon() {
-        const slotContents = this.shadowRoot.querySelector('slot[name=icon]').assignedElements();
-        if(0 == slotContents.length)
+        const slotContents = this.querySelector('[slot=icon]');
+        if(null === slotContents)
             return;
 
-        const oldIcon = slotContents[0].getAttribute('data-icon-factory-arg');
+        const oldIcon = slotContents.getAttribute('data-icon-factory-arg');
         if( ! oldIcon)
             return;
 
