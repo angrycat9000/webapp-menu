@@ -34,7 +34,7 @@ function styleComponents(style) {
 storiesOf('Common|Style', module)
     .add('Border Color', styleComponents('--menu-border-color:red'))
     .add('Border Width', styleComponents('--menu-border-width:4px'))
-    .add('Border Style', styleComponents('--menu-border-style:outset'))
+    .add('No Border', styleComponents('--menu-border-width:0px; --menu-border-radius:0.5rem'))    .add('Border Style', styleComponents('--menu-border-style:outset'))
     .add('Border Radius', styleComponents('--menu-border-radius:1rem'))
     .add('Focus Ring Color', styleComponents('--menu-focus-color:red'))
     .add('Focus Ring Size', styleComponents('--menu-focus-width:1px'))
