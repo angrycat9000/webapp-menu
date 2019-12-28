@@ -1,6 +1,7 @@
 @import 'theme.scss';
 
 .menu {
+  border-radius: #{$menu-border-radius};
   border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
   border: $menu-border;    
   background: $menu-background;
