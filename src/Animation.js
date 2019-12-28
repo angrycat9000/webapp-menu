@@ -58,6 +58,7 @@ class Transition {
      */
     immediate() {
         this.frame = 0;
+        this._timeout = 0;
         const event = transitionEvent(this);
         event.isFastForward = true;
 
@@ -70,6 +71,10 @@ class Transition {
         if(this.frame) {
             window.cancelAnimationFrame(this.frame);
             this.frame = 0;
+        }
+        if(this.timeout) {
+            window.cancelTimeout(this.timeout);
+            this.timeout = 0;
         }
         if(this.startFunc) {
             this.target.removeEventListener('transtionstart', this.startFunc)
@@ -114,16 +119,13 @@ class Transition {
         this.events.emit('secondframe', transitionEvent(this));
 
         if( ! this.wasStopped)
-            this.frame = window.requestAnimationFrame(()=>this.thirdFrame())
+            this.timeout = window.setTimeout(this.checkOnTransition.bind(this), 50);
     }
 
-    // Not needed for animation. Used to check if a transition has really started. Bails out
-    // if it hasn't taken place
-    thirdFrame() {
-        this.frame = 0;
-        this.target.removeEventListener('transtionstart', this.startFunc)
-        this.startFunc = null;
-
+    /*  Check if the transition has really started after 50 ms.  If it hasn't started
+        there was a problem with the setup and it will never start. */
+    checkOnTransition() {
+        this.timeout = 0;
         if( ! this.transitionStarted) {
             console.warn('Transition failed to start for: ', this.cssName, this.target);
             this.cleanup();
