@@ -23,14 +23,6 @@ class CloseTriggerFlags {
     get escape() {return this._escape}
     set escape(value) {this._escape = value; this.updateAttribute()}
 
-    /** 
-     * Menu will close if the focus moves outside of the menu
-     * @property {boolean}
-     * @deprecated
-     */
-    get lostFocus() {return false}
-    set lostFocus(value) {}
-
     /**
      * 
      */

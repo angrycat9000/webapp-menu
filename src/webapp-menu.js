@@ -5,9 +5,8 @@ import Toolbar from './Toolbar';
 import Popup from './Popup';
 import SubMenuItem from './SubMenuItem';
 import NestedMenu from './NestedMenu';
-import TreeList from './TreeList';
 
-const menuExport = {Item, SubMenuItem, Popup, Toolbar, Position, Menu, Direction, NestedMenu, TreeList};
+const menuExport = {Item, SubMenuItem, Popup, Toolbar, Position, Menu, Direction, NestedMenu};
 
 for(let e in menuExport) {
     const c = menuExport[e];
