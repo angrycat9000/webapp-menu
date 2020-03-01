@@ -20,8 +20,8 @@ class Toolbar extends Menu {
 
     updateItem(item, i , items) {
         item.setAppearance({
-            hideIcon: false,
-            hideLabel: ! item.hasAttribute('showtoolbarlabel'),
+            hideIcon: !item.hasIcon,
+            hideLabel: item.hasIcon && !item.showToolbarLabel,
             roundLeft: 0 == i,
             roundRight: i == items.length - 1
         });

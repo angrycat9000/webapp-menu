@@ -77,3 +77,11 @@
 [data-round-bottom-left] {border-bottom-left-radius: $menu-border-radius;}
 [data-round-bottom-right] {border-bottom-right-radius: $menu-border-radius;}
 
+[aria-checked="true"] .check .off {
+  display: none;
+}
+
+[aria-checked="false"] .check .on {
+  display: none;
+}
+

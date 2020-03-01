@@ -6,8 +6,9 @@ import Popup from './Popup';
 import SubMenuItem from './SubMenuItem';
 import NestedMenu from './NestedMenu';
 import Separator from './Separator';
+import CheckItem from './CheckItem';
 
-const menuExport = {Item, SubMenuItem, Separator, Popup, Toolbar, Position, Menu, Direction, NestedMenu};
+const menuExport = {Item, CheckItem, SubMenuItem, Separator, Popup, Toolbar, Position, Menu, Direction, NestedMenu};
 
 for(let e in menuExport) {
     const c = menuExport[e];

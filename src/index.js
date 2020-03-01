@@ -1,5 +1,6 @@
 import './event-logger.js';
 import materialIcon from'../stories/materialIcon';
+import CheckItem from './CheckItem';
 
 
 function run() {
@@ -10,7 +11,8 @@ function run() {
       { label: "Bold", icon: "format_bold" },
       { label: "Italics", icon: "format_italic" },
       { label: "Underline", icon: "format_underline" },
-      { label: "Clear Formatting", icon: "format_clear", showToolbarLabel:true }
+      { label: "Clear Formatting", icon: "format_clear", showToolbarLabel:true },
+      { label: "Show", type:CheckItem}
     ]);
     document.body.appendChild(toolbar);
   }

@@ -1,10 +1,10 @@
-import { html, fixture, expect } from '@open-wc/testing';
+import { fixture, expect } from '@open-wc/testing';
 
 import Menu from '../dist/webapp-menu';
 
 
 describe('Register Custom Elements', () => {  
-  for(let e of  ['Toolbar', 'Popup','Item','NestedMenu']) {
+  for(let e of  ['Toolbar', 'Popup','Item','CheckItem','NestedMenu']) {
     const t = Menu[e];
     if(t.tagName) {
       it(`Register <${t.tagName}>`, async () => {

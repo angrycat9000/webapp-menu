@@ -17,3 +17,9 @@ storiesOf('Component Specific|Toolbar', module)
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
      </wam-toolbar>`;
   })
+  .add('Checkbox in Toolbar', ()=>{
+      return `<wam-toolbar open closeon="none" useanimation="false">
+         <wam-check-item label="Show"></wam-check-item>
+         <wam-item label="Run"></wam-item>
+      </wam-toolbar>`
+  })
