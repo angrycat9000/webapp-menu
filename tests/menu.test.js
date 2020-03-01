@@ -120,4 +120,9 @@ describe('Menu', () => {
         const menu = Menu.Menu.fromElement(item);
         expect(el).to.equal(menu);
     })
+    it('Separator is not interactive', async()=>{
+        const el = (await fixture(`<wam-popup><wam-separator></wam-separator><wam-item></wam-item></wam-popup`));
+        expect(el.items.length).to.equal(2);
+        expect(el.interactiveItems.length).to.equal(1);
+    })
 });

@@ -1,0 +1,11 @@
+@import 'theme.scss';
+
+:host {
+  cursor: none;
+}
+
+hr {
+  border: 0;
+  margin: $menu-margin;
+  border-top: $menu-border;
+}

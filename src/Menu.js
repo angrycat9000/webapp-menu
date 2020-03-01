@@ -219,7 +219,9 @@ export class Menu extends HTMLElement {
      * @see Menu#displayedItems
      * @property {TabList} interactiveItems
      */
-    get interactiveItems() {return this.displayItems;}
+    get interactiveItems() {
+        return new TabList(this.displayItems.array.filter(item => item.isInteractive));
+    }
 
     /**
      * Items that are visible to the user. 

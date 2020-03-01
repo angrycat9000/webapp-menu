@@ -19,11 +19,17 @@ import itemStyle from '../style/item.scss';
   * @property {Event} detail.source
   */
 
+export class ItemBase extends HTMLElement {
+    get isInteractive() {return true;}
+
+    setAppearance() {}
+}
+
  /**
   * Item in a menu or toolbar.
   * @fires wam-activate
   */
-export class Item extends HTMLElement {
+export class Item extends ItemBase {
     constructor() {
         super();
 

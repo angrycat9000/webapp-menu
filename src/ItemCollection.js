@@ -1,7 +1,7 @@
-import Item from './Item';
+import {Item, ItemBase} from './Item';
 
 function convertToItem(obj) {
-    return (obj instanceof Item) ? obj : Item.create(obj);
+    return (obj instanceof ItemBase) ? obj : Item.create(obj);
 }
 
 
@@ -20,7 +20,7 @@ class ItemCollection {
     atIndex(i) {
         let j = 0;
         for(let e = this.owner.firstElementChild; null != e;  e = e.nextElementSibling) {
-            if( ! (e instanceof Item))
+            if( ! (e instanceof ItemBase))
                 continue;
 
             if(j == i)
@@ -68,7 +68,7 @@ class ItemCollection {
         if('number' == typeof item)
             item = this.atIndex(item);
 
-        if(item instanceof Item && item.parentElement == owner)
+        if(item instanceof ItemBase && item.parentElement == owner)
             this.owner.removeChild(item);
         
     }
@@ -79,7 +79,7 @@ class ItemCollection {
     get length() {
         let l = 0;
         for(let e of this.owner.children) {
-            if(e instanceof Item)
+            if(e instanceof ItemBase)
                 ++l;
         }
         return l;
@@ -92,7 +92,7 @@ class ItemCollection {
         let node =this.owner.firstChild;
         while(node) {
             const next = node.nextSibling;
-            if(node instanceof Item)
+            if(node instanceof ItemBase)
                 this.owner.removeChild(node);
             node = next;
         }
@@ -113,7 +113,7 @@ class ItemCollection {
 
     *[Symbol.iterator]() {
         for(let e of this.owner.children)
-            if(e instanceof Item)
+            if(e instanceof ItemBase)
                 yield e;
     }
 }

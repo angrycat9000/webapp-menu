@@ -1,6 +1,6 @@
-import { html, fixture, expect } from '@open-wc/testing';
+import { fixture, expect } from '@open-wc/testing';
 
-import Menu from '../dist/webapp-menu';
+import '../dist/webapp-menu';
 
 
 describe('ItemCollection', () => {  

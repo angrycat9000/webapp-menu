@@ -1,6 +1,6 @@
-import { html, fixture, expect} from '@open-wc/testing';
+import {fixture, expect} from '@open-wc/testing';
 
-import Menu from '../dist/webapp-menu';
+import '../dist/webapp-menu';
 
 
 describe('Interaction', () => {  
@@ -39,6 +39,18 @@ describe('Interaction', () => {
     });
     it(`Disabled item does not activate`, async () => {
         const el = (await fixture(`<wam-popup open><wam-item disabled></wam-item></wam-popup>`));
+        const item = el.firstElementChild;
+        let fired = false;
+        item.addEventListener('wam-item-activate', (e)=>{fired=true});
+
+        var evObj = document.createEvent('Events');
+        evObj.initEvent('click', true, false);
+        item.dispatchEvent(evObj);
+
+        expect(fired).to.be.false;
+    });
+    it(`Separator does not activate`, async () => {
+        const el = (await fixture(`<wam-popup open><wam-separator></wam-separator></wam-popup>`));
         const item = el.firstElementChild;
         let fired = false;
         item.addEventListener('wam-item-activate', (e)=>{fired=true});
