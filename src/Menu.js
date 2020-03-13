@@ -574,9 +574,6 @@ export class Menu extends HTMLElement {
             e.preventDefault();
         } else if('Escape' == e.key && this.closeOn.escape) {
             this.close();
-        } else if (' ' == e.key || 'Enter' == e.key) {
-            this.activate(Item.fromEvent(e), e);
-            e.preventDefault();
         }
     }
 
