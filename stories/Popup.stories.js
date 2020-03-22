@@ -4,7 +4,7 @@ import Menu from '../dist/webapp-menu.js';
 
 storiesOf('Component Specific|Popup', module)
     .add('HTML Initalization', ()=>{
-        return `<wam-popup>
+        return `<wam-popup static>
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
@@ -17,6 +17,7 @@ storiesOf('Component Specific|Popup', module)
             {label:'Copy'},
             {label:'Paste'}
         ]);
+        popup.isPopup = false;
         return popup;
     })
 

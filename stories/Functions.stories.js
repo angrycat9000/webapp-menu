@@ -10,12 +10,13 @@ function materialIcon(name) {
 
 function createPopup() {
     const popup = createStaticPopup();
-    popup.isPopup = true;
     return popup;
 }
 
 function createStaticPopup() {
-    const popup = Menu.Popup.create([
+    const popup = document.createElement('wam-popup');
+    popup.isPopup = false;
+    popup.items.set([
         {label:'Cut'},
         {label:'Copy'},
         {label:'Paste'}
@@ -26,7 +27,7 @@ function createStaticPopup() {
 storiesOf('Common|Functions', module)
     .add('ControlledBy', () => {
         return `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
-        <wam-popup popup controlledBy="open-menu-button">
+        <wam-popup controlledBy="open-menu-button">
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
@@ -105,7 +106,7 @@ storiesOf('Common|Functions', module)
       })
       .add('disabled item', ()=>{
           return `
-            <wam-popup>
+            <wam-popup static>
                 <wam-item label="Cut"></wam-item>
                 <wam-item label="Copy"></wam-item>
                 <wam-item label="Paste" disabled></wam-item>
