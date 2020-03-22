@@ -1,4 +1,4 @@
-import { html, fixture, expect } from '@open-wc/testing';
+import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import Menu from '../dist/webapp-menu';
 
@@ -124,5 +124,13 @@ describe('Menu', () => {
         const el = (await fixture(`<wam-popup><wam-separator></wam-separator><wam-item></wam-item></wam-popup`));
         expect(el.items.length).to.equal(2);
         expect(el.interactiveItems.length).to.equal(1);
+    });
+
+    it('getFocused()', async ()=>{
+        const el = (await fixture(`<wam-popup open><wam-item disabled></wam-item></wam-popup>`));
+        const item = el.firstElementChild;
+        await nextFrame();
+        expect(document.activeElement === item).to.be.true;
+        expect(el.getFocused() === item).to.be.true;
     })
 });
