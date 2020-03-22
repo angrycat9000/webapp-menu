@@ -55,11 +55,4 @@ describe('Item', () => {
 
         expect(document.activeElement).to.be.equal(el);
     })
-    describe('disabled item focusable', async ()=>{
-        const el = (await fixture(`<wam-item disabled></wam-item>`));
-        el.focus();
-        await nextFrame();
-
-        expect(document.activeElement).to.be.equal(el);
-    })
 });
