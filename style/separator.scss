@@ -2,10 +2,8 @@
 
 :host {
   cursor: none;
-}
-
-hr {
-  border: 0;
   margin: $menu-margin;
   border-top: $menu-border;
+  border-left: $menu-border;
+  display: block;
 }

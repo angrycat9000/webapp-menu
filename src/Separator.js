@@ -8,7 +8,6 @@ export class Separator extends ItemBase {
         super();
         const shadow = this.attachShadow({mode: 'open'});
         Separator.stylesheet.addToShadow(shadow);
-        shadow.appendChild(document.createElement('hr')); 
     }
 
     get isInteractive() {
