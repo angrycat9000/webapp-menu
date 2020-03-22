@@ -215,12 +215,14 @@ export class Menu extends HTMLElement {
     _convertToStatic() {
         const menu = this.shadowRoot.querySelector('.menu');
         menu.style.display = '';
+        this.style.position = '';
         this._state = 'open';
     }
 
     _convertToPopup() {
         const menu = this.shadowRoot.querySelector('.menu');
         menu.style.display = 'none';
+        this.style.position = 'absolute';
         this._state = 'closed';
     }
     

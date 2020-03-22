@@ -5,13 +5,22 @@ import Menu from '../dist/webapp-menu';
 
 describe('Menu', () => {  
     describe('open', ()=> {
-        it(`initialize to false for popup`, async () => {
+        it(`initialize to false for <wam-popup>`, async () => {
             const el = (await fixture(`<wam-popup popup></wam-popup`));
             expect(el.isOpen).to.be.false;
         });
-        it(`initialize to true for non-popup`, async () => {
-            const el = (await fixture(`<wam-popup></wam-popup`));
+        it(`initialize to true for <wam-popup static>`, async () => {
+            const el = (await fixture(`<wam-popup static></wam-popup`));
             expect(el.isOpen).to.be.true;
+        });
+
+        it(`initialize to true for wam-toolbar`, async () => {
+            const el = (await fixture(`<wam-toolbar></wam-toolbar`));
+            expect(el.isOpen).to.be.true;
+        });
+        it(`initialize to false for <wam-toolbar popup>`, async () => {
+            const el = (await fixture(`<wam-toolbar popup></wam-toolbar`));
+            expect(el.isOpen).to.be.false
         });
         it(`open()`, async () => {
             const el = (await fixture(`<wam-popup popup></wam-popup`));
@@ -26,8 +35,8 @@ describe('Menu', () => {
             el.close();
             expect(el.isOpen, 'closed after close()').to.be.false;
         });
-        it(`close() ignored on non-popup`, async () => {
-            const el = (await fixture(`<wam-popup></wam-popup`));
+        it(`close() ignored on non-popup/static`, async () => {
+            const el = (await fixture(`<wam-popup static></wam-popup`));
             el.open();
             el.close();
             expect(el.isOpen).to.be.true;
