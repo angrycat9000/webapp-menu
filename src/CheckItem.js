@@ -34,15 +34,15 @@ export class CheckItem extends Item {
         }
     }
 
-
-    get checked() {
-        return Attributes.getExists(this, 'checked');
-    }
-    set checked(value) {
-        Attributes.setExists(this, 'checked', value)
-    }
+    /**
+     * @property {Boolean}
+     */
+    get checked() {return Attributes.getExists(this, 'checked');}
+    set checked(value) {Attributes.setExists(this, 'checked', value)}
 
     get hasIcon() {return true;}
+
+    get showToolbarLabel() {return !super.hasIcon || super.showToolbarLabel}
 
     _activated(e) {
         e.preventDefault();
