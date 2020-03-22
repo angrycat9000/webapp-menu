@@ -44,8 +44,6 @@ export class CheckItem extends Item {
 
     get hasIcon() {return true;}
 
-    get showToolbarLabel() {return true;}
-
     _activated(e) {
         e.preventDefault();
         this.checked = !this.checked;

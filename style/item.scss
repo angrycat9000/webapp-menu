@@ -85,3 +85,7 @@
   display: none;
 }
 
+:host-context(wam-toolbar) .item[aria-checked="true"] {
+  background: $menu-pressed-background;
+}
+
