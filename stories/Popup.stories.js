@@ -4,11 +4,11 @@ import Menu from '../dist/webapp-menu.js';
 
 storiesOf('Component Specific|Popup', module)
     .add('HTML Initalization', ()=>{
-        return `<wam-popup open closeon="none" useanimation="false">
+        return `<wam-popup>
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
-        </wam-toolbar>`
+        </wam-popup>`
     })
     .add('JavaScript Initalization', ()=>{
         const popup = document.createElement('wam-popup');
@@ -17,9 +17,6 @@ storiesOf('Component Specific|Popup', module)
             {label:'Copy'},
             {label:'Paste'}
         ]);
-        popup.closeOn.none();
-        popup.isOpen = true;
-        popup.useAnimation = false;
         return popup;
     })
 

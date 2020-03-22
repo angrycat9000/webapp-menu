@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/html';
 
 storiesOf('Component Specific|NestedMenu', module)
   .add('HTML Initalization', () => 
-  `<wam-nestedmenu open closeon="none" useanimation="false" >
+  `<wam-nestedmenu>
     <wam-item label="Rock"></wam-item>
     <wam-submenu><span slot="label">Animal</span>
           <wam-item label="Cat"></wam-item>

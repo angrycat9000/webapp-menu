@@ -7,17 +7,17 @@ function styleComponents(style) {
     .samples{display:flex; align-items:flex-start; flex-wrap:wrap;}
     .samples > * {margin-left:1rem;}</style>
     <div class="samples">
-     <wam-popup open closeon="none" useanimation="no">
+     <wam-popup>
         <wam-item label="Cut"></wam-item>
         <wam-item label="Copy"></wam-item>
         <wam-item label="Paste"></wam-item>
     </wam-popup>
-    <wam-toolbar open closeon="none" useanimation="no">
+    <wam-toolbar>
         <wam-item label="Reply"><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
      </wam-toolbar>
-     <wam-nestedmenu open closeon="none" useanimation="no">
+     <wam-nestedmenu>
         <wam-submenu label="Letters">
             <wam-item label="Letter A"></wam-item>
             <wam-item label="Letter B"></wam-item>
@@ -47,7 +47,7 @@ storiesOf('Common|Style', module)
     .add('Shadow', styleComponents('--menu-shadow: 4px 4px 4px 2px rgba(0,0,0,0.3)'))
     .add('Open Close Transition', ()=>
         `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
-        <wam-popup controlledBy="open-menu-button" 
+        <wam-popup popup controlledBy="open-menu-button" 
             style="--menu-transition-transform:translateX(100%); 
                    --menu-transition-opacity: 0.5">
             <wam-item label="Cut"></wam-item>

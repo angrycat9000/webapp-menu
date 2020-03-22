@@ -7,6 +7,7 @@ function run() {
     const toolbar = document.createElement("wam-toolbar");
     toolbar.iconFactory = materialIcon;
     toolbar.controlledBy = document.getElementById("toolbar-button");
+    toolbar.isPopup = true;
     toolbar.items.set([
       { label: "Bold", icon: "format_bold" },
       { label: "Italics", icon: "format_italic" },

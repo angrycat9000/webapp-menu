@@ -3,8 +3,8 @@ import {fixture, expect, nextFrame} from '@open-wc/testing';
 import '../dist/webapp-menu';
 
 describe('Interaction', () => {  
-    it(`wam-activate is fired once on click`, async () => {
-        const el = (await fixture(`<wam-popup open><wam-item></wam-item></wam-popup>`));
+    it(`wam-item-activate is fired`, async () => {
+        const el = (await fixture(`<wam-popup><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;
         let fired = 0;
         item.addEventListener('wam-item-activate', (e)=>{fired++});
@@ -18,7 +18,7 @@ describe('Interaction', () => {
 
         expect(fired).to.be.equal(1);
     });
-    it('wam-activate uses click to activate not keypress', async ()=> {
+    it('wam-item-activate uses click to activate not keypress', async ()=> {
         const el = (await fixture(`<wam-popup open><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;
         let fired = 0;
@@ -35,21 +35,21 @@ describe('Interaction', () => {
         expect(fired).to.be.equal(0);
     })
     it(`Close after activate`, async () => {
-        const el = (await fixture(`<wam-popup open><wam-item></wam-item></wam-popup>`));
+        const el = (await fixture(`<wam-popup popup><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;
+        el.open();
 
-        var evObj = document.createEvent('Events');
-        evObj.initEvent('keypress', true, false);
         var evObj = document.createEvent('Events');
         evObj.initEvent('click', true, false);
-
         item.dispatchEvent(evObj);
 
         expect(el.isOpen).to.be.false;
     });
-    it(`Open after wam-activate + preventDefault()`, async () => {
-        const el = (await fixture(`<wam-popup open><wam-item></wam-item></wam-popup>`));
+
+    it(`Open after activate + preventDefault()`, async () => {
+        const el = (await fixture(`<wam-popup popup ><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;
+        el.open();
         item.addEventListener('wam-item-activate', (e)=>e.preventDefault());
 
         var evObj = document.createEvent('Events');
@@ -58,6 +58,16 @@ describe('Interaction', () => {
 
         expect(el.isOpen).to.be.true;
     });
+
+    it('Open after close + preventDefault()', async() => {
+        const el = (await fixture(`<wam-popup popup><wam-item></wam-item></wam-popup>`));
+        el.addEventListener('wam-menu-close', (e)=>e.preventDefault());
+
+        el.open();
+        el.close();
+        expect(el.isOpen).to.be.true;
+    });
+
     it(`Disabled item does not activate`, async () => {
         const el = (await fixture(`<wam-popup open><wam-item disabled></wam-item></wam-popup>`));
         const item = el.firstElementChild;
@@ -70,6 +80,7 @@ describe('Interaction', () => {
 
         expect(fired).to.be.false;
     });
+
     it(`Separator does not activate`, async () => {
         const el = (await fixture(`<wam-popup open><wam-separator></wam-separator></wam-popup>`));
         const item = el.firstElementChild;

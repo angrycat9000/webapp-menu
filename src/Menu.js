@@ -9,106 +9,12 @@ import Attributes from './Attributes';
 import {ReusableStyleSheet} from './Style';
 import style from '../style/menu.scss';
 
-
-class CloseTriggerFlags {
-    constructor(parent) {
-        this._parent = parent;
-        this._escape = this._pointerDownOutside = this._itemActivate = true;
-    }
-
-    /**
-     * Menu will close if the user presses the Escape key
-     * @property {boolean}
-     */
-    get escape() {return this._escape}
-    set escape(value) {this._escape = value; this.updateAttribute()}
-
-    /**
-     * 
-     */
-    get pointerDownOutside() {return this._pointerDownOutside}
-    set pointerDownOutside(value) {this._pointerDownOutside = value; this.updateAttribute()}
-
-    /**
-     * Menu will close when an item is activated.  
-     * Does not include items that perform internal menu navigation such as 
-     * opening a sub menu.
-     * @property {boolean}
-     */
-    get itemActivate() {return this._itemActivate}
-    set itemActivate(value) {this._itemActivate = value; this.updateAttribute()}
-
-    /** 
-     * Set the menu to close on any of the potential close events: escape, lost focus,
-     * or activating an item.
-     */
-    all() {this._escape = this._pointerDownOutside = this._itemActivate = true;}
-
-    /**
-     * Ignore the potential close events.  A call to  #Menu.close must
-     * be made to close the menu.
-     */
-    none() {this._escape = this._pointerDownOutside = this._itemActivate = false;}
-
-    /**
-     * Update the element attribute based on the internal values of this object.
-     *  @private
-     */
-    updateAttribute() {
-        const str = this.toString();
-        this._parent.setAttribute('closeon', str);    
-    }
-
-    /**
-     * Update the internal properties of this menu based on the element attribute value
-     * @private
-     */
-    updateInternal() {
-        this.fromString(this._parent.getAttribute('closeon'));
-    }
-
-    fromString(str) {
-        if( ! str) {
-            this._escape = true;
-            this._pointerDownOutside = true;
-            this._itemActivate = true;
-        }
-
-        const array = str.toLowerCase().split(',').map(s=>s.trim());
-        if(0 == array.length || (1 == array.length && 'none' == array[0])) {
-            this._escape = false;
-            this._pointerDownOutside = false;
-            this._itemActivate = false;
-        } else if ( 1 == array.length && 'all' == array[0]) {
-            this._escape = true;
-            this._pointerDownOutside = true;
-            this._itemActivate = true;
-        } else {
-            this._escape =  !! array.find(s=>s=='escape');
-            this._pointerDownOutside = !! array.find(s=>s=='pointerdownoutside');
-            this._itemActivate = !! array.find(s=>s=='itemactivate');
-        }
-    }
-
-    toString() {
-        const values = []
-        if(this.escape)
-            values.push('escape');
-
-        if(this.pointerDownOutside)
-            values.push('pointerdownoutside');
-
-        if(this.itemActivate)
-           values.push('itemactivate')
-
-        if(3 == values.length)
-            return 'all';
-        if(0 == values.length)
-            return 'none';
-
-        return values.join(',');
-    }
-}
+/** @enum CloseReason */
+const CloseReason = {
+    Escape: 'Escape',
+    ItemActivated: 'ItemActivated',
+    PointerDownOutside: 'PointerDownOutside'
+};
 
 /**
  * @enum Direction
@@ -145,7 +51,6 @@ export class Menu extends HTMLElement {
         const shadow = this.attachShadow({mode: 'open'});
         Menu.stylesheet.addToShadow(shadow);
         const outer = document.createElement('div');
-        outer.style.display='none';
         outer.className = 'menu menu-outer';
         outer.setAttribute('role', 'menu');
         const inner = document.createElement('div');
@@ -166,31 +71,22 @@ export class Menu extends HTMLElement {
          */
         this.items = new ItemCollection(this);
 
-        /**
-         * @property {Direction}
-         */
+        /** @property {Direction} */
         this.direction = Direction.TopToBottom;
 
-        /** 
-         * Events that will cause the menu to close
-         * @property {CloseTriggerFlags} closeOn
-         */
-        Object.defineProperty(this, 'closeOn', {value:new CloseTriggerFlags(this)});
+        /** @property {boolean} useAnimation */
+        this.useAnimation = true;
+
+        /** @property {PositionFunction} position */
+        this._position = Position.None;
 
         this.addEventListener('keydown', Menu.onKeyDown);
         this.addEventListener('keypress', Menu.onKeyPress);
         this.addEventListener('click', Menu.onClick);
 
-        this._state = this._previousState = 'closed';
+        this._state = 'open';
         this._windowResizeFunc = (e)=>{this.onWindowResize(e)}
         this._windowPointerFunc = (e)=>{this.onWindowPointerDown(e)}
-
-
-        /** @property {PositionFunction} position */
-        this._position = Position.None;
-
-
-        
     }
 
     /**
@@ -233,16 +129,17 @@ export class Menu extends HTMLElement {
      */
     get displayItems() {return new TabList(this.items);}
 
-    /** @property {boolean} useAnimation */
-    get useAnimation() {return Attributes.getTrueFalse(this, 'useanimation', true)}
-    set useAnimation(value) {Attributes.setTrueFalse(this, 'useanimation', value)}
-
     /**
      * @property {boolean} isOpen
      */
-    get isOpen() {return Attributes.getExists(this, 'open')};
-    set isOpen(value) {Attributes.setExists(this, 'open', value)}
-    
+    get isOpen() {return 'open' === this._state ||  'opening' === this._state || ! this.isPopup;}
+
+    /**
+     * @property {boolean} isPopup
+     */
+    get isPopup() { return Attributes.getExists(this, 'popup') }
+    set isPopup(value) { Attributes.setExists(this, 'popup', value)}
+
     /**
      * @property {HTMLElement} controlledBy Element that controls this this menu.
      */
@@ -282,27 +179,25 @@ export class Menu extends HTMLElement {
      * Web component life cycle helper to define what attributes trigger #attributeChangedCallback
      */
     static get observedAttributes() {
-        return ['open', 'closeon', 'controlledby'];
+        return ['popup', 'controlledby'];
     }
+
     /**
      * Web component life cycle when an attribute on the element is changed
      */
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name) {
-
-            case 'open':
-                if(null != newValue && 'false' != newValue)
-                    this.open();
+            case 'popup': {
+                const isPopup = null !== newValue;
+                if(isPopup)
+                    this._convertToPopup();
                 else
-                    this.close();
+                    this._convertToStatic();
                 break;
-
+            }
             case 'controlledby':
                 this.setControlledByElement(this.getElementById(newValue));
                 break;
-
-            case 'closeon':
-                this.closeOn.updateInternal();    
         }
     }
 
@@ -316,7 +211,23 @@ export class Menu extends HTMLElement {
         }
         return element;
     }
+
+    _convertToStatic() {
+        const menu = this.shadowRoot.querySelector('.menu');
+        menu.style.display = '';
+        this._state = 'open';
+    }
+
+    _convertToPopup() {
+        const menu = this.shadowRoot.querySelector('.menu');
+        menu.style.display = 'none';
+        this._state = 'closed';
+    }
     
+    /** 
+     * Check if one of the menu items has focus
+     * @return {boolean}
+     */
     isFocusWithin() {
         let focused = document.activeElement;
         while(focused) {
@@ -324,24 +235,7 @@ export class Menu extends HTMLElement {
                 return true;
             focused = focused.parentElement
         }
-        return false;  
-    }
-
-    onPointerDownOutside() {
-        if(this.closeOn.pointerDownOutside && 'open' == this.state )
-            this.close();
-    }
-
-    /**
-     * If the menu is opened, closed, or in transition.  Public callers use isOpen
-     * @property {string} state;
-     * @private
-     */
-    get state() {return this._state;}
-    set state(value) {
-        this._state = value;
-        
-        this.isOpen = 'open' == value || 'opening' == value;
+        return false;
     }
 
     startTransition(transition) {
@@ -363,21 +257,23 @@ export class Menu extends HTMLElement {
      * @return {Transition} null if the menu is already open.  Otherwise a Transition.
      */
     open() {
-        if('open' == this.state|| 'opening' == this.state)
+        if(this.isOpen || ! this.isPopup)
             return null;
 
         const event = new CustomEvent('wam-menu-open', {
             bubbles:true,
-            cancelable:false,
+            cancelable:true,
             detail: {
                 menu: this,
             }
         });
 
-        this.dispatchEvent(event);
+        if( ! this.dispatchEvent(event)) {
+            return null;
+        }
 
         this.previousFocus = this.parentElement ? document.activeElement : null;
-        this.state = 'opening';
+        this._state = 'opening';
 
         const menuElement = this.shadowRoot.querySelector('.menu');
 
@@ -398,29 +294,34 @@ export class Menu extends HTMLElement {
         })
 
         anim.on('complete',()=>{
-            this.state = 'open';
+            this._state = 'open';
         })
 
         return this.startTransition(anim);
     }
 
     /**
+     * @param {CloseReason}
      * @return {Transition} Null if it is already closed
      */
-    close() {
-        if(this.state == 'closed' || this.state == 'closing')
+    close(cause) {
+        if( ! this.isPopup || ! this.isOpen)
             return null;
-    
+
         const event = new CustomEvent('wam-menu-close', {
             bubbles:true,
-            cancelable:false,
+            cancelable: true,
             detail: {
                 menu: this,
+                cause: cause
             }
         });
-        this.dispatchEvent(event);
 
-        this.state = 'closing';
+        if( ! this.dispatchEvent(event)) {
+            return false;
+        }
+
+        this._state = 'closing';
 
         let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'animation-hide');
         anim.on('firstframe',(e)=>{
@@ -438,10 +339,7 @@ export class Menu extends HTMLElement {
         })
 
         anim.on('complete', ()=>{
-            if(this.state != 'closing')
-                return;
-
-            this.state = 'closed';
+            this._state = 'closed';
             this.shadowRoot.querySelector('.menu').style.display = 'none';
         });
 
@@ -461,10 +359,9 @@ export class Menu extends HTMLElement {
         return focused;
     }
 
-
     onWindowPointerDown(e) {
-        if(this.closeOn.pointerDownOutside && this !== Menu.fromElement(e.target))
-            this.close();
+        if(this.isPopup && this !== Menu.fromElement(e.target))
+            this.close(CloseReason.PointerDownOutside);
     }
 
     onWindowResize() {
@@ -566,8 +463,8 @@ export class Menu extends HTMLElement {
         } else if('ArrowDown' == e.key && Direction.TopToBottom == this.direction) {
             this.setFocusOn(this.interactiveItems.next(item));
             e.preventDefault();
-        } else if('Escape' == e.key && this.closeOn.escape) {
-            this.close();
+        } else if('Escape' == e.key && this.isPopup) {
+            this.close(CloseReason.Escape);
         }
     }
 
@@ -591,10 +488,10 @@ export class Menu extends HTMLElement {
         if('function' == typeof item.action)
             item.action(event);
 
-        const closeMenu = item.dispatchEvent(event);
+        const closeOk = item.dispatchEvent(event);
         
-        if(this.closeOn.itemActivate && closeMenu)
-            this.close();    
+        if(this.isPopup && closeOk)
+            this.close(CloseReason.ItemActivated);
     }
 
     /** @private */
@@ -618,7 +515,12 @@ export class Menu extends HTMLElement {
     get controlledByEventListeners() {
         if( ! this._controlledByEventListeners) {
             this._controlledByEventListeners = {
-                onClick: (e)=>{this.isOpen = ! this.isOpen},
+                onClick: (e)=>{
+                    if(this.isOpen)
+                        this.close();
+                    else
+                        this.open();
+                },
                 onKeyDown: (e)=>{
                     if(this.isOpen )
                         return;

@@ -9,28 +9,24 @@ function materialIcon(name) {
 }
 
 function createPopup() {
+    const popup = createStaticPopup();
+    popup.isPopup = true;
+    return popup;
+}
+
+function createStaticPopup() {
     const popup = Menu.Popup.create([
         {label:'Cut'},
         {label:'Copy'},
         {label:'Paste'}
     ]);
-
-
-    return popup;
-}
-
-function createStaticPopup() {
-    const popup = createPopup();
-    popup.isOpen = true;
-    popup.useAnimation = false;
-    popup.closeOn.none();
     return popup;
 }
 
 storiesOf('Common|Functions', module)
     .add('ControlledBy', () => {
         return `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
-        <wam-popup controlledBy="open-menu-button">
+        <wam-popup popup controlledBy="open-menu-button">
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
@@ -81,8 +77,6 @@ storiesOf('Common|Functions', module)
           {label:'Reply All', icon:'reply_all'},
           {label:'Forward', icon:'forward'}
         ]);
-        bar.isOpen = true;
-        bar.closeOn.none();
         return bar;
       })
       .add('.create()', ()=>{
@@ -93,8 +87,6 @@ storiesOf('Common|Functions', module)
         ];
         const bar = Menu.Toolbar.create(items);
         bar.iconFactory = materialIcon;
-        bar.isOpen = true;
-        bar.closeOn.none();
         return bar;
       })
       .add('wam-item-activate preventDefault', ()=>{
@@ -103,7 +95,8 @@ storiesOf('Common|Functions', module)
           {label:'Leave Open', id:'leave-open'},
         ];
         const bar = Menu.Popup.create(items);
-        bar.isOpen = true;
+        bar.isPopup = true;
+        bar.open();
         bar.addEventListener('wam-item-activate', (e)=>{
             if('leave-open' == e.detail.item.id)
                 e.preventDefault();
@@ -112,7 +105,7 @@ storiesOf('Common|Functions', module)
       })
       .add('disabled item', ()=>{
           return `
-            <wam-popup open useanimation="false"  closeon="none">
+            <wam-popup>
                 <wam-item label="Cut"></wam-item>
                 <wam-item label="Copy"></wam-item>
                 <wam-item label="Paste" disabled></wam-item>

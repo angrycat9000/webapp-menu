@@ -59,7 +59,7 @@
     <p>You can download webapp-menu from <a href="https://www.npmjs.com/package/webapp-menu">NPM</a> or from 
         <a href="https://github.com/angrycat9000/webapp-menu">GitHub</a>.</p>
 
-    <wam-toolbar open closeon="none" useanimation="false">
+    <wam-toolbar>
         <wam-item label="Popup" id="popup-button" showtoolbarlabel>
             <i class="material-icons" slot="icon">more_horiz</i>
         </wam-item>
@@ -69,7 +69,7 @@
             <i class="material-icons" slot="icon">account_tree</i></wam-item>
     </wam-toolbar>
 
-    <wam-nestedmenu controlledby="nested-button">
+    <wam-nestedmenu popup controlledby="nested-button">
         <wam-item label="Generic Item"></wam-item>
         <wam-submenu label="List of Fruits">
             <wam-item label="Apple"></wam-item>
@@ -94,7 +94,7 @@
         </wam-submenu>
     </wam-nestedmenu>
 
-    <wam-popup controlledby="popup-button">
+    <wam-popup popup controlledby="popup-button">
         <wam-item label="Cut"></wam-item>
         <wam-item label="Copy"></wam-item>
         <wam-item label="Paste"></wam-item>
@@ -106,7 +106,7 @@
 
     <h2>Custom Theming</h2>
     <p>The controls support customization so you can match them to the look of your app.</p>
-    <wam-popup open closeon="none" useanimation="false" class="custom-border">
+    <wam-popup class="custom-border">
             <wam-item label="Pick Fonts" class="custom-font"></wam-item>
             <wam-item label="Add Icons"><i class="material-icons" slot="icon">add</i></wam-item>
             <wam-item label="Change Colors" class="custom-color"></wam-item>
