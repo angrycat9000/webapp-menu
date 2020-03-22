@@ -256,7 +256,7 @@ export class Menu extends HTMLElement {
         const id = this.getAttribute('controlledBy');
         if( ! id)
             return null;
-        return document.getElementById(id);
+        return this.getElementById(id);
     }
     set controlledBy(value) {
         if( ! value)
@@ -304,7 +304,7 @@ export class Menu extends HTMLElement {
                 break;
 
             case 'controlledby':
-                this.setControlledByElement(document.getElementById(newValue));
+                this.setControlledByElement(this.getElementById(newValue));
                 break;
 
             case 'closeon':
@@ -487,7 +487,7 @@ export class Menu extends HTMLElement {
 
         const controlledBy = this.getAttribute('controlledBy');
         if(controlledBy)
-            this.setControlledByElement(document.getElementById(controlledBy));
+            this.setControlledByElement(this.getElementById(controlledBy));
     }
 
     /**
@@ -685,6 +685,17 @@ export class Menu extends HTMLElement {
     updateAllItems() {
         const items = Array.from(this.items);
         items.forEach(this.updateItem, this);
+    }
+
+    /**
+     * @private
+     */
+    getElementById(id) {
+        let root = this.getRootNode();
+        if(root.shadowRoot) {
+            root = root.shadowRoot;
+        }
+        return root.getElementById(id);
     }
 }
 
