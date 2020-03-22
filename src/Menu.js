@@ -379,6 +379,8 @@ export class Menu extends HTMLElement {
         const controlledBy = this.getAttribute('controlledBy');
         if(controlledBy)
             this.setControlledByElement(this.getElementById(controlledBy));
+
+        this.focusItem = this.interactiveItems.first;
     }
 
     /**
