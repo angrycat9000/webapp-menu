@@ -692,9 +692,10 @@ export class Menu extends HTMLElement {
      */
     getElementById(id) {
         let root = this.getRootNode();
-        if(root.shadowRoot) {
+        if(root.shadowRoot)
             root = root.shadowRoot;
-        }
+        else
+            root = window.document;
         return root.getElementById(id);
     }
 }
