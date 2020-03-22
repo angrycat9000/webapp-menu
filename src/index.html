@@ -59,17 +59,34 @@
     <p>You can download webapp-menu from <a href="https://www.npmjs.com/package/webapp-menu">NPM</a> or from 
         <a href="https://github.com/angrycat9000/webapp-menu">GitHub</a>.</p>
 
-    <wam-toolbar>
-        <wam-item label="Popup" id="popup-button" showtoolbarlabel>
-            <i class="material-icons" slot="icon">more_horiz</i>
+    <h2><code>&lt;wam-toolbar&gt;</code></h2>
+    <wam-toolbar id="toolbar-example">
+        <wam-check-item label="Bold">
+            <i class="material-icons" slot="icon">format_bold</i>
+        </wam-check-item>
+        <wam-check-item label="Italics">
+            <i class="material-icons" slot="icon">format_italic</i>
+        </wam-check-item>
+        <wam-check-item label="Underline" checked>
+            <i class="material-icons" slot="icon">format_underline</i>
+        </wam-check-item>
+        <wam-separator></wam-separator>
+        <wam-item label="Clear Formatting" showtoolbarlabel>
+            <i class="material-icons" slot="icon">format_clear</i>
         </wam-item>
-        <wam-item label="Toolbar" id="toolbar-button" showtoolbarlabel>
-            <i class="material-icons" slot="icon">build</i></wam-item>
-        <wam-item label="Nested Menu" id="nested-button" showtoolbarlabel>
-            <i class="material-icons" slot="icon">account_tree</i></wam-item>
     </wam-toolbar>
 
-    <wam-nestedmenu popup controlledby="nested-button">
+    <h2><code>&lt;wam-popup&gt;</code></h2>
+    <wam-popup>
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste"></wam-item>
+        <wam-separator></wam-separator>
+        <wam-item label="Paste Special"></wam-item>
+    </wam-popup>
+
+    <h2><code>&lt;wam-nestedmenu&gt;</code></h2>
+    <wam-nestedmenu>
         <wam-item label="Generic Item"></wam-item>
         <wam-submenu label="List of Fruits">
             <wam-item label="Apple"></wam-item>
@@ -93,15 +110,6 @@
             </wam-submenu>
         </wam-submenu>
     </wam-nestedmenu>
-
-    <wam-popup popup controlledby="popup-button">
-        <wam-item label="Cut"></wam-item>
-        <wam-item label="Copy"></wam-item>
-        <wam-item label="Paste"></wam-item>
-        <wam-item label="Paste Special"></wam-item>
-        <wam-separator></wam-separator>
-        <wam-item label="Save"></wam-item>
-    </wam-popup>
 
 
     <h2>Custom Theming</h2>

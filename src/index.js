@@ -4,18 +4,13 @@ import CheckItem from './CheckItem';
 
 
 function run() {
-    const toolbar = document.createElement("wam-toolbar");
-    toolbar.iconFactory = materialIcon;
-    toolbar.controlledBy = document.getElementById("toolbar-button");
-    toolbar.isPopup = true;
-    toolbar.items.set([
-      { label: "Bold", icon: "format_bold" },
-      { label: "Italics", icon: "format_italic" },
-      { label: "Underline", icon: "format_underline" },
-      { label: "Clear Formatting", icon: "format_clear", showToolbarLabel:true },
-      { label: "Show", type:CheckItem}
-    ]);
-    document.body.appendChild(toolbar);
+    const clearButton = document.querySelector('#toolbar-example wam-item');
+    clearButton.addEventListener('wam-item-activate', ()=>{
+      const toggles = document.querySelectorAll('#toolbar-example wam-check-item');
+      for(const t of toggles) {
+        t.checked = false;
+      }
+    });
   }
   
   if ("loading" == document.readyState)

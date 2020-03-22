@@ -4,6 +4,6 @@
 
 .menu-inner {width:100%}
 
-:host {
+:host([popup]) {
   position:absolute;
 }
