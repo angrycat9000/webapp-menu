@@ -201,11 +201,12 @@ export class Item extends HTMLElement {
             case 'isdefaultfocus':
                 this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)
                 break;
-            case 'label':
+            case 'label': {
                 const labelSlot = this.shadowRoot.querySelector('slot[name=label]');
                 while(labelSlot.firstChild)
                     labelSlot.removeChild(labelSlot.firstChild);
-                labelSlot.appendChild(document.createTextNode(newValue))
+                labelSlot.appendChild(document.createTextNode(newValue));
+            }
         }
       }
 
