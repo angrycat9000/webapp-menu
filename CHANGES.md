@@ -5,6 +5,8 @@
   - Removed `open` attribute. Use `open()` or `close()` in JavaScript to control popup menus.
   - Made `isOpen` property read only.
 
+- Remove `CloseTriggerFlags` / `closeOn`.  Callers should listen to the `wam-menu-close` event and call event.prevent default to block closing on certian causes.
+
 - Changed CSS variable prefix from `--menu-` to `--wam-`
 
 ## Internal

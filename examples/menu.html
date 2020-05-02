@@ -1,0 +1,52 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WebApp Menu Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+    <script type="module" src="../dist/webapp-menu.js"/></script>
+    <script src="../src/event-logger.js"></script>
+
+    <style>
+        .menu {
+            display:flex;
+            border: 1px solid black;
+        }
+
+
+        .item {padding: 0.5rem;}
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Core Menu</h1>
+
+        <wam-popup>
+            <wam-item label="Label Only"></wam-item>
+            <wam-item label="Item with Icon">
+                <span slot="icon" style="font-size:2rem">&copy;</span>
+            </wam-item>
+        </wam-popup>
+
+        <button id="show-menu">Show Menu</button>
+        
+        <wam-popup popup controlledBy="show-menu">
+            <wam-item label="Label Only"></wam-item>
+            <wam-item label="Item with Icon">
+                <span slot="icon" style="font-size:2rem">&copy;</span>
+            </wam-item>
+            <wam-item>
+                <div slot="label">
+                    <div>Custom Formatting</div>
+                    <div>with second line</div>
+                </div>
+            </wam-item>
+            <wam-item label="Should not show because overridden by label slot">
+                <span slot="label"><span style="text-decoration:underline">A</span>ction 2</span>
+            </wam-item>
+        </wam-popup>
+
+    </main>
+</body>
+
+</html>
