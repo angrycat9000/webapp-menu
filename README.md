@@ -4,20 +4,41 @@ Quickly create accessible menus for in web apps.  Eg. context menu, file menu, e
 
 No framework dependencies.  It is written in with vanilla JS and can be used with any framework.
 
+## Live Demos
 
-## Screenshots & Demo
+[Web App Menu site](https://webapp-menu.netlify.com/)
 
-[Live Demo](https://webapp-menu.netlify.com/)
+[Storybook](https://webapp-menu.netlify.com/storybook)
 
-Toolbar
+<!--
+```
+<custom-element-demo>
+  <template>
+  <script type="module"  src="https://unpkg.com/webapp-menu@^3/dist/webapp-menu.js"></script>
+    <button id="show-it">Show Menu</button>
+    <wam-popup controlled-by="show-it">
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste></wam-item>
+        <wam-separator></wam-separator>
+        <wam-item label="Delete"></wam-item>
+    </wam-popup>
+  </template>
+</custom-element-demo>
+```
+-->
+
+## Screenshots
+
+### Toolbar
 
 [![toolbar screenshot](screenshots/toolbar.png)](https://webapp-menu.netlify.com/)
 
-Popup
+### Popup
 
 [![context popup screenshot](screenshots/popup.png)](https://webapp-menu.netlify.com/)
 
-Nested Menu
+### Nested Menu
 
 [![nested menu control screenshot](screenshots/nested-menu.png)](https://webapp-menu.netlify.com/)
 
@@ -29,7 +50,7 @@ Nested Menu
 Include the Javascript in your HTML as a module import.
 
 ```html
-<script type="module"  src="https://unpkg.com/webapp-menu@^2/dist/webapp-menu.js"></script>
+<script type="module" src="https://unpkg.com/webapp-menu@^3/dist/webapp-menu.js"></script>
 ```
 
 ### NPM
@@ -41,7 +62,7 @@ npm install --save webapp-menu
 Include the file in your code:
 
 ```javascript
-import Menu from 'webapp-menu';
+import 'webapp-menu';
 ```
 
 ## Usage
@@ -53,10 +74,9 @@ See the [storybook examples](https://webapp-menu.netlify.com/storybook/) for mor
 ### Using HTML
 
 ```html
-<wam-popup controlledBy="some-button-id">
+<wam-popup controlled-by="some-button-id">
     <wam-item label="Text Only"></wam-item>
-    <wam-item label="Text with Icon">
-        <img slot="icon" src="hello.png"></span>
+    <wam-item label="Text with Icon" icon="hello.png">
     </wam-item>
 </wam-popup>
 ```
@@ -64,19 +84,16 @@ See the [storybook examples](https://webapp-menu.netlify.com/storybook/) for mor
 ### Using JavaScript
 
 ```javascript
-function iconFactory(icon) {
-    const img = document.createElement('img');
-    img.src = icon;
-    return img;
-}
-
 const items = [
     {label:'Text Only'}
     {label:'Text with Icon', icon:'hello.png'},
 ];
 
 const menu = document.createElement('wam-popup');
-menu.iconFactory = iconFactory;
 menu.items.set(items);
 menu.controlledBy = document.getElementById('some-button-id');
 ```
+
+## History
+
+See [CHANGES.md](./CHANGES.md).
