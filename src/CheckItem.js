@@ -1,6 +1,9 @@
 import Item from './Item';
 import Attributes from './Attributes';
 
+/**
+ * @element wam-check-item
+ */
 export class CheckItem extends Item {
 
     static get observedAttributes() {
@@ -35,7 +38,8 @@ export class CheckItem extends Item {
     }
 
     /**
-     * @property {Boolean}
+     * @attribute {on/off} checked
+     * @property {Boolean} checked
      */
     get checked() {return Attributes.getExists(this, 'checked');}
     set checked(value) {Attributes.setExists(this, 'checked', value)}
