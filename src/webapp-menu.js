@@ -7,15 +7,28 @@ import SubMenuItem from './SubMenuItem';
 import NestedMenu from './NestedMenu';
 import Separator from './Separator';
 import CheckItem from './CheckItem';
+import IconFactory from './IconFactory';
 
-const menuExport = {Item, CheckItem, SubMenuItem, Separator, Popup, Toolbar, Position, Menu, Direction, NestedMenu};
+const Wam = {
+    Item,
+    CheckItem,
+    SubMenuItem,
+    Separator,
+    Popup,
+    Toolbar,
+    Position,
+    Menu,
+    Direction,
+    NestedMenu,
+    IconFactory
+};
 
-for(let e in menuExport) {
-    const c = menuExport[e];
+for(let e in Wam) {
+    const c = Wam[e];
     if(c.tagName) {
         window.customElements.define(c.tagName, c);
         console.debug(`Registering <${c.tagName}>` );
     }
 }
 
-export default menuExport;
+export default Wam;

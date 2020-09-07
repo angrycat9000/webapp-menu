@@ -80,6 +80,10 @@ export class SubMenuItem extends Item {
         return e;
     }
 
+    get iconFactory() {
+        return this.topMenu.iconFactory;
+    }
+
     /**
      * Determine if this is an action on the child items (instead of the open root item)
      * @param {Array<Node>} targetPath

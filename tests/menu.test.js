@@ -2,6 +2,7 @@ import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import Menu from '../dist/webapp-menu';
 
+const iconFactory = function () { return document.createElement('span')}
 
 describe('Menu', () => {  
     describe('open', ()=> {
@@ -118,5 +119,33 @@ describe('Menu', () => {
         await nextFrame();
         expect(document.activeElement === item, 'document.activeElement').to.be.true;
         expect(el.getFocused() === item, 'getFocused()').to.be.true;
+    })
+
+    describe('iconFactory', () => {
+        it('can set Menu.iconFactory', () => {
+            Menu.IconFactory.defaultFactory = null;
+            Menu.iconFactory = iconFactory;
+            expect(Menu.iconFactory).to.equal(iconFactory);
+        })
+
+        it('defaults to null', () => {
+            const el = document.createElement(Menu.Popup.tagName);
+            Menu.IconFactory.defaultFactory = null;
+            expect(el._iconFactory).to.be.null;
+            expect(el.iconFactory).to.be.null;
+        })
+
+        it('use Menu.IconFactory default', async () => {
+            const el = document.createElement(Menu.Popup.tagName);
+            Menu.IconFactory.defaultFactory = iconFactory;
+            expect(el.iconFactory).to.equal(iconFactory);
+        })
+
+        it('can override Menu.iconFactory', async () => {
+            const el = document.createElement(Menu.Popup.tagName);
+            Menu.IconFactory.defaultFactory = null;
+            el.iconFactory = iconFactory;
+            expect(el.iconFactory).to.equal(iconFactory);
+        })
     })
 });
