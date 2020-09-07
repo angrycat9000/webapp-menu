@@ -1,4 +1,9 @@
-# 3.0.0
+## 3.0.0
+
+- Added IconFactory
+  - Added `IconFactory.image` and `IconFactory.materialIcon` as icon factory methods
+  - Changed `Menu.defaultFactory` to `IconFactory.defaultFactory`
+  - Changed default icon factory from `null` to  `IconFactory.image`
 
 - Default to  static elements instead of popups
   - Added `popup` attribute.  Use this to enable popup behavior on a menu
@@ -9,6 +14,6 @@
 
 - Changed CSS variable prefix from `--menu-` to `--wam-`
 
-## Internal
+### Internal
 - Renamed `Direction` enum to `Orientation` to align with `aria-orientation`
 * 
