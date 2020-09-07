@@ -4,13 +4,6 @@ export default {
     title: 'Functions'
  }
 
-function materialIcon(name) {
-    const icon = document.createElement('i');
-    icon.className = 'material-icons';
-    icon.innerHTML = name;
-    return icon;
-}
-
 function createPopup() {
     const popup = createStaticPopup();
     return popup;
@@ -68,7 +61,6 @@ positionAtPoint.storyName = 'Position At Point';
 
 export const itemCollection =  () => {
     const popup = createStaticPopup();
-    popup.iconFactory = materialIcon;
 
     popup.items.append({label:'Accessibility', icon:'accessibility'});
     popup.items.insertBefore({label:'Themes', icon:'color_lens'}, 1);

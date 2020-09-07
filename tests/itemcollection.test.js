@@ -22,9 +22,10 @@ describe('ItemCollection', () => {
         it(`with items`, async () => {
             const el = (await fixture(`<wam-popup><wam-item></wam-item><wam-item></wam-item></wam-popup>`));
             expect(el.items.length).to.be.equal(2);
-            el.items.set([{label:'Test Value'}]);
+            el.items.set([{label:'Test Value', icon:"alarm"}]);
             expect(el.items.length).to.be.equal(1);
             expect(el.items.atIndex(0).label).to.be.equal('Test Value');
+            expect(el.items.atIndex(0).icon).to.be.equal('alarm');
         });
     });
     it('insertBefore(object)', async ()=>{

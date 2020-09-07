@@ -73,11 +73,8 @@ export class Item extends ItemBase {
     set(props) {
         if( ! props)
             return;
-        
-        if('undefined' != props.icon)
-            this.setIcon(props.icon);
 
-        for(let prop of ['disabled', 'label', 'showLabel', 'action', 'data', 'id']) {
+        for(let prop of ['disabled', 'icon', 'label', 'showLabel', 'action', 'data', 'id']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
@@ -149,10 +146,10 @@ export class Item extends ItemBase {
     }
 
     updateFactoryIcon() {
-        if(!this.iconName || !this.parentElement || ! this.parentElement.iconFactory)
+        if(!this.icon || !this.parentElement || ! this.parentElement.iconFactory)
             return;
 
-        const iconElement = this.parentElement.iconFactory(this.iconName);
+        const iconElement = this.parentElement.iconFactory(this.icon);
         this.setIcon(iconElement);
     }
 
@@ -226,10 +223,10 @@ export class Item extends ItemBase {
 
     /**
      * @attribute {string} icon
-     * @property {string} iconName
+     * @property {string} icon
      */
-    get iconName() {return Attributes.getString(this, 'icon');}
-    set iconName(value) {return Attributes.setString(this, 'icon', value);}
+    get icon() {return Attributes.getString(this, 'icon');}
+    set icon(value) {return Attributes.setString(this, 'icon', value);}
 
     clearSlot(name) {
         const items = this.querySelectorAll(`[slot=${name}]`);
