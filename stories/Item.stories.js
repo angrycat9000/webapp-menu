@@ -2,12 +2,16 @@ function itemShowcase(item) {
   return `
     <h2>Popup or Nested Menu</h2>
     <wam-popup static>
+      <wam-item label="Item Before"></wam-item>
       ${item}
+      <wam-item label="Item After"></wam-item>
     </wam-popup>
 
     <h2>Toolbar</h2>
     <wam-toolbar>
+      <wam-item label="Item Before" icon="skip_previous"></wam-item>
       ${item}
+      <wam-item label="Item After" icon="skip_next"></wam-item>
     </wam-toolbar>`;
 }
 
@@ -50,10 +54,7 @@ check.args = {
 
 
 export const separator = (args) => {
-  const item = `
-    <wam-item label="Item A"></wam-item>
-    <wam-separator></wam-separator>
-    <wam-item label="Item B"></wam-item>`;
+  const item = `<wam-separator></wam-separator>`;
   return itemShowcase(item);
 }
 separator.storyName = 'Separator';
