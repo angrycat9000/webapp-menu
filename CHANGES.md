@@ -1,3 +1,5 @@
+# Changes
+
 ## 3.0.0
 
 - Added IconFactory
@@ -26,4 +28,10 @@
 
 ### Internal
 - Renamed `Direction` enum to `Orientation` to align with `aria-orientation`
-* 
+
+
+## 2.2.4 
+- Work around for [#9 ?!Missing Label!? ](https://github.com/angrycat9000/webapp-menu/issues/9)
+
+## 2.2.3
+- Prevent hidden menus from blocking pointer events.

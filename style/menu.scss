@@ -10,6 +10,7 @@
   margin:0;
   position:relative;
   display:inline-block;
+  pointer-events: auto;
 }
 
 .menu-inner {
@@ -21,6 +22,7 @@
   color: $menu-text-color;
   font-family: $menu-font;
   z-index: 1; // push above other things
+  pointer-events: none; // stop from blocking clicks if the host is sized, but the menu is hidden
 }
 
 
