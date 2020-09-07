@@ -7,8 +7,8 @@ describe('Toolbar', () => {
             const item = el.firstElementChild;
             expect(item.shadowItem.getAttribute('data-label')).to.equal('false');
         });
-        it('Show if showtoolbarlabel=true', async()=>{
-            const el = (await fixture(`<wam-toolbar><wam-item label="l" showtoolbarlabel></wam-item></wam-toolbar`));
+        it('Show if show-label', async()=>{
+            const el = (await fixture(`<wam-toolbar><wam-item label="l" show-label></wam-item></wam-toolbar`));
             const item = el.firstElementChild;
             expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
         });

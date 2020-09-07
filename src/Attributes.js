@@ -1,12 +1,15 @@
-function getTrueFalse(element, attributeName, defaultValue) {
+function getTrueFalse(element, attributeName, defaultValue, defaultIfEmpty) {
     if( ! element.hasAttribute(attributeName))
         return defaultValue;
 
     const value = element.getAttribute(attributeName);
-    if(value == 'false' || value == 'no')
+    if(value === 'false' || value === 'no')
         return false;
-    if(value == 'true' || value == 'yes')
+    if(value === 'true' || value === 'yes')
         return true;
+
+    if(value === '') 
+        return undefined === defaultIfEmpty ? defaultValue : defaultIfEmpty; 
 
     return defaultValue;
 }

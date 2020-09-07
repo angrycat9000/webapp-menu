@@ -22,19 +22,19 @@ describe('Item', () => {
         const el = (await fixture(`<wam-item><span slot="label">Test</span></wam-item>`));
         expect(el.label).to.equal('Test');
     });
-    describe('showToolbarLabel', ()=>{
+    describe('showLabel', ()=>{
         it('init to false', async ()=>{
             const el = (await fixture(`<wam-item></wam-item>`));
-            expect(el.showToolbarLabel).to.be.false;
+            expect(el.showLabel).to.be.false;
         });
         it('attribute set', async ()=>{
-            const el = (await fixture(`<wam-item showtoolbarlabel></wam-item>`));
-            expect(el.showToolbarLabel).to.be.true;
+            const el = (await fixture(`<wam-item show-label></wam-item>`));
+            expect(el.showLabel).to.be.true;
         });
         it('property set', async ()=>{
             const el = (await fixture(`<wam-item></wam-item>`));
-            el.showToolbarLabel = true;
-            expect(el).dom.to.equal(`<wam-item showtoolbarlabel></wam-item>`);
+            el.showLabel = true;
+            expect(el).dom.to.equal(`<wam-item show-label="true"></wam-item>`);
         });
     });
     describe('icon', ()=>{

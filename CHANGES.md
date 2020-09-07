@@ -12,10 +12,11 @@
 
 - Remove `CloseTriggerFlags` / `closeOn`.  Callers should listen to the `wam-menu-close` event and call event.prevent default to block closing on certian causes.
 
-- Item labeling
+- Item labels
   - Remove `Item.setLabel`.  Use `Item.label` instead.
   - Change `label` to prefer the attribute value over slotted child.
-  - Default `label` to undefined if neither the atribute or slot has been provided
+  - Change default `label` to undefined if neither the atribute or slot has been provided
+  - Change `showToolbarLabel` to `showLabel` property and `show-label` attribute
 
 - Changed CSS variable prefix from `--menu-` to `--wam-`
 

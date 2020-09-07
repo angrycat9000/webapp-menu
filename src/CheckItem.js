@@ -46,7 +46,7 @@ export class CheckItem extends Item {
 
     get hasIcon() {return true;}
 
-    get showToolbarLabel() {return !super.hasIcon || super.showToolbarLabel}
+    get showLabel() {return !super.hasIcon || super.showLabel}
 
     _activated(e) {
         e.preventDefault();

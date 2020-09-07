@@ -65,7 +65,7 @@ export class Item extends ItemBase {
      * @param {string} [props.label]
      * @param {Node|string} [props.icon]
      * @param {boolean} [props.disabled]
-     * @param {boolean} [props.showToolbarLabel]
+     * @param {boolean} [props.showLabel]
      * @param {itemActivateFunction} [props.action]
      * @param {object} [props.data]
      * @param {string} [props.id]
@@ -77,7 +77,7 @@ export class Item extends ItemBase {
         if('undefined' != props.icon)
             this.setIcon(props.icon);
 
-        for(let prop of ['disabled', 'label', 'showToolbarLabel', 'action', 'data', 'id']) {
+        for(let prop of ['disabled', 'label', 'showLabel', 'action', 'data', 'id']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
@@ -106,12 +106,14 @@ export class Item extends ItemBase {
     }
 
     /** 
-     * @attribute {on/of} showToolbarLabel - force the label to show in a toolbar
-     * @property {string} showToolbarLabel
+     * @attribute {boolean} show-label -  Determine if the item be labeled in a toolbar. 
+     *                                          Has no effect if the item is not in a toolbar.
+     * @property {boolean}  showLabel - Determine if the item be labeled in a toolbar. 
+     *                                   Has no effect if the item is not in a toolbar.
      * 
      */
-    get showToolbarLabel() {return Attributes.getExists(this, 'showtoolbarlabel');}
-    set showToolbarLabel(value) {return Attributes.setExists(this, 'showtoolbarlabel', value);}
+    get showLabel() {return Attributes.getTrueFalse(this, 'show-label', false, true);}
+    set showLabel(value) {return Attributes.setTrueFalse(this, 'show-label', value);}
 
     /**
      * 

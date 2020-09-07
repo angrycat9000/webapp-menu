@@ -24,7 +24,7 @@ export const item = (args) => {
     <wam-item
       label="${args.label}"
       icon="${args.icon}"
-      ${args.showToolbarLabel ? 'showtoolbarlabel' : ''}
+      ${args.showLabel ? 'show-label' : ''}
     >
     </wam-item>`;
   return itemShowcase(item);
@@ -34,12 +34,15 @@ item.component = 'wam-item';
 item.args = {
   label: 'Item One',
   icon: 'alarm',
-  showToolbarLabel: false
+  showLabel: false
 }
 
 export const slottedLabel = (args) => {
   const item = 
-    `<wam-item icon="${args.icon}">
+    `<wam-item
+      icon="${args.icon}"
+      ${args.showLabel ? 'show-label' : ''}
+    >
     <div slot="label">
         <div>Custom Label</div>
         <div style="opacity:0.8;font-size:0.8rem">With sub label</div>
@@ -49,7 +52,8 @@ export const slottedLabel = (args) => {
 }
 slottedLabel.storyName = "Slotted Label";
 slottedLabel.args = {
-  icon: 'alarm'
+  icon: 'alarm',
+  showLabel: false
 };
 
 export const check = (args) => {

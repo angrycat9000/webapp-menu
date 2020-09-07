@@ -32,14 +32,14 @@ jsInit.argTypes = {
 
 export const LabelOne = () =>
    `<wam-toolbar>
-        <wam-item label="Reply" showtoolbarlabel><i class="material-icons" slot="icon">reply</i></wam-item>
+        <wam-item label="Reply" show-label><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
      </wam-toolbar>`;
 LabelOne.storyName = 'Show One Label';
 
 export const LabelAll = () =>
-   `<wam-toolbar showtoolbarlabel>
+   `<wam-toolbar show-label>
         <wam-item label="Reply"><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
