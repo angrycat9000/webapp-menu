@@ -1,5 +1,8 @@
-import { storiesOf } from '@storybook/html';
 import Menu from '../dist/webapp-menu';
+
+export default {
+    title: 'Functions'
+ }
 
 function materialIcon(name) {
     const icon = document.createElement('i');
@@ -24,91 +27,76 @@ function createStaticPopup() {
     return popup;
 }
 
-storiesOf('Common|Functions', module)
-    .add('ControlledBy', () => {
-        return `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
-        <wam-popup controlledBy="open-menu-button">
-            <wam-item label="Cut"></wam-item>
-            <wam-item label="Copy"></wam-item>
-            <wam-item label="Paste"></wam-item>
-        </wam-toolbar>`
-    })
-    .add('Position At Point', ()=>{
-        const popup = createPopup();
-        popup.style.fontSize = '1rem';
+export const ControlledBy = () => {
+    return `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
+    <wam-popup controlledBy="open-menu-button">
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste"></wam-item>
+    </wam-toolbar>`
+};
 
-        const div = document.createElement('div');
-        div.style.top = div.style.left = div.style.right = div.style.bottom = '0';
-        div.style.position = 'absolute';
-        div.style.fontSize = '4rem';
-        div.style.display = 'flex';
-        div.style.alignItems = 'center';
-        div.style.justifyContent= 'center';
-        div.addEventListener('click',(e)=>{
-            let element = e.target;
-            while(element) {
-                if(element == popup)
-                    return;
-                element = element.parentElement;
-            }
-            
-            popup.position = Menu.Position.AtPoint(e.pageX, e.pageY, 8);
-            popup.open();
+export const positionAtPoint = () => {
+    const popup = createPopup();
+    popup.style.fontSize = '1rem';
+
+    const div = document.createElement('div');
+    div.style.top = div.style.left = div.style.right = div.style.bottom = '0';
+    div.style.position = 'absolute';
+    div.style.fontSize = '4rem';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.justifyContent= 'center';
+    div.addEventListener('click',(e)=>{
+        let element = e.target;
+        while(element) {
+            if(element == popup)
+                return;
+            element = element.parentElement;
+        }
         
-        })
-        div.appendChild(document.createTextNode('Click Me'));
-        div.appendChild(popup);
-
-        return div;
+        popup.position = Menu.Position.AtPoint(e.pageX, e.pageY, 8);
+        popup.open();
+    
     })
-    .add('Item Collection', ()=>{
-        const popup = createStaticPopup();
-        popup.iconFactory = materialIcon;
+    div.appendChild(document.createTextNode('Click Me'));
+    div.appendChild(popup);
 
-        popup.items.append({label:'Accessibility', icon:'accessibility'});
-        popup.items.insertBefore({label:'Themes', icon:'color_lens'}, 1);
-        
-        return popup;
+    return div;
+}
+positionAtPoint.storyName = 'Position At Point';
+
+export const itemCollection =  () => {
+    const popup = createStaticPopup();
+    popup.iconFactory = materialIcon;
+
+    popup.items.append({label:'Accessibility', icon:'accessibility'});
+    popup.items.insertBefore({label:'Themes', icon:'color_lens'}, 1);
+    
+    return popup;
+}
+itemCollection.storyName = 'Item Collection Functions';
+
+export const leaveOpen = ()=> {
+    const items = [
+        {label:'Close'},
+        {label:'Leave Open', id:'leave-open'},
+    ];
+    const bar = Menu.Popup.create(items);
+    bar.isPopup = true;
+    bar.open();
+    bar.addEventListener('wam-item-activate', (e)=>{
+        if('leave-open' == e.detail.item.id)
+            e.preventDefault();
     })
-    .add('document.createElement()', () => {
-        const bar = document.createElement('wam-toolbar');
-        bar.iconFactory = materialIcon;
-        bar.items.set([
-          {label:'Reply', icon:'reply'},
-          {label:'Reply All', icon:'reply_all'},
-          {label:'Forward', icon:'forward'}
-        ]);
-        return bar;
-      })
-      .add('.create()', ()=>{
-        const items = [
-          {label:'Reply', icon:'reply'},
-          {label:'Reply All', icon:'reply_all'},
-          {label:'Forward', icon:'forward'}
-        ];
-        const bar = Menu.Toolbar.create(items);
-        bar.iconFactory = materialIcon;
-        return bar;
-      })
-      .add('wam-item-activate preventDefault', ()=>{
-        const items = [
-          {label:'Close'},
-          {label:'Leave Open', id:'leave-open'},
-        ];
-        const bar = Menu.Popup.create(items);
-        bar.isPopup = true;
-        bar.open();
-        bar.addEventListener('wam-item-activate', (e)=>{
-            if('leave-open' == e.detail.item.id)
-                e.preventDefault();
-        })
-        return bar;
-      })
-      .add('disabled item', ()=>{
-          return `
-            <wam-popup static>
-                <wam-item label="Cut"></wam-item>
-                <wam-item label="Copy"></wam-item>
-                <wam-item label="Paste" disabled></wam-item>
-            </wam-popup>`
-      })
+    return bar;
+}
+leaveOpen.storyName = 'Leave open with preventDefault()';
+
+export const disabled = () =>
+    `<wam-popup static>
+        <wam-item label="Cut"></wam-item>
+        <wam-item label="Copy"></wam-item>
+        <wam-item label="Paste" disabled></wam-item>
+    </wam-popup>`
+disabled.storyName = 'Disabled Item';

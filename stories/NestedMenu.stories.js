@@ -1,8 +1,11 @@
-import { document, console } from 'global';
-import { storiesOf } from '@storybook/html';
+import Menu from '../dist/webapp-menu';
 
-storiesOf('Component Specific|NestedMenu', module)
-  .add('HTML Initalization', () => 
+export default {
+  title: 'Nested Menu',
+  component: Menu.NestedMenu
+}
+
+export const htmlInit = () => 
   `<wam-nestedmenu>
     <wam-item label="Rock"></wam-item>
     <wam-submenu><span slot="label">Animal</span>
@@ -21,4 +24,5 @@ storiesOf('Component Specific|NestedMenu', module)
       <wam-item label="Ivy"></wam-item>
       <wam-item label="Morning Glory"></wam-item>
     </wam-submenu>
-    </wam-nestedmenu>`)
+    </wam-nestedmenu>`;
+htmlInit.storyName = 'HTML'

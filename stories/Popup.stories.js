@@ -1,23 +1,30 @@
-import { document, console } from 'global';
-import { storiesOf } from '@storybook/html';
-import Menu from '../dist/webapp-menu.js';
+import Menu from '../dist/webapp-menu';
 
-storiesOf('Component Specific|Popup', module)
-    .add('HTML Initalization', ()=>{
-        return `<wam-popup static>
+export default {
+    title: 'Popup',
+    component: Menu.Popup
+}
+
+export const htmlInit = () =>
+    `<wam-popup static>
             <wam-item label="Cut"></wam-item>
             <wam-item label="Copy"></wam-item>
             <wam-item label="Paste"></wam-item>
-        </wam-popup>`
-    })
-    .add('JavaScript Initalization', ()=>{
-        const popup = document.createElement('wam-popup');
-        popup.items.set([
-            {label:'Cut'},
-            {label:'Copy'},
-            {label:'Paste'}
-        ]);
-        popup.isPopup = false;
-        return popup;
-    })
+    </wam-popup>`;
+htmlInit.storyName = 'HTML';
 
+
+export const jsInit = (args) => {
+    const popup = document.createElement('wam-popup');
+    popup.items.set(args.items);
+    popup.isPopup = false;
+    return popup;
+};
+jsInit.storyName = 'Javascript';
+jsInit.args = {
+    items: [
+        {label:'Cut'},
+        {label:'Copy'},
+        {label:'Paste'}
+    ]
+}
