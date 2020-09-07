@@ -1,9 +1,11 @@
 import { setCustomElements } from '@storybook/web-components';
 
-import '../dist/webapp-menu.js';
+import Menu from '../dist/webapp-menu.js';
 import customElements from '../dist/custom-elements.json';
 
 setCustomElements(customElements);
+
+Menu.IconFactory.defaultFactory = Menu.IconFactory.materialIcon;
 
 export const parameters = {
   actions: {

@@ -16,14 +16,21 @@ export default {
 }
 
 export const item = (args) => {
-  const item = `<wam-item label="${args.label} icon="${args.icon}"></wam-item>`;
+  const item = `
+    <wam-item
+      label="${args.label}"
+      icon="${args.icon}"
+      ${args.showToolbarLabel ? 'showtoolbarlabel' : ''}
+    >
+    </wam-item>`;
   return itemShowcase(item);
 }
 item.storyName = 'Item';
 item.component = 'wam-item';
 item.args = {
   label: 'Item One',
-  icon: 'alarm'
+  icon: 'alarm',
+  showToolbarLabel: false
 }
 
 export const check = (args) => {
