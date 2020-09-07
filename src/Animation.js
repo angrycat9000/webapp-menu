@@ -73,7 +73,7 @@ class Transition {
             this.frame = 0;
         }
         if(this.timeout) {
-            window.cancelTimeout(this.timeout);
+            window.clearTimeout(this.timeout);
             this.timeout = 0;
         }
         if(this.startFunc) {
