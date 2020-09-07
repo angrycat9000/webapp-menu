@@ -1,9 +1,10 @@
 import './event-logger.js';
-import materialIcon from'../stories/materialIcon';
-import CheckItem from './CheckItem';
+import IconFactory from './IconFactory';
 
 
 function run() {
+    IconFactory.defaultFactory = IconFactory.materialIcon;
+
     const clearButton = document.querySelector('#toolbar-example wam-item');
     clearButton.addEventListener('wam-item-activate', ()=>{
       const toggles = document.querySelectorAll('#toolbar-example wam-check-item');

@@ -5,6 +5,7 @@ import {nextId} from './Id';
 import ItemCollection from './ItemCollection';
 import TabList from './TabList';
 import Attributes from './Attributes';
+import IconFactory from './IconFactory';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/menu.scss';
@@ -37,10 +38,6 @@ export const Direction  = {
  * @type {CustomEvent}
  * @property {Menu} detail.menu
  */
-
- /**
-  * 
-  */
 
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items.
@@ -75,6 +72,8 @@ export class Menu extends HTMLElement {
          */
         this.items = new ItemCollection(this);
 
+        this._itemUpdatePending = false;
+
         /** @property {Direction} */
         this.direction = Direction.TopToBottom;
 
@@ -83,6 +82,8 @@ export class Menu extends HTMLElement {
 
         /** @property {PositionFunction} position */
         this._position = Position.None;
+
+        this._iconFactory = null;
 
         this.addEventListener('keydown', Menu.onKeyDown);
         this.addEventListener('keypress', Menu.onKeyPress);
@@ -174,7 +175,9 @@ export class Menu extends HTMLElement {
 
 
     /** @property {iconFactoryFunction} iconFactory */
-    get iconFactory() {return this._iconFactory}
+    get iconFactory() {
+        return this._iconFactory || IconFactory.defaultFactory;
+    }
     set iconFactory(value) {
         this._iconFactory = value;
         for(let item of this.items)
@@ -590,6 +593,14 @@ export class Menu extends HTMLElement {
     updateAllItems() {
         const items = Array.from(this.items);
         items.forEach(this.updateItem, this);
+        this._itemUpdatePending = false;
+    }
+
+    requestItemUpdate() {
+        if(this._itemUpdatePending) 
+            return;
+        this._itemUpdatePending = true;
+        window.queueMicrotask(this.updateAllItems.bind(this));
     }
 
     /**
@@ -604,11 +615,6 @@ export class Menu extends HTMLElement {
         return root.getElementById(id);
     }
 }
-
-/** 
- * Set this as a fallback for any newly created Menu objects to use as the icon factory
- */
-Menu.defaultIconFactory = null;
 
 Object.defineProperty(Menu, 'stylesheet', {value: new ReusableStyleSheet(style)})
 

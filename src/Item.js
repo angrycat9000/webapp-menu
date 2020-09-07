@@ -3,13 +3,6 @@ import {ReusableStyleSheet} from './Style';
 import itemStyle from '../style/item.scss';
 
 
-/**
- * @callback iconFactoryFunction
- * @param {string} name
- * @return {HTMLElement}
- */
-
-
  /**
   * Occurs when an item in a toolbar is activated via a keypress or click.
   * @event wam-activate
@@ -123,6 +116,9 @@ export class Item extends ItemBase {
      */
     setIcon(icon) {
         this.clearSlot('icon');
+        if(this.parentElement && this.parentElement.requestItemUpdate) {
+            this.parentElement.requestItemUpdate();
+        }
         if( ! icon)
             return;
 
@@ -132,16 +128,9 @@ export class Item extends ItemBase {
             return;
         }
 
-        let iconElement;
-        if(this.parentElement && this.parentElement.iconFactory) {
-            iconElement = this.parentElement.iconFactory(icon);
-        } else {
-            iconElement = document.createElement('span');
+        if(icon instanceof String) {
+            this.icon = icon;
         }
-
-        iconElement.setAttribute('slot', 'icon');
-        iconElement.setAttribute('data-icon-factory-arg', icon);
-        this.appendChild(iconElement);
     }
 
     /** 
@@ -186,15 +175,11 @@ export class Item extends ItemBase {
     }
 
     updateFactoryIcon() {
-        const slotContents = this.querySelector('[slot=icon]');
-        if(null === slotContents)
+        if(!this.iconName || !this.parentElement || ! this.parentElement.iconFactory)
             return;
 
-        const oldIcon = slotContents.getAttribute('data-icon-factory-arg');
-        if( ! oldIcon)
-            return;
-
-        this.setIcon(oldIcon);   
+        const iconElement = this.parentElement.iconFactory(this.iconName);
+        this.setIcon(iconElement);
     }
 
     connectedCallback() {
@@ -202,7 +187,7 @@ export class Item extends ItemBase {
     }
 
     static get observedAttributes() {
-        return ['disabled', 'isdefaultfocus', 'label'];
+        return ['disabled', 'isdefaultfocus', 'label', 'icon'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -218,7 +203,11 @@ export class Item extends ItemBase {
                 const labelSlot = this.shadowRoot.querySelector('slot[name=label]');
                 while(labelSlot.firstChild)
                     labelSlot.removeChild(labelSlot.firstChild);
-                labelSlot.appendChild(document.createTextNode(newValue))
+                labelSlot.appendChild(document.createTextNode(newValue));
+                break;
+            case 'icon':
+                this.updateFactoryIcon();
+                break;
         }
       }
 
@@ -247,6 +236,13 @@ export class Item extends ItemBase {
         return labelElement ? labelElement.innerText : this.shadowRoot.querySelector('slot[name=label]').innerText
     }
     set label(value) {return Attributes.setString(this, 'label', value)}
+
+    /**
+     * @attribute {string} icon
+     * @property {string} iconName
+     */
+    get iconName() {return Attributes.getString(this, 'icon');}
+    set iconName(value) {return Attributes.setString(this, 'icon', value);}
 
     clearSlot(name) {
         const items = this.querySelectorAll(`[slot=${name}]`);

@@ -5,7 +5,7 @@
   "main": "dist/webapp-menu.js",
   "scripts": {
     "test": "karma start",
-    "test:watch": "karma start --auto-watch=true --single-run=false",
+    "test:debug": "karma start --no-single-run --browsers=Chrome",
     "start": "rollup -w -c rollup.config.js & es-dev-server --app-index dist/index.html  --watch --open",
     "develop": "rimraf dist && rollup -c rollup.config.js",
     "build:site": "npm run build && npm run build:storybook --",
