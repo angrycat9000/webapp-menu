@@ -2,7 +2,7 @@ import Menu from '../dist/webapp-menu';
 
 export default {
    title: 'Toolbar',
-   component: Menu.Toolbar
+   component: 'wam-toolbar'
 }
 
 export const htmlInit = () => 

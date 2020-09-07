@@ -1,8 +1,6 @@
-import Menu from '../dist/webapp-menu';
-
 export default {
     title: 'Popup',
-    component: Menu.Popup
+    component: 'wam-popup'
 }
 
 export const htmlInit = () =>

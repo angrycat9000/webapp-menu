@@ -8,7 +8,12 @@ import Attributes from './Attributes';
 import {ReusableStyleSheet} from './Style';
 import style from '../style/nestedmenu.scss';
 
-
+/**
+ * @element wam-nestedmenu
+ * 
+ * @fires wam-submenu-open
+ * @fires wam-submenu-close
+ */
 class NestedMenu extends Menu {
     constructor() {
         super();
@@ -171,11 +176,6 @@ class NestedMenu extends Menu {
         return frame.shadowRoot.querySelector('.submenu-inner');
     }
 
-    /**
-     * @param {function} beforeHeightResolved any code that needs to get run before
-     *                                          after the animation, but before the final 
-     *                                          height of the container is resolved
-     */
     stackChanged(itemToClose) {
         const container = this.shadowRoot.querySelector('.menu-outer');
         const slider = this.shadowRoot.querySelector('.menu-inner');

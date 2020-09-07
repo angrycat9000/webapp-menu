@@ -2,7 +2,7 @@ import Menu from '../dist/webapp-menu';
 
 export default {
   title: 'Nested Menu',
-  component: Menu.NestedMenu
+  component: 'wam-nestedmenu'
 }
 
 export const htmlInit = () => 

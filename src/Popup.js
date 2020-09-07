@@ -4,6 +4,11 @@ import {ReusableStyleSheet} from './Style';
 import style from '../style/popup.scss';
 
 
+/**
+ * Pop up menu suitable for a context menu
+ * 
+ * @element wam-popup
+ */
 class Popup extends Menu {
     constructor() {
         super();

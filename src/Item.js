@@ -27,7 +27,10 @@ export class ItemBase extends HTMLElement {
 
  /**
   * Item in a menu or toolbar.
-  * @fires wam-activate
+  * 
+  * @element wam-item
+  *
+  * @fires wam-item-activate
   */
 export class Item extends ItemBase {
     constructor() {

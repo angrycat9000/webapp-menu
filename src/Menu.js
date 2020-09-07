@@ -26,22 +26,26 @@ export const Direction  = {
 
 /**
  * Occurs when a menu element is opened.
- * @event wam-open
+ * @event wam-menu-open
  * @type {CustomEvent}
  * @property {Menu} detail.menu
  */
 
 /**
  * Occurs when a menu element is closed.
- * @event wam-close
+ * @event wam-menu-close
  * @type {CustomEvent}
  * @property {Menu} detail.menu
  */
 
+ /**
+  * 
+  */
+
 /**
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items.
- * @fires wam-open
- * @fires wam-close
+ * @fires wam-menu-open
+ * @fires wam-menu-close
  */
 export class Menu extends HTMLElement {
 
@@ -135,12 +139,14 @@ export class Menu extends HTMLElement {
     get isOpen() {return 'open' === this._state ||  'opening' === this._state || ! this.isPopup;}
 
     /**
+     * @attribute {on/off} popup - if present, will hide the element by default until open is called or the controlledBy element is clicked
      * @property {boolean} isPopup
      */
     get isPopup() { return Attributes.getExists(this, 'popup') }
     set isPopup(value) { Attributes.setExists(this, 'popup', value)}
 
     /**
+     * @attribute {string} controlledBy- id of the element that controls if the menu is open or closed
      * @property {HTMLElement} controlledBy Element that controls this this menu.
      */
     get controlledBy () {
