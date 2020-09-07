@@ -147,22 +147,22 @@ export class Menu extends HTMLElement {
     set isPopup(value) { Attributes.setExists(this, 'popup', value)}
 
     /**
-     * @attribute {string} controlledBy- id of the element that controls if the menu is open or closed
+     * @attribute {string} controlled-by - id of the element that controls if the menu is open or closed
      * @property {HTMLElement} controlledBy Element that controls this this menu.
      */
     get controlledBy () {
-        const id = this.getAttribute('controlledBy');
+        const id = this.getAttribute('controlled-by');
         if( ! id)
             return null;
         return this.getElementById(id);
     }
     set controlledBy(value) {
         if( ! value)
-            Attributes.setString(this, 'controlledby', null)
+            this.removeAttribute('controlled-by');
         else {
             if( ! value.id)
                 value.id = nextId();
-            this.setAttribute('controlledBy', value.id);
+            this.setAttribute('controlled-by', value.id);
         }
     }
 
@@ -188,7 +188,7 @@ export class Menu extends HTMLElement {
      * Web component life cycle helper to define what attributes trigger #attributeChangedCallback
      */
     static get observedAttributes() {
-        return ['popup', 'controlledby'];
+        return ['popup', 'controlled-by'];
     }
 
     /**
@@ -204,7 +204,7 @@ export class Menu extends HTMLElement {
                     this._convertToStatic();
                 break;
             }
-            case 'controlledby':
+            case 'controlled-by':
                 this.setControlledByElement(this.getElementById(newValue));
                 break;
         }
@@ -386,7 +386,7 @@ export class Menu extends HTMLElement {
         this._resizeListener = this.onWindowResize.bind(this);
         window.addEventListener('resize', this._resizeListener);
 
-        const controlledBy = this.getAttribute('controlledBy');
+        const controlledBy = this.getAttribute('controlled-by');
         if(controlledBy)
             this.setControlledByElement(this.getElementById(controlledBy));
 

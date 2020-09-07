@@ -18,6 +18,10 @@
   - Change default `label` to undefined if neither the atribute or slot has been provided
   - Change `showToolbarLabel` to `showLabel` property and `show-label` attribute
 
+- Hyphenated attribute names
+  - `controlled-by`
+  - `show-label`
+
 - Changed CSS variable prefix from `--menu-` to `--wam-`
 
 ### Internal

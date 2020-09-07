@@ -27,9 +27,9 @@ function createStaticPopup() {
     return popup;
 }
 
-export const ControlledBy = () => {
+export const controlledBy = () => {
     return `<p style="text-align:center"><button id="open-menu-button">Open</button></p>
-    <wam-popup controlledBy="open-menu-button">
+    <wam-popup controlled-by="open-menu-button">
         <wam-item label="Cut"></wam-item>
         <wam-item label="Copy"></wam-item>
         <wam-item label="Paste"></wam-item>

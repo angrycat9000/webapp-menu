@@ -43,13 +43,13 @@ describe('Menu', () => {
             expect(el.isOpen).to.be.true;
         });
     });
-    describe('controlledBy',()=>{
+    describe('controlled-by',()=>{
         it('initalize to null', async ()=>{
             const el = (await fixture(`<wam-popup></wam-popup>`));
             expect(el.controlledBy).to.be.null;
         })
         it('set attribute', async ()=>{
-            const el = (await fixture(`<div><button id="b"></button><wam-popup controlledBy="b"></wam-popup></div>`));
+            const el = (await fixture(`<div><button id="b"></button><wam-popup controlled-by="b"></wam-popup></div>`));
             const b = el.firstElementChild;
             const p = el.lastElementChild;
             expect(p.controlledBy).to.be.equal(b);
@@ -63,7 +63,7 @@ describe('Menu', () => {
             expect(b).dom.to.equal(`<button id="b" aria-haspopup="true" aria-controls="${p.id}" aria-expanded="${p.isOpen}"></button>`)
         })
         it('set property to null', async()=>{
-            const el = (await fixture(`<div><button id="b"></button><wam-popup controlledBy="b"></wam-popup></div>`));
+            const el = (await fixture(`<div><button id="b"></button><wam-popup controlled-by="b"></wam-popup></div>`));
             const b = el.firstElementChild;
             const p = el.lastElementChild;
             expect(p.controlledBy).to.be.equal(b);
@@ -81,7 +81,7 @@ describe('Menu', () => {
             expect(b).dom.to.equal(`<button id="b" aria-haspopup="true" aria-controls="${popup.id}" aria-expanded="${popup.isOpen}"></button>`)
         })
         it('Cleanup button on remove', async()=>{
-            const el = (await fixture(`<div><button id="b"></button><wam-popup controlledby="b"></wam-popup></div>`));
+            const el = (await fixture(`<div><button id="b"></button><wam-popup controlled-by="b"></wam-popup></div>`));
             const button = el.firstElementChild;
             const popup = el.lastElementChild;
             el.removeChild(popup);

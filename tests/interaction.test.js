@@ -97,11 +97,11 @@ describe('Interaction', () => {
     it('controlledBy opens on click', async ()=>{
         const el = (await fixture(`
             <div>
-                <wam-popup controlledBy="mine"><wam-item></wam-item></wam-popup>
                 <button id="mine"></button>
+                <wam-popup controlled-by="mine"><wam-item></wam-item></wam-popup>
             </div>`));
-        const menu = el.children[0];
-        const button = el.children[1];
+        const menu = el.children[1];
+        const button = el.children[0];
 
         var evObj = new MouseEvent('click', {});
         button.dispatchEvent(evObj);
