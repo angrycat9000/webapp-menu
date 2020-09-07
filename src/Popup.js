@@ -38,6 +38,9 @@ class Popup extends Menu {
         return Menu.create(Popup, items)
     }
 
+    /**
+     * @attribute static {on/off} if present does not treat this as a popup
+     */
     get isPopup() {return ! Attributes.getExists(this, 'static');}
     set isPopup(value) {Attributes.setExists(this, 'static', ! value)}
 

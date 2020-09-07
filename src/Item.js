@@ -31,6 +31,9 @@ export class ItemBase extends HTMLElement {
   * @element wam-item
   *
   * @fires wam-item-activate
+  * 
+  * @slot label
+  * @slot icon
   */
 export class Item extends ItemBase {
     constructor() {
@@ -142,6 +145,7 @@ export class Item extends ItemBase {
     }
 
     /** 
+     * @attribute {on/of} showToolbarLabel - force the label to show in a toolbar
      * @property {string} showToolbarLabel
      * 
      */
@@ -218,7 +222,10 @@ export class Item extends ItemBase {
         }
       }
 
-    /** @property {boolean} disabled true if the item is disabled */
+    /** 
+     * @attribute {on/off} disabled
+     * @property {boolean} disabled true if the item is disabled 
+     */
     get disabled() {return Attributes.getExists(this, 'disabled')}
     set disabled(value) {return Attributes.setExists(this ,'disabled', value)}
 
@@ -231,6 +238,7 @@ export class Item extends ItemBase {
 
 
     /** 
+     * @attribute {string} label
      * @property {string} label Set the value of the label.  This is overridden if there is an element
      *                             with ```slot="label"``` provided as a child.
      */
