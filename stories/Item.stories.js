@@ -37,6 +37,21 @@ item.args = {
   showToolbarLabel: false
 }
 
+export const slottedLabel = (args) => {
+  const item = 
+    `<wam-item icon="${args.icon}">
+    <div slot="label">
+        <div>Custom Label</div>
+        <div style="opacity:0.8;font-size:0.8rem">With sub label</div>
+    </div>
+  </wam-item>`;
+  return itemShowcase(item);
+}
+slottedLabel.storyName = "Slotted Label";
+slottedLabel.args = {
+  icon: 'alarm'
+};
+
 export const check = (args) => {
   const item = `
     <wam-check-item 

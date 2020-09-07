@@ -443,7 +443,13 @@ export class Menu extends HTMLElement {
 
     onKeyPress(e) {
         const key = e.key.toLowerCase();
-        const matching = this.interactiveItems.array.filter(i=>i.label[0].toLowerCase() == key);
+        const matching = this.interactiveItems.array.filter(i => {
+            const label = i.label;
+            if( ! label)
+                return false;
+
+            return i.label[0].toLowerCase() == key
+        });
         if(0 == matching.length)
             return;
         const tablist = new TabList(matching);

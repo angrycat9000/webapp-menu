@@ -2,11 +2,10 @@ import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import '../dist/webapp-menu';
 
-
 describe('Item', () => {  
-    it(`Default Label`, async () => {
+    it('Default label undefined', async () => {
         const el = (await fixture(`<wam-item></wam-item>`));
-        expect(el.label).to.be.equal('!? Missing Label !?');
+        expect(el.label).to.be.undefined;
     });
     it('<label="Test">', async () => {
         const el = (await fixture(`<wam-item label="Test"></wam-item>`));

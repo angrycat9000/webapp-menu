@@ -73,42 +73,14 @@ export class Item extends ItemBase {
     set(props) {
         if( ! props)
             return;
- 
-        if('undefined' != props.label || 'undefined' != props.label2)
-            this.setLabel(props.label, props.label2);
         
         if('undefined' != props.icon)
             this.setIcon(props.icon);
 
-        for(let prop of ['disabled', 'showToolbarLabel', 'action', 'data', 'id']) {
+        for(let prop of ['disabled', 'label', 'showToolbarLabel', 'action', 'data', 'id']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
         }
-    }
-
-    /**
-     * @param {Node|string} label
-     * @param {Node|string} [label2]
-     */
-    setLabel(label, label2) {
-        this.clearSlot('label');
-
-        if( ! label && ! label2)
-            return;
-
-        if( ! label2) {
-            const l0 = stringToNode(label);
-            l0.setAttribute('slot', 'label');
-            this.appendChild(l0);
-            return;
-        }
-
-        const l0 = document.createElement('div');
-        l0.setAttribute('slot', 'label');
-        l0.appendChild(stringToNode(label))
-        l0.appendChild(stringToNode(label2))
-
-        this.appendChild(l0);
     }
 
     /**
@@ -182,12 +154,31 @@ export class Item extends ItemBase {
         this.setIcon(iconElement);
     }
 
+    /** @private */
+    updateLabel() {
+        const slot = 'label';
+        this.clearSlot(slot);
+        const label = Attributes.getString(this, slot);
+        const labelNode = document.createTextNode(label);
+        this.shadowRoot.querySelector(`slot[name=${slot}]`).appendChild(labelNode);
+    }
+
+    /** @private */
+    getLabelText() {
+        const slot = 'label';
+        const label = Attributes.getString(this, slot);
+        if(label)
+            return label;
+        const labelElement = this.querySelector(`[slot=${slot}]`);
+        return labelElement ? labelElement.innerText : undefined;
+    }
+
     connectedCallback() {
         this.updateFactoryIcon();
     }
 
     static get observedAttributes() {
-        return ['disabled', 'isdefaultfocus', 'label', 'icon'];
+        return ['disabled', 'isdefaultfocus', 'label', 'sublabel', 'icon'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -200,10 +191,7 @@ export class Item extends ItemBase {
                 this.shadowRoot.querySelector('button').setAttribute('tabindex', null == newValue ? -1 : 0)
                 break;
             case 'label':
-                const labelSlot = this.shadowRoot.querySelector('slot[name=label]');
-                while(labelSlot.firstChild)
-                    labelSlot.removeChild(labelSlot.firstChild);
-                labelSlot.appendChild(document.createTextNode(newValue));
+                this.updateLabel();
                 break;
             case 'icon':
                 this.updateFactoryIcon();
@@ -228,14 +216,11 @@ export class Item extends ItemBase {
 
     /** 
      * @attribute {string} label
-     * @property {string} label Set the value of the label.  This is overridden if there is an element
-     *                             with ```slot="label"``` provided as a child.
+     * @property {string} label The text label for this element. If the label attribute is not provided
+     *                           it falls back to the text content of the the element with `slot="label"`
      */
-    get label() {
-        const labelElement = this.querySelector('[slot=label]');
-        return labelElement ? labelElement.innerText : this.shadowRoot.querySelector('slot[name=label]').innerText
-    }
-    set label(value) {return Attributes.setString(this, 'label', value)}
+    get label() { return this.getLabelText('label') }
+    set label(value) {Attributes.setString(this, 'label', value)}
 
     /**
      * @attribute {string} icon
@@ -279,25 +264,9 @@ Object.defineProperty(Item, 'template', {get:function(){
     template.innerHTML = 
         `<button class="item" role="menuitem" tabindex="-1">
             <span class="icon" aria-hidden="true"><slot name="icon"></slot></span>
-            <span class="label"><slot name="label">!? Missing Label !?</slot></span>
+            <span class="label"><slot name="label"></slot></span>
         </button>`;
     return template;
 }});
-
-
-
-/**
- * @param {Node|string} str
- * @return {Node}
- * @private
- */
-function stringToNode(str, tag='span') {
-    if(str instanceof Node) 
-        return str;
-        
-    const span = document.createElement(tag);
-    span.appendChild(document.createTextNode(str));
-    return span;
-}
 
 export default Item;
