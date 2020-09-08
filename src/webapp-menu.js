@@ -1,4 +1,4 @@
-import {Menu, Direction} from './Menu';
+import {Direction, CloseReason} from './Menu';
 import Item from './Item';
 import Position from './Position';
 import Toolbar from './Toolbar';
@@ -10,16 +10,16 @@ import CheckItem from './CheckItem';
 import IconFactory from './IconFactory';
 
 const Wam = {
-    Item,
-    CheckItem,
-    SubMenuItem,
-    Separator,
     Popup,
     Toolbar,
-    Position,
-    Menu,
-    Direction,
     NestedMenu,
+    Item,
+    SubMenuItem,
+    CheckItem,
+    Separator,
+    CloseReason,
+    Position,
+    Direction,
     IconFactory
 };
 

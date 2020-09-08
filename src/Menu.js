@@ -11,7 +11,7 @@ import {ReusableStyleSheet} from './Style';
 import style from '../style/menu.scss';
 
 /** @enum CloseReason */
-const CloseReason = {
+export const CloseReason = {
     Escape: 'Escape',
     ItemActivated: 'ItemActivated',
     PointerDownOutside: 'PointerDownOutside'
@@ -37,6 +37,7 @@ export const Direction  = {
  * @event wam-menu-close
  * @type {CustomEvent}
  * @property {Menu} detail.menu
+ * @property {CloseReason} detail.cause
  */
 
 /**
