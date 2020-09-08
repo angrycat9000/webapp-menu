@@ -11,7 +11,7 @@ import style from '../style/toolbar.scss';
  * @fires wam-item-activate
  * 
  */
-class Toolbar extends Menu {
+export class Toolbar extends Menu {
     constructor() {
         super();
 

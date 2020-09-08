@@ -9,7 +9,7 @@ import style from '../style/popup.scss';
  * 
  * @element wam-popup
  */
-class Popup extends Menu {
+export class Popup extends Menu {
     constructor() {
         super();
 

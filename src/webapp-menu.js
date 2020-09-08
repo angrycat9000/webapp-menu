@@ -9,6 +9,21 @@ import Separator from './Separator';
 import CheckItem from './CheckItem';
 import IconFactory from './IconFactory';
 
+export {
+    Popup,
+    Toolbar,
+    NestedMenu,
+    Item,
+    SubMenuItem,
+    CheckItem,
+    Separator,
+    CloseReason,
+    Position,
+    Direction,
+    IconFactory
+};
+
+
 const Wam = {
     Popup,
     Toolbar,
@@ -25,10 +40,8 @@ const Wam = {
 
 for(let e in Wam) {
     const c = Wam[e];
-    if(c.tagName) {
+    if(c.tagName)
         window.customElements.define(c.tagName, c);
-        console.debug(`Registering <${c.tagName}>` );
-    }
 }
 
 export default Wam;

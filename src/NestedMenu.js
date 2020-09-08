@@ -14,7 +14,7 @@ import style from '../style/nestedmenu.scss';
  * @fires wam-submenu-open
  * @fires wam-submenu-close
  */
-class NestedMenu extends Menu {
+export class NestedMenu extends Menu {
     constructor() {
         super();
         const shadow = this.shadowRoot;

@@ -134,8 +134,7 @@ function apply(element, position) {
   return position;
 }
 
-const Position = {
-
+export const Position = {
   /** 
    * Shows the menu left aligned to element.  Displays above the element if there
    * is not enough room above.
