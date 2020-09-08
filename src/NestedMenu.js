@@ -93,7 +93,8 @@ export class NestedMenu extends Menu {
         container.setAttribute('data-depth', this.stack.length);
     }
 
-    open() {
+    /** @private */
+    _open() {
         const anim = super.open();
         if( ! anim)
             return null;

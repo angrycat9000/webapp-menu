@@ -12,9 +12,10 @@ import style from '../style/menu.scss';
 
 /** @enum CloseReason */
 export const CloseReason = {
-    Escape: 'Escape',
-    ItemActivated: 'ItemActivated',
-    PointerDownOutside: 'PointerDownOutside'
+    CloseMethod: 'close-method',
+    Escape: 'escape-key',
+    ItemActivated: 'item-activated',
+    PointerDownOutside: 'pointer-down'
 };
 
 /**
@@ -265,9 +266,27 @@ export class Menu extends HTMLElement {
     }
 
     /**
-     * @return {Transition} null if the menu is already open.  Otherwise a Transition.
+     * Open the menu.  Promise resolves when the animation has completed
+     * @return {Promise<Menu>}
      */
     open() {
+        return new Promise((resolve, reject) => {
+            const transition = this._open();
+            if(null === transition) {
+                reject('Already open')
+            } else if(false === transition) {
+                reject('Open canceled');
+            } else {
+                transition.on('complete', () => resolve(this))
+            }
+        })
+    }
+
+    /**
+     * @private
+     * @return {Transition} null if the menu is already open.  False if canceled.  Otherwise a Transition.
+     */
+    _open() {
         if(this.isOpen || ! this.isPopup)
             return null;
 
@@ -280,7 +299,7 @@ export class Menu extends HTMLElement {
         });
 
         if( ! this.dispatchEvent(event)) {
-            return null;
+            return false;
         }
 
         this.previousFocus = this.parentElement ? document.activeElement : null;
@@ -312,10 +331,29 @@ export class Menu extends HTMLElement {
     }
 
     /**
-     * @param {CloseReason}
-     * @return {Transition} Null if it is already closed
+     * Close the menu.  Promise resolves when the animation has completed
+     * @return {Promise<Menu>}
      */
-    close(cause) {
+    close() {
+        return new Promise((resolve, reject) => {
+            const transition = this._close(CloseReason.CloseMethod);
+            if(null === transition) {
+                reject('Already closed');
+            } else if (false === transition) {
+                reject('Close canceled');
+            } else {
+                transition.on('complete', () => resolve(this));
+            }
+
+        });
+    }
+
+    /**
+     * @private
+     * @param {CloseReason}
+     * @return {Transition} Null if it is already closed, false
+     */
+    _close(cause) {
         if( ! this.isPopup || ! this.isOpen)
             return null;
 

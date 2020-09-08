@@ -22,23 +22,39 @@ describe('Menu', () => {
             expect(el.isOpen).to.be.false
         });
         it(`open()`, async () => {
-            const el = (await fixture(`<wam-popup popup></wam-popup`));
+            const el = (await fixture(`<wam-popup></wam-popup`));
             expect(el.isOpen, 'closed before open()').to.be.false;
             el.open();
             expect(el.isOpen, 'open after open()').to.be.true;
         });
         it(`close()`, async () => {
-            const el = (await fixture(`<wam-popup popup></wam-popup`));
+            const el = (await fixture(`<wam-popup></wam-popup`));
             el.open();
             expect(el.isOpen, 'open after open()').to.be.true;
             el.close();
             expect(el.isOpen, 'closed after close()').to.be.false;
         });
-        it(`close() ignored on non-popup/static`, async () => {
+        it(`close() ignored on static popup`, async () => {
             const el = (await fixture(`<wam-popup static></wam-popup`));
             el.open();
             el.close();
             expect(el.isOpen).to.be.true;
+        });
+        it('close() ignored on toolbar', async() => {
+            const el = await fixture(`<wam-toolbar></wam-toolbar`);
+            el.close();
+            expect(el.isOpen).to.be.true;
+        });
+        it('open rejects if already open', async() => {
+            const el = await fixture(`<wam-toolbar></wam-toolbar`);
+            let rejected = false;
+            await el.open().catch(() => rejected = true);
+            return expect(rejected).to.be.true;
+        });
+        it('open resolves with menu', async() => {
+            const el = await fixture(`<wam-popup></wam-popup`);
+            const result = await el.open();
+            return expect(result).to.equal(el);
         });
     });
     describe('controlled-by',()=>{
