@@ -102,7 +102,7 @@ describe('Menu', () => {
     it('Menu.fromElement', async()=>{
         const el = (await fixture(`<wam-popup><wam-item></wam-item></wam-popup`));
         const item = el.firstElementChild;
-        const menu = Menu.Menu.fromElement(item);
+        const menu = Menu.Popup.fromElement(item);
         expect(el).to.equal(menu);
     })
     it('Separator is not interactive', async()=>{
