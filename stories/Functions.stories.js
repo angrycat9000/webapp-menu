@@ -1,4 +1,4 @@
-import Menu from '../dist/webapp-menu';
+import Wam from '../dist/webapp-menu';
 
 export default {
     title: 'Functions'
@@ -6,6 +6,7 @@ export default {
 
 function createPopup() {
     const popup = createStaticPopup();
+    popup.isPopup = true;
     return popup;
 }
 
@@ -48,9 +49,14 @@ export const positionAtPoint = () => {
             element = element.parentElement;
         }
         
-        popup.position = Menu.Position.AtPoint(e.pageX, e.pageY, 8);
+        popup.position = Wam.Position.AtPoint(e.pageX, e.pageY, 8);
         popup.open();
     
+    });
+    popup.addEventListener('wam-menu-close', event => {
+        if(event.detail.cause === Wam.CloseReason.PointerDownOutside) {
+            event.preventDefault();
+        }
     })
     div.appendChild(document.createTextNode('Click Me'));
     div.appendChild(popup);
