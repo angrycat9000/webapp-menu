@@ -1,8 +1,6 @@
 import { fixture, expect, nextFrame } from '@open-wc/testing';
 
-import Menu from '../dist/webapp-menu';
-
-const iconFactory = function () { return document.createElement('span')}
+import Wam from '../dist/webapp-menu';
 
 describe('Menu', () => {  
     describe('open', ()=> {
@@ -99,10 +97,10 @@ describe('Menu', () => {
             expect(el.useAnimation).to.be.false;
         })
     }),
-    it('Menu.fromElement', async()=>{
+    it('Wam.fromElement', async()=>{
         const el = (await fixture(`<wam-popup><wam-item></wam-item></wam-popup`));
         const item = el.firstElementChild;
-        const menu = Menu.Popup.fromElement(item);
+        const menu = Wam.Popup.fromElement(item);
         expect(el).to.equal(menu);
     })
     it('Separator is not interactive', async()=>{
@@ -119,33 +117,5 @@ describe('Menu', () => {
         await nextFrame();
         expect(document.activeElement === item, 'document.activeElement').to.be.true;
         expect(el.getFocused() === item, 'getFocused()').to.be.true;
-    })
-
-    describe('iconFactory', () => {
-        it('can set Menu.iconFactory', () => {
-            Menu.IconFactory.defaultFactory = null;
-            Menu.iconFactory = iconFactory;
-            expect(Menu.iconFactory).to.equal(iconFactory);
-        })
-
-        it('defaults to null', () => {
-            const el = document.createElement(Menu.Popup.tagName);
-            Menu.IconFactory.defaultFactory = null;
-            expect(el._iconFactory).to.be.null;
-            expect(el.iconFactory).to.be.null;
-        })
-
-        it('use Menu.IconFactory default', async () => {
-            const el = document.createElement(Menu.Popup.tagName);
-            Menu.IconFactory.defaultFactory = iconFactory;
-            expect(el.iconFactory).to.equal(iconFactory);
-        })
-
-        it('can override Menu.iconFactory', async () => {
-            const el = document.createElement(Menu.Popup.tagName);
-            Menu.IconFactory.defaultFactory = null;
-            el.iconFactory = iconFactory;
-            expect(el.iconFactory).to.equal(iconFactory);
-        })
     })
 });
