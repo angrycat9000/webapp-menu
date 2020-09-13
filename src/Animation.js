@@ -38,22 +38,6 @@ class Transition {
     }
 
     /**
-     * Start the transition on the next animation frame
-     */
-    play() {
-        this.frame = window.requestAnimationFrame(()=>this.firstFrame());
-    }
-
-    /**
-     * Execute the all actions associated with the transition in the next animation frame  
-     * Useful if you don't want an animation to appear, but still want all the side effects
-     * of the event listeners to happen
-     */
-    fastForward() {
-        this.frame = window.requestAnimationFrame(()=>this.immediate());
-    }
-
-    /**
      * Execute all the frame events immediately.  Does not wait for an animation frame.
      */
     immediate() {
@@ -119,10 +103,10 @@ class Transition {
         this.events.emit('secondframe', transitionEvent(this));
 
         if( ! this.wasStopped)
-            this.timeout = window.setTimeout(this.checkOnTransition.bind(this), 50);
+            this.timeout = window.setTimeout(this.checkOnTransition.bind(this), 500);
     }
 
-    /*  Check if the transition has really started after 50 ms.  If it hasn't started
+    /*  Check if the transition has really started after 500 ms.  If it hasn't started
         there was a problem with the setup and it will never start. */
     checkOnTransition() {
         this.timeout = 0;
