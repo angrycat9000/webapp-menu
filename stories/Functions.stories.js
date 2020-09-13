@@ -80,7 +80,7 @@ export const leaveOpen = ()=> {
         {label:'Close'},
         {label:'Leave Open', id:'leave-open'},
     ];
-    const bar = Menu.Popup.create(items);
+    const bar = Wam.Popup.create(items);
     bar.isPopup = true;
     bar.open();
     bar.addEventListener('wam-item-activate', (e)=>{
