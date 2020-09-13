@@ -1,5 +1,5 @@
 export default {
-    title: 'Styling',
+    title: 'Common/Styling',
     parameters: {
         actions: {disabled: true},
         storysource: {disabled: true}

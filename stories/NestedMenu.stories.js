@@ -1,7 +1,5 @@
-import Menu from '../dist/webapp-menu';
-
 export default {
-  title: 'Nested Menu',
+  title: 'Components/wam-nestedmenu',
   component: 'wam-nestedmenu'
 }
 

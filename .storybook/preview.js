@@ -17,5 +17,10 @@ export const parameters = {
       'wam-submenu-close'
     ]
   },
-  docs: {disabled: true}
+  docs: {disabled: true},
+  options: {
+    storySort: {
+      order: ['Components', ['wam-toolbar', 'wam-popup', 'wam-nestedmenu'], 'Common']
+    }
+  }
 };

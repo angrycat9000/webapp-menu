@@ -1,7 +1,7 @@
 import Menu from '../dist/webapp-menu';
 
 export default {
-   title: 'Toolbar',
+   title: 'Components/wam-toolbar',
    component: 'wam-toolbar'
 }
 

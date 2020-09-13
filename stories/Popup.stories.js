@@ -1,5 +1,5 @@
 export default {
-    title: 'Popup',
+    title: 'Components/wam-popup',
     component: 'wam-popup'
 }
 

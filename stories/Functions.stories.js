@@ -1,7 +1,7 @@
 import Wam from '../dist/webapp-menu';
 
 export default {
-    title: 'Functions'
+    title: 'Common/Functions'
  }
 
 function createPopup() {
@@ -58,7 +58,7 @@ export const positionAtPoint = () => {
             event.preventDefault();
         }
     })
-    div.appendChild(document.createTextNode('Click Me'));
+    div.appendChild(document.createTextNode('Click Anywhere'));
     div.appendChild(popup);
 
     return div;
@@ -90,11 +90,3 @@ export const leaveOpen = ()=> {
     return bar;
 }
 leaveOpen.storyName = 'Leave open with preventDefault()';
-
-export const disabled = () =>
-    `<wam-popup static>
-        <wam-item label="Cut"></wam-item>
-        <wam-item label="Copy"></wam-item>
-        <wam-item label="Paste" disabled></wam-item>
-    </wam-popup>`
-disabled.storyName = 'Disabled Item';
