@@ -45,6 +45,9 @@ export const Direction  = {
  * Base class for list of items that are menus. Ie. that use arrow keys to move between a list of items.
  * @fires wam-menu-open
  * @fires wam-menu-close
+ * 
+ * @attribute {on/off} popup - If present, will hide the element by default until open is called or the controlledBy element is clicked
+ * @attribute {string} controlled-by - Id of the element that controls if the menu is open or closed
  */
 export class Menu extends HTMLElement {
 
@@ -70,19 +73,18 @@ export class Menu extends HTMLElement {
          * 
          * Subclasses may add or filter items with the Menu#displayItems and Menu#interativeItems properies.
          * @see Menu#interactiveItems
-         * @property {ItemCollection} items 
+         * @type {ItemCollection}
          */
         this.items = new ItemCollection(this);
 
         this._itemUpdatePending = false;
 
-        /** @property {Direction} */
+        /** @type {Direction} */
         this.direction = Direction.TopToBottom;
 
-        /** @property {boolean} useAnimation */
+        /** @type {boolean} */
         this.useAnimation = true;
 
-        /** @property {PositionFunction} position */
         this._position = Position.None;
 
         this._iconFactory = null;
@@ -120,7 +122,7 @@ export class Menu extends HTMLElement {
      * 
      * @see Menu#items
      * @see Menu#displayedItems
-     * @property {TabList} interactiveItems
+     * @type {TabList}
      */
     get interactiveItems() {
         return new TabList(this.displayItems.array.filter(item => item.isInteractive));
@@ -133,24 +135,27 @@ export class Menu extends HTMLElement {
      * 
      * @see Menu#items
      * @see Menu#displayedItems
+     * @type {TabList}
      */
     get displayItems() {return new TabList(this.items);}
 
     /**
-     * @property {boolean} isOpen
+     * Is the menu displayed to the user.
+     * @type {boolean}
+     * @readonly
      */
     get isOpen() {return 'open' === this._state ||  'opening' === this._state || ! this.isPopup;}
 
     /**
-     * @attribute {on/off} popup - if present, will hide the element by default until open is called or the controlledBy element is clicked
-     * @property {boolean} isPopup
+     * True if the menu is able to be opened and closed.  False for static menus that are always open.
+     * @type {boolean}
      */
     get isPopup() { return Attributes.getExists(this, 'popup') }
     set isPopup(value) { Attributes.setExists(this, 'popup', value)}
 
     /**
-     * @attribute {string} controlled-by - id of the element that controls if the menu is open or closed
-     * @property {HTMLElement} controlledBy Element that controls this this menu.
+     * Element that controls the opening and closing of this menu.
+     * @type {HTMLElement} controlledBy
      */
     get controlledBy () {
         const id = this.getAttribute('controlled-by');
@@ -168,6 +173,7 @@ export class Menu extends HTMLElement {
         }
     }
 
+    /** @type {PositionFunction} */
     get position() {return this._position}
     set position(value) {
         this._position = value;
@@ -176,7 +182,11 @@ export class Menu extends HTMLElement {
     }
 
 
-    /** @property {iconFactoryFunction} iconFactory */
+    /** 
+     * Override IconFactory.defaultFactory for this menu only.  Set to null to use the defaultFactory.
+     * @see IconFactory#defaultFactory
+     * @type {iconFactoryFunction} 
+     */
     get iconFactory() {
         return this._iconFactory || IconFactory.defaultFactory;
     }
@@ -397,7 +407,7 @@ export class Menu extends HTMLElement {
 
 
     /**
-     * @return {HTMLElement|null} focused item in this menu or null if the focus is outside of this parent
+     * @return {?HTMLElement} focused item in this menu or null if the focus is outside of this parent
      */
     getFocused() {
         const focused = document.activeElement;
@@ -441,7 +451,8 @@ export class Menu extends HTMLElement {
     }
     
     /**
-     * @property {Item} focusItem 
+     * @type {Item} focusItem 
+     * @protected
      */
     set focusItem(item) {
         for(let element of this.interactiveItems) {
@@ -457,6 +468,7 @@ export class Menu extends HTMLElement {
      * Set the focused element of the current list.  Modifies tab index of items so
      * only the focused element has tabindex=0.  Others have tabindex=-1
      * @param {HTMLElement} item
+     * @protected
      */
     setFocusOn(item) {
         this.focusItem = item;
@@ -500,9 +512,6 @@ export class Menu extends HTMLElement {
         e.currentTarget.onKeyDown(e)
     }
 
-    /**
-     * 
-     */
     onKeyDown(e) {
         let item = this.getFocused();
         if( ! item)

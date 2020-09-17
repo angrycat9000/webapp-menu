@@ -28,6 +28,7 @@ export class NestedMenu extends Menu {
         menuRoot.appendChild(scroller);
         scroller.appendChild(shadow.querySelector('.menu-inner'));
 
+        /** @private */
         this.stack = [];
     }
 
@@ -40,12 +41,14 @@ export class NestedMenu extends Menu {
         return new TabList(source);
     }
 
+    /** @type {?SubMenuItem} */
     get topSubMenu() {
         if(0 == this.stack.length)
             return null;
         return this.stack[this.stack.length - 1];
     }
 
+    /** @type {?SubMenuItem} */
     get currentMenu() {
         if(0 == this.stack.length)
             return this;
@@ -276,7 +279,7 @@ export class NestedMenu extends Menu {
         super.setItemStyles();
     }
 
-    /** @property {boolean} autoResize Will the menu grow bigger or smaller for sub menus*/
+    /** @type {boolean} autoResize Will the menu grow bigger or smaller for sub menus*/
     get autoResize() {return Attributes.getTrueFalse(this, 'autoresize', true)}
     set autoResize(value) {Attributes.setTrueFalse(this, 'autoresize', value, true)}
 

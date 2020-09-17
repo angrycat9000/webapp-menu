@@ -74,7 +74,7 @@ class ItemCollection {
     }
     
     /** 
-     * @property {number} 
+     * @type {number} 
      */
     get length() {
         let l = 0;

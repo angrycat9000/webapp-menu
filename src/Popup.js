@@ -8,6 +8,8 @@ import style from '../style/popup.scss';
  * Pop up menu suitable for a context menu
  * 
  * @element wam-popup
+ * 
+ * @attribute {on/off} static - If present will be treated as a static element instead of a popup
  */
 export class Popup extends Menu {
     constructor() {
@@ -38,9 +40,7 @@ export class Popup extends Menu {
         return Menu.create(Popup, items)
     }
 
-    /**
-     * @attribute static {on/off} if present does not treat this as a popup
-     */
+    /** @override */
     get isPopup() {return ! Attributes.getExists(this, 'static');}
     set isPopup(value) {Attributes.setExists(this, 'static', ! value)}
 

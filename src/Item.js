@@ -3,16 +3,24 @@ import {ReusableStyleSheet} from './Style';
 import itemStyle from '../style/item.scss';
 
 
- /**
-  * Occurs when an item in a toolbar is activated via a keypress or click.
-  * @event wam-activate
-  * @type {CustomEvent}
-  * @property {Item} detail.item
-  * @property {Menu} detail.menu
-  * @property {Event} detail.source
-  */
+/**
+ * Occurs when an item in a toolbar is activated via a keypress or click.
+ * @event wam-activate
+ * @type {CustomEvent}
+ * @property {Item} detail.item
+ * @property {Menu} detail.menu
+ * @property {Event} detail.source
+ */
 
+/**
+ * Base class for items that are added to menu and toolbars
+ */
 export class ItemBase extends HTMLElement {
+    /**
+     * True if this is an item that the user can focus and interact with
+     * @type {Boolean}
+     * @readonly
+     */
     get isInteractive() {return true;}
 
     setAppearance() {}
@@ -22,6 +30,9 @@ export class ItemBase extends HTMLElement {
   * Item in a menu or toolbar.
   * 
   * @element wam-item
+  *
+  * @attribute {boolean} show-label
+  * @attribute {on/off} disabled
   *
   * @fires wam-item-activate
   * 
@@ -38,10 +49,10 @@ export class Item extends ItemBase {
         const button = Item.template.content.cloneNode(true);
         shadow.appendChild(button);
 
-        /** @property {function} action */
+        /** @type {function} */
         this.action = null;
 
-        /** @property {object} data */
+        /** @type {object} */
         this.data = null;
     }
 
@@ -81,7 +92,8 @@ export class Item extends ItemBase {
     }
 
     /**
-     * @param {Node|string} icon
+     * Assign an icon 
+     * @param {(Node|string)} icon
      */
     setIcon(icon) {
         this.clearSlot('icon');
@@ -102,18 +114,17 @@ export class Item extends ItemBase {
         }
     }
 
-    /** 
-     * @attribute {boolean} show-label -  Determine if the item be labeled in a toolbar. 
-     *                                          Has no effect if the item is not in a toolbar.
-     * @property {boolean}  showLabel - Determine if the item be labeled in a toolbar. 
-     *                                   Has no effect if the item is not in a toolbar.
-     * 
+    /**
+     * Determine if the item be labeled in a toolbar. Has no effect if the item is not in a toolbar.
+     * @type {boolean} showLabel
+     * @attribute show-label
      */
     get showLabel() {return Attributes.getTrueFalse(this, 'show-label', false, true);}
     set showLabel(value) {return Attributes.setTrueFalse(this, 'show-label', value);}
 
     /**
-     * 
+     * @type {boolean}
+     * @readonly
      */
     get hasIcon () {
         return null !==  this.querySelector('[slot=icon]');
@@ -133,6 +144,7 @@ export class Item extends ItemBase {
      * Allow Menu containers to tweak the appearance of this item.  Unless you are implementing a
      * new Menu subclass, you probably should not call this.
      * @param {ItemAppearance} appearance
+     * @protected
      */
     setAppearance(config){
         const button = this.shadowItem;
@@ -177,7 +189,7 @@ export class Item extends ItemBase {
     }
 
     static get observedAttributes() {
-        return ['disabled', 'isdefaultfocus', 'label', 'sublabel', 'icon'];
+        return ['disabled', 'isdefaultfocus', 'label', 'icon'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -199,35 +211,39 @@ export class Item extends ItemBase {
       }
 
     /** 
-     * @attribute {on/off} disabled
-     * @property {boolean} disabled true if the item is disabled 
+     * True if the item is disabled
+     * @attribute disabled
+     * @type {boolean}
      */
     get disabled() {return Attributes.getExists(this, 'disabled')}
     set disabled(value) {return Attributes.setExists(this ,'disabled', value)}
 
     /**
-     * @property {boolean} isDefaultFocus True if the item is the one to recieve focus when the user
-     *                                    tabs into the parent menu
+     * True if the item is the one to recieve focus when the user tabs into the parent menu
+     * @type {boolean} isDefaultFocus
+     * @package
      */
     get isDefaultFocus() {return '0' == this.shadowItem.getAttribute('tabindex')}
     set isDefaultFocus(value) {this.shadowItem.setAttribute('tabindex', value ? '0' : '-1')}
 
 
     /** 
-     * @attribute {string} label
-     * @property {string} label The text label for this element. If the label attribute is not provided
+     * @attribute label
+     * @type {string} label The text label for this element. If the label attribute is not provided
      *                           it falls back to the text content of the the element with `slot="label"`
      */
     get label() { return this.getLabelText('label') }
     set label(value) {Attributes.setString(this, 'label', value)}
 
     /**
-     * @attribute {string} icon
-     * @property {string} icon
+     * Identifier of the icon used
+     * @attribute icon
+     * @type {string} icon
      */
     get icon() {return Attributes.getString(this, 'icon');}
     set icon(value) {return Attributes.setString(this, 'icon', value);}
 
+    /** @private */
     clearSlot(name) {
         const items = this.querySelectorAll(`[slot=${name}]`);
         for(let item of items)
@@ -235,7 +251,8 @@ export class Item extends ItemBase {
     }
 
     /**
-     * @property  {HTMLElement} shadowItem The button in the ShadowDOM that represents this item.
+     * The button in the ShadowDOM that represents this item.
+     * @type {HTMLElement} shadowItem 
      * @readonly
      */
     get shadowItem() {return this.shadowRoot.querySelector('button.item')}

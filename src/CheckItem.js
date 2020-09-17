@@ -2,6 +2,7 @@ import Item from './Item';
 import Attributes from './Attributes';
 
 /**
+ * Menu item that has a checked and unchecked state.
  * @element wam-check-item
  */
 export class CheckItem extends Item {
@@ -39,7 +40,7 @@ export class CheckItem extends Item {
 
     /**
      * @attribute {on/off} checked
-     * @property {Boolean} checked
+     * @type {Boolean} checked
      */
     get checked() {return Attributes.getExists(this, 'checked');}
     set checked(value) {Attributes.setExists(this, 'checked', value)}

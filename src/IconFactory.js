@@ -7,7 +7,7 @@
 export const IconFactory = {
   /**
    * Uses the icon name as an image source
-   * @property {iconFactoryFunction} img
+   * @type {iconFactoryFunction}
    */
   imageSrc: function(name) {
     const img = document.createElement('img');
@@ -18,7 +18,7 @@ export const IconFactory = {
   /**
    * Creates a Google Material icon.  Caller is responsible for importing to the material
    * icons styles.
-   * @property {iconFactoryFunction} 
+   * @type {iconFactoryFunction} 
    */
   materialIcon: function(name) {
     const icon = document.createElement('i');

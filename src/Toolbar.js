@@ -4,8 +4,6 @@ import {ReusableStyleSheet} from './Style';
 import style from '../style/toolbar.scss';
 
 /**
- * Here is a description of my web component.
- * 
  * @element wam-toolbar
  * 
  * @fires wam-item-activate

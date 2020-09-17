@@ -14,8 +14,14 @@ export class Separator extends ItemBase {
         Separator.stylesheet.addToShadow(shadow);
     }
 
+    /** @override */
     get isInteractive() {
         return false;
+    }
+
+    /** @override */
+    static get observedAttributes() {
+        return [];
     }
 
     static get tagName() {return 'wam-separator'}
