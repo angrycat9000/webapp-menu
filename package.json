@@ -1,11 +1,12 @@
 {
   "name": "webapp-menu",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Create accessible menus for web apps (eg. file, edit, context menus)",
   "main": "dist/webapp-menu.js",
   "scripts": {
     "test": "karma start",
     "test:watch": "karma start --auto-watch=true --single-run=false",
+    "test:debug": "karma start --auto-watch=true --single-run=false --browsers Chrome",
     "start": "rollup -w -c rollup.config.js & es-dev-server --app-index dist/index.html  --watch --open",
     "develop": "rimraf dist && rollup -c rollup.config.js",
     "build:site": "npm run build && npm run build:storybook",
