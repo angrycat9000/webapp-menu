@@ -16,15 +16,18 @@ describe('Position', () => {
         const el = (await fixture(menu5items));
         el.position = Menu.Position.AtPoint(100, 235, 0);
         await nextFrame();
-        expect(el.style.top).to.equal('235px')
-        expect(el.style.left).to.equal('50px'); // -50px because centered
+        const rect = el.getBoundingClientRect();
+        expect(rect.left).to.equal(50); // 100px - 50px for centering = 50 px
+        expect(rect.top).to.equal(235);
     });
-    /*it(`Empty`, async () => {
-        //viewport.set(470,470);
-        const el = (await fixture(menu5items));
-        el.position = Menu.Position.AtPoint(235, 235);
+
+    it('inside of a relatively positioned container', async() => {
+        const html = await fixture(`<div style="position: relative; left: 100px; top:-100px;">${menu5items}</div>`);
+        const menu = html.querySelector('wam-popup');
+        menu.position = Menu.Position.AtPoint(100, 235, 0);
         await nextFrame();
-        expect(el.style.top).to.equal('235px')
-        expect(el.style.left).to.equal('50px'); // -50px because centered
-    });*/
+        const rect = menu.getBoundingClientRect();
+        expect(rect.left).to.equal(50); // 100px - 50 px for centering = 50px
+        expect(rect.top).to.equal(235);
+    });
 });

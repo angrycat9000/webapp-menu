@@ -106,6 +106,14 @@ function positionPopup(menuRect, containerRect, x, y, verticalPadding, align = '
  */
 
 
+ function getPx(s) {
+  const match  = s.match(/^(\-?\d*\.?\d+)?px$/);
+  if(2 !== match.length) {
+    return 0;
+  }
+  return Number(match[1]);
+ }
+
 /**
  * Apply this position to the menu element.
  * @param {HTMLElement} element
@@ -113,12 +121,29 @@ function positionPopup(menuRect, containerRect, x, y, verticalPadding, align = '
  */
 function apply(element, position) {
 
+  // Find the closest parent that has a positioning context and save its position because
+  // the menu will be positioned inside of it.
+  let offsetLeft = 0, offsetTop = 0;
+  let parent = element.parentElement;
+  while(parent) {
+    const style = window.getComputedStyle(parent);
+    if('absolute' === style.position || 'relative'  === style.position || 'fixed' === style.position) {
+        const rect = parent.getBoundingClientRect();
+        offsetLeft = rect.left;
+        offsetTop = rect.top;
+        break;
+    }
+    parent = parent.parentElement;
+  }
+
   for (let prop of ['top', 'bottom', 'left', 'right']) {
     let value = position[prop]
     if ('undefined' === typeof value)
       value = '';
-    else if ('number' === typeof value)
-      value = value + 'px';
+    else if ('number' === typeof value) {
+      const offset = ('top' === prop || 'bottom' === prop)  ? offsetTop : offsetLeft;
+      value = (value - offset) + 'px';
+    }
     element.style[prop] = value;
   }
 
