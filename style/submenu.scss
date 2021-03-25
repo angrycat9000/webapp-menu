@@ -8,13 +8,18 @@
 
 .submenu-inner{
     width:100%;
-    overflow-y:auto;
-    padding-top: 3rem;
     box-sizing:border-box;
+    display:flex;
+    flex-direction: column;
+
+    slot {
+        display: block;
+        flex: 1 1 auto;
+        overflow-y: auto;
+    }
 }
 
 .back {
-    position:fixed;
-    top:0;
-    width:100%;
+    flex: 0 0 3rem;
 }
+
