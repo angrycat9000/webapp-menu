@@ -229,9 +229,9 @@ export class NestedMenu extends Menu {
 
             /* 
                Resizes the current list to be the same height as the container so it scrolls properly.
-               This needs to be fired after the height transition for this.element has complete because
+               This needs to be fired after the height transition for this.element has completed because
                it uses the final value of the height.  That value isn't available until after the
-               transition has completed.  It might also have been capped by max-height
+               transition has completed.  It might also have been capped by max-height.
             */
             const resolvedHeight = container.clientHeight;
             if(resize) {
@@ -282,6 +282,7 @@ export class NestedMenu extends Menu {
     /** @type {boolean} autoResize Will the menu grow bigger or smaller for sub menus*/
     get autoResize() {return Attributes.getTrueFalse(this, 'autoresize', true)}
     set autoResize(value) {Attributes.setTrueFalse(this, 'autoresize', value, true)}
+
 
     static get observedAttributes() {
         return Menu.observedAttributes.concat(['autoresize']);
