@@ -193,7 +193,7 @@ export class Menu extends HTMLElement {
     set iconFactory(value) {
         this._iconFactory = value;
         for(let item of this.items)
-            item.updateFactoryIcon();
+            item.updateIcon();
     }
 
     /**

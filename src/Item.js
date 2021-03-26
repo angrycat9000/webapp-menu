@@ -74,7 +74,7 @@ export class Item extends ItemBase {
     /**
      * @param {object} props
      * @param {string} [props.label]
-     * @param {Node|string} [props.icon]
+     * @param {string} [props.icon]
      * @param {boolean} [props.disabled]
      * @param {boolean} [props.showLabel]
      * @param {itemActivateFunction} [props.action]
@@ -88,29 +88,6 @@ export class Item extends ItemBase {
         for(let prop of ['disabled', 'icon', 'label', 'showLabel', 'action', 'data', 'id']) {
             if('undefined' != typeof props[prop])
                 this[prop] = props[prop];
-        }
-    }
-
-    /**
-     * Assign an icon 
-     * @param {(Node|string)} icon
-     */
-    setIcon(icon) {
-        this.clearSlot('icon');
-        if(this.parentElement && this.parentElement.requestItemUpdate) {
-            this.parentElement.requestItemUpdate();
-        }
-        if( ! icon)
-            return;
-
-        if(icon instanceof Node) {
-            icon.setAttribute('slot', 'icon');
-            this.appendChild(icon);
-            return;
-        }
-
-        if(icon instanceof String) {
-            this.icon = icon;
         }
     }
 
@@ -157,35 +134,57 @@ export class Item extends ItemBase {
         Attributes.setString(button, 'title', config.hideLabel ? this.label : '')
     }
 
-    updateFactoryIcon() {
+    /**
+     * Update the icon element based on the icon name.
+     */
+    updateIcon() {
+        const iconName = this.icon;
+        const query = !iconName ? '[slot=icon] [data-factory-icon]' : '[slot=icon]'
+        const icons = this.querySelectorAll(query);
+        const hadIcon = this.hasIcon;
+        for(let previousIcon of icons) {
+            // If removing the icon name, leave any elements manually added to the slot.
+            // If adding/changing the icon name, wipe out all icons.
+            if(this.icon || previousIcon.hasAttribute('data-factory-icon')) {
+                this.removeChild(previousIcon);
+            }
+        }
+        
+        // Can't make a new icon so give up
         if(!this.icon || !this.parentElement || ! this.parentElement.iconFactory)
             return;
 
-        const iconElement = this.parentElement.iconFactory(this.icon);
-        this.setIcon(iconElement);
+        let hasNewIcon = false;
+        const iconElement = this.parentElement.iconFactory(iconName);
+        if(iconElement) {
+            hasNewIcon = true;
+            icon.setAttribute('slot', 'icon');
+            icon.setAttribute('data-factory-icon')
+            this.appendChild(icon);
+        }
+
+        if(this.parentElement.requestItemUpdate && hadIcon != hasNewIcon) {
+            this.parentElement.requestItemUpdate();
+        }
     }
 
-    /** @private */
+    /** 
+     * Set the icon name in the shadow root.  This can be overriden by adding a light
+     * DOM child with slot=label
+     * @private
+     */
     updateLabel() {
-        const slot = 'label';
-        this.clearSlot(slot);
-        const label = Attributes.getString(this, slot);
+        const label = Attributes.getString(this, 'label');
         const labelNode = document.createTextNode(label);
-        this.shadowRoot.querySelector(`slot[name=${slot}]`).appendChild(labelNode);
-    }
-
-    /** @private */
-    getLabelText() {
-        const slot = 'label';
-        const label = Attributes.getString(this, slot);
-        if(label)
-            return label;
-        const labelElement = this.querySelector(`[slot=${slot}]`);
-        return labelElement ? labelElement.innerText : undefined;
+        const shadowSlot = this.shadowRoot.querySelector(`slot[name=label]`);
+        while(shadowSlot.firstChild) {
+            shadowSlot.removeChild(shadowSlot.firstChild);
+        }
+        shadowSlot.appendChild(labelNode);
     }
 
     connectedCallback() {
-        this.updateFactoryIcon();
+        this.updateIcon();
     }
 
     static get observedAttributes() {
@@ -205,7 +204,7 @@ export class Item extends ItemBase {
                 this.updateLabel();
                 break;
             case 'icon':
-                this.updateFactoryIcon();
+                this.updateIcon();
                 break;
         }
       }
@@ -232,7 +231,13 @@ export class Item extends ItemBase {
      * @type {string} label The text label for this element. If the label attribute is not provided
      *                           it falls back to the text content of the the element with `slot="label"`
      */
-    get label() { return this.getLabelText('label') }
+    get label() {
+        const label = Attributes.getString(this, 'label');
+        if(label)
+            return label;
+        const labelElement = this.querySelector('[slot=label]');
+        return labelElement ? labelElement.innerText : undefined;
+    }
     set label(value) {Attributes.setString(this, 'label', value)}
 
     /**
@@ -243,12 +248,6 @@ export class Item extends ItemBase {
     get icon() {return Attributes.getString(this, 'icon');}
     set icon(value) {return Attributes.setString(this, 'icon', value);}
 
-    /** @private */
-    clearSlot(name) {
-        const items = this.querySelectorAll(`[slot=${name}]`);
-        for(let item of items)
-            this.removeChild(item);
-    }
 
     /**
      * The button in the ShadowDOM that represents this item.
