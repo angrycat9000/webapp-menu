@@ -438,6 +438,10 @@ export class Menu extends HTMLElement {
         const controlledBy = this.getAttribute('controlled-by');
         if(controlledBy)
             this.setControlledByElement(this.getElementById(controlledBy));
+        
+        // Force the upgrade of any children so they are included in this.interactiveItems
+        // before trying to select the focused item
+        window.customElements.upgrade(this);
 
         this.focusItem = this.interactiveItems.first;
     }

@@ -125,7 +125,7 @@ describe('Menu', () => {
         expect(el.interactiveItems.length).to.equal(1);
     });
 
-    it('getFocused()', async ()=>{
+    it('focuses on open', async ()=>{
         const el = (await fixture(`<wam-popup><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;
         el.useAnimation = false;
@@ -133,5 +133,13 @@ describe('Menu', () => {
         await nextFrame();
         expect(document.activeElement === item, 'document.activeElement').to.be.true;
         expect(el.getFocused() === item, 'getFocused()').to.be.true;
+    });
+
+    it('sets defaultFocus on the first item', async() => {
+        const menu = await fixture(`<wam-toolbar><wam-item></wam-item><wam-item></wam-item></wam-toolbar>`);
+        await nextFrame();
+        const item = menu.firstElementChild;
+        const shadowButton = item.shadowRoot.querySelector('button');
+        expect(shadowButton.getAttribute('tabindex')).to.equal("0");
     })
 });
