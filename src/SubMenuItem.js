@@ -44,7 +44,10 @@ export class SubMenuItem extends Item {
         const inner = document.createElement('div');
         inner.className = 'submenu-inner';
 
-        const back = Item.create({icon:Icon.Back, label:'Back'});
+        const back = Item.create({ label:'Back'});
+        const backIcon = Icon.Back;
+        backIcon.setAttribute("slot", "icon");
+        back.appendChild(backIcon);
         back.shadowItem.setAttribute('aria-label', 'Back to previous level');
         back.classList.add('back');
         inner.appendChild(back);
