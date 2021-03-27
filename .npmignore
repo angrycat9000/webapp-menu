@@ -12,3 +12,4 @@ dist/index*
 style
 src
 icons
+coverage

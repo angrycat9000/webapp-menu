@@ -13,13 +13,11 @@ module.exports = config => {
         { pattern: config.grep ? config.grep : 'tests/**/*.test.js', type: 'module' }
       ],
       browserConsoleLogOptions: { level: 'error' },
-      coverageIstanbulReporter: {
-        dir:'dist/coverage'
-      },
       // see the karma-esm docs for all options
       esm: {
         // if you are using 'bare module imports' you will need this option
-        nodeResolve: true
+        nodeResolve: true,
+        coverageExclude: ['tests/*.test.js', 'node_modules/*'],
       }
     })
   );
