@@ -6,7 +6,7 @@ import { terser } from "rollup-plugin-terser";
 import commonjs from 'rollup-plugin-commonjs'
 import cssnano from 'cssnano';
 import postcss from 'postcss';
-import indexHTML from 'rollup-plugin-index-html';
+import html from '@open-wc/rollup-plugin-html';
 const license = require('rollup-plugin-license');
 
 const path = require('path');
@@ -22,7 +22,7 @@ function getPlugins(isProd) {
   }
 
   let plugins = [
-    indexHTML(),
+    html(),
     resolve(),
     commonjs(),
     svg(),
