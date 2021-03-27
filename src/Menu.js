@@ -123,6 +123,7 @@ export class Menu extends HTMLElement {
      * @see Menu#items
      * @see Menu#displayedItems
      * @type {TabList}
+     * @readonly
      */
     get interactiveItems() {
         return new TabList(this.displayItems.array.filter(item => item.isInteractive));
@@ -136,6 +137,7 @@ export class Menu extends HTMLElement {
      * @see Menu#items
      * @see Menu#displayedItems
      * @type {TabList}
+     * @readonly
      */
     get displayItems() {return new TabList(this.items);}
 

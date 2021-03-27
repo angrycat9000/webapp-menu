@@ -23,16 +23,14 @@ export const jsInit = (args) => {
 jsInit.storyName = "Javascript"
 jsInit.args = {
    items: [
-      {label: 'Item One'},
-      {label: 'Item Two'}
+      {label: 'Reply', icon:'reply'},
+      {label: 'Reply All', icon:'reply_all'},
+      {label: 'Foward', icon:'forward'}
    ]
-}
-jsInit.argTypes = {
-   items: {control: 'object'}
 }
 
 export const LabelOne = () =>
-   `<wam-toolbar>
+   `<wam-toolbar static>
         <wam-item label="Reply" show-label><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
@@ -40,16 +38,23 @@ export const LabelOne = () =>
 LabelOne.storyName = 'Show One Label';
 
 export const LabelAll = () =>
-   `<wam-toolbar show-label>
+   `<wam-toolbar show-label static>
         <wam-item label="Reply"><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
      </wam-toolbar>`;
 LabelAll.storyName = 'Show All Labels';
 
-export const CheckboxInToolbar = () => 
-   `<wam-toolbar>
-         <wam-check-item label="Show"></wam-check-item>
-         <wam-item label="Run"></wam-item>
+export const CheckboxItemWithLabel = () => 
+   `<wam-toolbar static>
+         <wam-check-item label="Bold"></wam-check-item>
+         <wam-check-item label="Italics"></wam-check-item>
+         <wam-check-item label="Underline"></wam-check-item>
    </wam-toolbar>`;
-CheckboxInToolbar.storyName = 'Checkbox'
+
+export const CheckboxItemWithIcon = () => 
+   `<wam-toolbar static>
+      <wam-check-item label="Bold" icon="format_bold"></wam-check-item>
+      <wam-check-item label="Italics" icon="format_italic"></wam-check-item>
+      <wam-check-item label="Underline" icon="format_underline"></wam-check-item>
+   </wam-toolbar>`;

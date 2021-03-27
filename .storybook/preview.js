@@ -17,6 +17,9 @@ export const parameters = {
       'wam-submenu-close'
     ]
   },
+  controls: {
+    hideNoControlsWarning: true
+  },
   docs: {disabled: true},
   options: {
     storySort: {
@@ -24,3 +27,7 @@ export const parameters = {
     }
   }
 };
+
+export const argTypes = {
+  interactiveItems: { control: { disable: true } },
+}

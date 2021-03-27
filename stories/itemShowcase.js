@@ -8,7 +8,7 @@ export function itemShowcase(item) {
     </wam-popup>
 
     <h2>Toolbar</h2>
-    <wam-toolbar>
+    <wam-toolbar static>
       <wam-item label="Item Before" icon="skip_previous"></wam-item>
       ${item}
       <wam-item label="Item After" icon="skip_next"></wam-item>
