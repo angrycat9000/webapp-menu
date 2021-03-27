@@ -15,7 +15,7 @@ htmlInit.storyName = 'HTML';
 export const jsInit = (args) => {
     const popup = document.createElement('wam-popup');
     popup.items.set(args.items);
-    popup.isPopup = false;
+    popup.isStatic = true;
     return popup;
 };
 jsInit.storyName = 'Javascript';

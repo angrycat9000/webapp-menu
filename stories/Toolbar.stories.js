@@ -6,7 +6,7 @@ export default {
 }
 
 export const htmlInit = () => 
-    `<wam-toolbar>
+    `<wam-toolbar static>
         <wam-item label="Reply"><i class="material-icons" slot="icon">reply</i></wam-item>
         <wam-item label="Reply All"><i class="material-icons" slot="icon">reply_all</i></wam-item>
         <wam-item label="Forward"><i class="material-icons" slot="icon">forward</i></wam-item>
@@ -16,6 +16,7 @@ htmlInit.storyName = 'HTML';
 
 export const jsInit = (args) => {
    const toolbar = document.createElement(Menu.Toolbar.tagName);
+   toolbar.isStatic = true;
    toolbar.items.set(args.items);
    return toolbar;
 }

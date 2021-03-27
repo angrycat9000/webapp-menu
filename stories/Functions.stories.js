@@ -5,19 +5,18 @@ export default {
  }
 
 function createPopup() {
-    const popup = createStaticPopup();
-    popup.isPopup = true;
-    return popup;
-}
-
-function createStaticPopup() {
     const popup = document.createElement('wam-popup');
-    popup.isPopup = false;
     popup.items.set([
         {label:'Cut'},
         {label:'Copy'},
         {label:'Paste'}
     ]);
+    return popup;
+}
+
+function createStaticPopup() {
+    const popup = createPopup();
+    popup.isStatic = true;
     return popup;
 }
 
@@ -81,7 +80,6 @@ export const leaveOpen = ()=> {
         {label:'Leave Open', id:'leave-open'},
     ];
     const bar = Wam.Popup.create(items);
-    bar.isPopup = true;
     bar.open();
     bar.addEventListener('wam-item-activate', (e)=>{
         if('leave-open' == e.detail.item.id)

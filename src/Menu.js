@@ -46,7 +46,7 @@ export const Direction  = {
  * @fires wam-menu-open
  * @fires wam-menu-close
  * 
- * @attribute {on/off} popup - If present, will hide the element by default until open is called or the controlledBy element is clicked
+ * @attribute {on/off} static - If present will be treated as a static element instead of a popup
  * @attribute {string} controlled-by - Id of the element that controls if the menu is open or closed
  */
 export class Menu extends HTMLElement {
@@ -89,11 +89,11 @@ export class Menu extends HTMLElement {
 
         this._iconFactory = null;
 
+        this._convertToPopup();
+
         this.addEventListener('keydown', Menu.onKeyDown);
         this.addEventListener('keypress', Menu.onKeyPress);
         this.addEventListener('click', Menu.onClick);
-
-        this._state = 'open';
         this._windowResizeFunc = (e)=>{this.onWindowResize(e)}
         this._windowPointerFunc = (e)=>{this.onWindowPointerDown(e)}
     }
@@ -144,14 +144,14 @@ export class Menu extends HTMLElement {
      * @type {boolean}
      * @readonly
      */
-    get isOpen() {return 'open' === this._state ||  'opening' === this._state || ! this.isPopup;}
+    get isOpen() {return 'open' === this._state ||  'opening' === this._state ||  this.isStatic;}
 
     /**
      * True if the menu is able to be opened and closed.  False for static menus that are always open.
      * @type {boolean}
      */
-    get isPopup() { return Attributes.getExists(this, 'popup') }
-    set isPopup(value) { Attributes.setExists(this, 'popup', value)}
+    get isStatic() { return Attributes.getExists(this, 'static') }
+    set isStatic(value) { Attributes.setExists(this, 'static', value)}
 
     /**
      * Element that controls the opening and closing of this menu.
@@ -200,7 +200,7 @@ export class Menu extends HTMLElement {
      * Web component life cycle helper to define what attributes trigger #attributeChangedCallback
      */
     static get observedAttributes() {
-        return ['popup', 'controlled-by'];
+        return ['static', 'controlled-by'];
     }
 
     /**
@@ -208,12 +208,12 @@ export class Menu extends HTMLElement {
      */
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name) {
-            case 'popup': {
-                const isPopup = null !== newValue;
-                if(isPopup)
-                    this._convertToPopup();
-                else
+            case 'static': {
+                const isStatic = null !== newValue;
+                if(isStatic)
                     this._convertToStatic();
+                else
+                    this._convertToPopup();
                 break;
             }
             case 'controlled-by':
@@ -297,7 +297,7 @@ export class Menu extends HTMLElement {
      * @return {Transition} null if the menu is already open.  False if canceled.  Otherwise a Transition.
      */
     _open() {
-        if(this.isOpen || ! this.isPopup)
+        if(this.isOpen || this.isStatic)
             return null;
 
         const event = new CustomEvent('wam-menu-open', {
@@ -364,7 +364,7 @@ export class Menu extends HTMLElement {
      * @return {Transition} Null if it is already closed, false
      */
     _close(cause) {
-        if( ! this.isPopup || ! this.isOpen)
+        if( this.isStatic || ! this.isOpen)
             return null;
 
         const event = new CustomEvent('wam-menu-close', {
@@ -419,7 +419,7 @@ export class Menu extends HTMLElement {
     }
 
     onWindowPointerDown(e) {
-        if(this.isPopup && this !== Menu.fromElement(e.target))
+        if(!this.isStatic && this !== Menu.fromElement(e.target))
             this.close(CloseReason.PointerDownOutside);
     }
 
@@ -533,7 +533,7 @@ export class Menu extends HTMLElement {
         } else if('ArrowDown' == e.key && Direction.TopToBottom == this.direction) {
             this.setFocusOn(this.interactiveItems.next(item));
             e.preventDefault();
-        } else if('Escape' == e.key && this.isPopup) {
+        } else if('Escape' == e.key && !this.isStatic) {
             this.close(CloseReason.Escape);
         }
     }
@@ -560,7 +560,7 @@ export class Menu extends HTMLElement {
 
         const closeOk = item.dispatchEvent(event);
         
-        if(this.isPopup && closeOk)
+        if(!this.isStatic && closeOk)
             this.close(CloseReason.ItemActivated);
     }
 

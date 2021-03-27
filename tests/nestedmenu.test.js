@@ -3,7 +3,7 @@ import { html, fixture, expect, nextFrame } from '@open-wc/testing';
 import '../dist/webapp-menu';
 
 const menu = 
-  `<wam-nestedmenu useanimation="false" open>
+  `<wam-nestedmenu useanimation="false" static>
     <wam-submenu id="smaller" label="small">
       <wam-item label="a"></wam-item>
     </wam-submenu>

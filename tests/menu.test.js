@@ -3,7 +3,7 @@ import { fixture, expect, nextFrame } from '@open-wc/testing';
 import Wam from '../dist/webapp-menu';
 
 describe('Menu', () => {  
-    describe('open', ()=> {
+    describe('isOpen', ()=> {
         it(`initialize to false for <wam-popup>`, async () => {
             const el = (await fixture(`<wam-popup popup></wam-popup`));
             expect(el.isOpen).to.be.false;
@@ -13,13 +13,13 @@ describe('Menu', () => {
             expect(el.isOpen).to.be.true;
         });
 
-        it(`initialize to true for wam-toolbar`, async () => {
+        it(`initialize to false for <wam-toolbar>`, async () => {
             const el = (await fixture(`<wam-toolbar></wam-toolbar`));
-            expect(el.isOpen).to.be.true;
+            expect(el.isOpen).to.be.false;
         });
-        it(`initialize to false for <wam-toolbar popup>`, async () => {
-            const el = (await fixture(`<wam-toolbar popup></wam-toolbar`));
-            expect(el.isOpen).to.be.false
+        it(`initialize to true for <wam-toolbar static>`, async () => {
+            const el = (await fixture(`<wam-toolbar static></wam-toolbar`));
+            expect(el.isOpen).to.be.true
         });
         it(`open()`, async () => {
             const el = (await fixture(`<wam-popup></wam-popup`));
@@ -41,12 +41,13 @@ describe('Menu', () => {
             expect(el.isOpen).to.be.true;
         });
         it('close() ignored on toolbar', async() => {
-            const el = await fixture(`<wam-toolbar></wam-toolbar`);
+            const el = await fixture(`<wam-toolbar static></wam-toolbar`);
             el.close();
             expect(el.isOpen).to.be.true;
         });
         it('open rejects if already open', async() => {
             const el = await fixture(`<wam-toolbar></wam-toolbar`);
+            await el.open();
             let rejected = false;
             await el.open().catch(() => rejected = true);
             return expect(rejected).to.be.true;

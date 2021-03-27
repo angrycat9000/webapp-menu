@@ -4,7 +4,7 @@ export default {
 }
 
 export const htmlInit = () => 
-  `<wam-nestedmenu>
+  `<wam-nestedmenu static>
     <wam-item label="Rock"></wam-item>
     <wam-submenu><span slot="label">Animal</span>
           <wam-item label="Cat"></wam-item>

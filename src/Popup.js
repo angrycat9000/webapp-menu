@@ -7,42 +7,23 @@ import style from '../style/popup.scss';
 /**
  * Pop up menu suitable for a context menu
  * 
- * @element wam-popup
- * 
- * @attribute {on/off} static - If present will be treated as a static element instead of a popup
+ * @element wam-menu
+ *
  */
 export class Popup extends Menu {
     constructor() {
         super();
-
         Popup.stylesheet.addToShadow(this.shadowRoot);
         this.shadowRoot.querySelector('.menu').classList.add('menu-popup');
-        this._convertToPopup();
     }
 
     static get observedAttributes() {
         return super.observedAttributes.filter(attribute => 'popup' !== attribute).concat('static')
     }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
-
-        if('static' === name) {
-            const isPopup = null === newValue;
-            if(isPopup)
-                this._convertToPopup();
-            else
-                this._convertToStatic();
-        }
-    }
     
     static create(items) {
         return Menu.create(Popup, items)
     }
-
-    /** @override */
-    get isPopup() {return ! Attributes.getExists(this, 'static');}
-    set isPopup(value) {Attributes.setExists(this, 'static', ! value)}
 
     updateItem(item, i , items) {
         item.setAppearance({
