@@ -158,9 +158,9 @@ export class Item extends ItemBase {
         const iconElement = this.parentElement.iconFactory(iconName);
         if(iconElement) {
             hasNewIcon = true;
-            icon.setAttribute('slot', 'icon');
-            icon.setAttribute('data-factory-icon')
-            this.appendChild(icon);
+            iconElement.setAttribute('slot', 'icon');
+            iconElement.setAttribute('data-factory-icon','');
+            this.appendChild(iconElement);
         }
 
         if(this.parentElement.requestItemUpdate && hadIcon != hasNewIcon) {
@@ -175,6 +175,10 @@ export class Item extends ItemBase {
      */
     updateLabel() {
         const label = Attributes.getString(this, 'label');
+        const oldSlotLabels = this.querySelectorAll('[slot=label]');
+        for(const l of oldSlotLabels) {
+            this.removeChild(l);
+        }
         const labelNode = document.createTextNode(label);
         const shadowSlot = this.shadowRoot.querySelector(`slot[name=label]`);
         while(shadowSlot.firstChild) {

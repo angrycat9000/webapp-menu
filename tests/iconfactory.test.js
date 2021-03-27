@@ -35,4 +35,9 @@ describe('IconFactory', () => {
     const icon = Wam.IconFactory.imageSrc('helloworld.png');
     expect(icon).dom.to.equal('<img src="helloworld.png">');
   })
+
+  it('Material Icon factory', ()=> {
+    const icon = Wam.IconFactory.materialIcon('add');
+    expect(icon).dom.to.equal('<i class="material-icons">add</i>');
+  })
 })

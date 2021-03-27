@@ -51,4 +51,24 @@ describe('ItemCollection', () => {
         expect(el.items.length).to.be.equal(3);
         expect(el.items.atIndex(2).label).to.be.equal('Test');
     });
+    describe('indexOf', () => {
+        it('finds item', async() => {
+            const el = await fixture(`<wam-popup><wam-item id="one"></wam-item><wam-item id="two"></wam-item></wam-popup>`);
+            const target = el.querySelector('#two');
+            expect(el.items.indexOf(target)).to.equal(1);
+        })
+        it('returns -1 for not found', async() => {
+            const el = await fixture(`<wam-popup><wam-item id="one"></wam-item><wam-item id="two"></wam-item></wam-popup>`);
+            const target = document.createElement('wam-item');
+            expect(el.items.indexOf(target)).to.equal(-1);
+        })
+    })
+
+    describe('remove', ()=>{
+        it('removes an index', async()=> {
+            const el = await fixture(`<wam-popup><wam-item id="one"></wam-item><wam-item id="two"></wam-item></wam-popup>`);
+            el.items.remove(0);
+            expect(el).lightDom.to.equal('<wam-item id="two"></wam-item>');
+        })
+    })
 });

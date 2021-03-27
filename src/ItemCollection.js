@@ -68,7 +68,7 @@ class ItemCollection {
         if('number' == typeof item)
             item = this.atIndex(item);
 
-        if(item instanceof ItemBase && item.parentElement == owner)
+        if(item instanceof ItemBase && item.parentElement == this.owner)
             this.owner.removeChild(item);
         
     }
