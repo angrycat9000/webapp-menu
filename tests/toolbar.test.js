@@ -18,9 +18,14 @@ describe('Toolbar', () => {
             expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
         });
         it('Show for wam-check-item', async()=>{
-            const el = (await fixture(`<wam-toolbar><wam-check-item label="l"></wam-check-item></wam-toolbar`));
+            const el = (await fixture(`<wam-toolbar><wam-check-item label="alarm"></wam-check-item></wam-toolbar`));
             const item = el.firstElementChild;
             expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
         });
+        it('Show if toolbar sets show-label', async() => {
+            const el = await fixture(`<wam-toolbar show-label><wam-item label="alarm" icon="alarm"></wam-item></wam-toolbar`);
+            const item = el.firstElementChild;
+            expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
+        })
     });
 });
