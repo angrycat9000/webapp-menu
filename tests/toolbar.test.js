@@ -27,5 +27,16 @@ describe('Toolbar', () => {
             const item = el.firstElementChild;
             expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
         })
+        it('showLabel property reflects attribute', async() => {
+            const el = await fixture(`<wam-toolbar show-label><wam-item label="alarm" icon="alarm"></wam-item></wam-toolbar`);
+            expect(el.showLabel).to.be.true;
+        })
+        it('showLabel can be set by property', async() => {
+            const el = await fixture(`<wam-toolbar><wam-item label="alarm" icon="alarm"></wam-item></wam-toolbar`);
+            el.showLabel = true;
+            expect(el.showLabel).to.be.true;
+            const item = el.firstElementChild;
+            expect(item.shadowItem.getAttribute('data-label')).to.equal('true');
+        })
     });
 });
