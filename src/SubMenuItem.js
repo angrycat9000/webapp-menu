@@ -86,24 +86,6 @@ export class SubMenuItem extends Item {
         return this.topMenu.iconFactory;
     }
 
-    /**
-     * Determine if this is an action on the child items (instead of the open root item)
-     * @param {Array<Node>} targetPath
-     * @return {boolean}
-     */
-    isChildItem(targetPath) {
-        if( ! targetPath)
-            return false;
-
-        for(let item of targetPath) {
-            if(item == this)
-                return false;
-            if(item instanceof Item)
-                return true;
-        }
-        return false;
-    }
-
     get scrollTop() {return this.shadowRoot.querySelector('.submenu-inner').scrollTop;}
     set scrollTop(value) {this.shadowRoot.querySelector('.submenu-inner').scrollTop = value;}
 
