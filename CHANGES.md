@@ -3,12 +3,12 @@
 ## 3.0.0
 
 - Added IconFactory
-  - Added `IconFactory.image` and `IconFactory.materialIcon` as icon factory methods
+  - Added `IconFactory.imageSrc` and `IconFactory.materialIcon` as icon factory methods
   - Changed `Menu.defaultFactory` to `IconFactory.defaultFactory`
   - Changed default icon factory from `null` to  `IconFactory.image`
 
-- Default to  static elements instead of popups
-  - Added `popup` attribute.  Use this to enable popup behavior on a menu
+- Default to static toolbars and nested menus.
+  - Added `static` attribute to treate menus as static elements intead of pop ups.
   - Removed `open` attribute. Use `open()` or `close()` in JavaScript to control popup menus.
   - Made `isOpen` property read only.
 
@@ -16,7 +16,6 @@
 
 - Item labels
   - Remove `Item.setLabel`.  Use `Item.label` instead.
-  - Change `label` to prefer the attribute value over slotted child.
   - Change default `label` to undefined if neither the atribute or slot has been provided
   - Change `showToolbarLabel` to `showLabel` property and `show-label` attribute
 
