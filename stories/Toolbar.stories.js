@@ -25,7 +25,7 @@ jsInit.args = {
    items: [
       {label: 'Reply', icon:'reply'},
       {label: 'Reply All', icon:'reply_all'},
-      {label: 'Foward', icon:'forward'}
+      {label: 'Forward', icon:'forward'}
    ]
 }
 
