@@ -3,7 +3,6 @@ import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 import {nextId} from './Id';
 import TabList from './TabList';
-import NestedMenu from './NestedMenu';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';
@@ -77,9 +76,9 @@ export class SubMenuItem extends Item {
 
     get topMenu() {
         let e = this.parentElement;
-        while(e && ! (e instanceof NestedMenu))
+        while(e && 'wam-nestedmenu' !== e.tagName.toLowerCase()) {
             e = e.parentElement;
-
+        }
         return e;
     }
 

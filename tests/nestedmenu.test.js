@@ -1,4 +1,4 @@
-import { html, fixture, expect, nextFrame } from '@open-wc/testing';
+import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import '../dist/webapp-menu';
 
@@ -57,7 +57,7 @@ describe('NestedMenu', () => {
       expect(el.clientHeight).to.equal(sizeOfItems(el.displayItems.length));
 
       const child = el.querySelector('#bigger');
-      await new Promise((resolve, reject)=>{el.openChild(child).on('complete', resolve);})
+      await new Promise((resolve)=>{el.openChild(child).on('complete', resolve);})
       await nextFrame();
       
       expect(el.clientHeight).to.equal(sizeOfItems(child.displayItems.length))
@@ -69,10 +69,20 @@ describe('NestedMenu', () => {
       expect(el.clientHeight).to.equal(sizeOfItems(el.displayItems.length));
 
       const child = el.querySelector('#smaller');
-      await new Promise((resolve, reject)=>{el.openChild(child).on('complete', resolve);})
+      await new Promise((resolve)=>{el.openChild(child).on('complete', resolve);})
       await nextFrame();
      
       expect(el.clientHeight).to.equal(sizeOfItems(child.displayItems.length))
     })
   })
+  it("topMenu", async()=> {
+    const menu = await fixture(`
+      <wam-nestedmenu>
+        <wam-submenu> 
+          <wam-submenu id="inner"></wam-submenu>
+        </wam-submenu>
+      </wam-nestedmenu>`);
+    const inner = menu.querySelector('#inner');
+    expect(inner.topMenu).to.be.equal(menu);
+  });
 })
