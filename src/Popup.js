@@ -1,5 +1,4 @@
 import Menu from './Menu';
-import Attributes from './Attributes';
 import {ReusableStyleSheet} from './Style';
 import style from '../style/popup.scss';
 
@@ -15,10 +14,6 @@ export class Popup extends Menu {
         super();
         Popup.stylesheet.addToShadow(this.shadowRoot);
         this.shadowRoot.querySelector('.menu').classList.add('menu-popup');
-    }
-
-    static get observedAttributes() {
-        return super.observedAttributes.filter(attribute => 'popup' !== attribute).concat('static')
     }
     
     static create(items) {
