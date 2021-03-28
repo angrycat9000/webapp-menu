@@ -162,7 +162,7 @@ class Exit extends Transition {
         this.on('complete', this.removeOnComplete, this);
     }
 
-    removeOnComplete(e) {
+    removeOnComplete() {
         if(this.target.parentElement)
             this.target.parentElement.removeChild(this.target);
     }

@@ -187,7 +187,6 @@ export class NestedMenu extends Menu {
         const resize = this.autoResize;
 
         const tls = this.shadowRoot.querySelector('.top-level-scroller');
-        const scrollTop =  -1 * tls.scrollTop || tls.style.top || '0';
 
         const anim = new Animation.Transition(slider, 'animation-stack');
         anim.ignoreChildren = false;
@@ -270,7 +269,7 @@ export class NestedMenu extends Menu {
 
     updateItems() {
         this._hasIcons = false;
-        for(item of this.items) {
+        for(const item of this.items) {
             if(item.hasIcon) {
                 this._hasIcons = true;
                 break;

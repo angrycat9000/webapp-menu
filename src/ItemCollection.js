@@ -9,7 +9,7 @@ function convertToItem(obj) {
  * Provide access to the children of the menu via JavaScript.
  */
 class ItemCollection {
-    constructor(owner, shadowContainer) {
+    constructor(owner) {
         this.owner = owner;
     }
 
@@ -48,7 +48,7 @@ class ItemCollection {
      * @param {Item|number} exisiting
      */
     insertBefore(newItem, exisiting) {
-        const nextItem = 'number' == typeof exisiting ?  this.atIndex(exisiting) : existing;
+        const nextItem = 'number' == typeof exisiting ?  this.atIndex(exisiting) : exisiting;
         const newNode = convertToItem(newItem);
         return this.owner.insertBefore(newNode, nextItem);
     }

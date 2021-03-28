@@ -63,7 +63,7 @@ export class SubMenuItem extends Item {
         this.shadowItem.setAttribute('aria-expanded', false)
         
         /** */
-        this.items = new ItemCollection(this, inner);
+        this.items = new ItemCollection(this);
     }
 
     get shadowMenu() {return this.shadowRoot.querySelector('[role=menu]');}

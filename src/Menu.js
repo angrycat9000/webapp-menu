@@ -321,7 +321,7 @@ export class Menu extends HTMLElement {
 
 
         let anim = new Animation.Transition(menuElement, 'animation-show');
-        anim.on('firstframe', (e)=>{
+        anim.on('firstframe', ()=>{
             menuElement.style.display = '';
             this.applyPosition();
             if(this.controlledBy)
@@ -385,7 +385,7 @@ export class Menu extends HTMLElement {
         this._state = 'closing';
 
         let anim = new Animation.Transition(this.shadowRoot.querySelector('.menu'), 'animation-hide');
-        anim.on('firstframe',(e)=>{
+        anim.on('firstframe',()=>{
             window.removeEventListener('resize', this._windowResizeFunc);
             window.removeEventListener('touchstart', this._windowPointerFunc);
             window.removeEventListener('mousedown', this._windowPointerFunc);
@@ -587,7 +587,7 @@ export class Menu extends HTMLElement {
     get controlledByEventListeners() {
         if( ! this._controlledByEventListeners) {
             this._controlledByEventListeners = {
-                onClick: (e)=>{
+                onClick: ()=>{
                     if(this.isOpen)
                         this.close();
                     else
@@ -645,6 +645,7 @@ export class Menu extends HTMLElement {
      * @param {number} index
      * @param {Array<Items>} items
      */
+    // eslint-disable-next-line no-unused-vars
     updateItem(item, index, items) {}
 
     /**

@@ -97,7 +97,7 @@ export class Item extends ItemBase {
      * @attribute show-label
      */
     get showLabel() {return Attributes.getTrueFalse(this, 'show-label', false, true);}
-    set showLabel(value) {return Attributes.setTrueFalse(this, 'show-label', value);}
+    set showLabel(value) {Attributes.setTrueFalse(this, 'show-label', value);}
 
     /**
      * @type {boolean}
@@ -219,7 +219,7 @@ export class Item extends ItemBase {
      * @type {boolean}
      */
     get disabled() {return Attributes.getExists(this, 'disabled')}
-    set disabled(value) {return Attributes.setExists(this ,'disabled', value)}
+    set disabled(value) {Attributes.setExists(this ,'disabled', value)}
 
     /**
      * True if the item is the one to recieve focus when the user tabs into the parent menu
@@ -250,7 +250,7 @@ export class Item extends ItemBase {
      * @type {string} icon
      */
     get icon() {return Attributes.getString(this, 'icon');}
-    set icon(value) {return Attributes.setString(this, 'icon', value);}
+    set icon(value) {Attributes.setString(this, 'icon', value);}
 
 
     /**
@@ -268,7 +268,7 @@ export class Item extends ItemBase {
         }
         return null;
     }
-};
+}
 
 Object.defineProperty(Item, 'tagName', {value:'wam-item'});
 
