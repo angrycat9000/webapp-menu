@@ -63,7 +63,7 @@
         <a href="https://github.com/angrycat9000/webapp-menu">GitHub</a>.</p>
 
     <h2><code>&lt;wam-toolbar&gt;</code></h2>
-    <wam-toolbar id="toolbar-example">
+    <wam-toolbar id="toolbar-example" static>
         <wam-check-item label="Bold">
             <i class="material-icons" slot="icon">format_bold</i>
         </wam-check-item>
@@ -81,15 +81,15 @@
 
     <h2><code>&lt;wam-popup&gt;</code></h2>
     <wam-popup static>
-        <wam-item label="Cut"></wam-item>
-        <wam-item label="Copy"></wam-item>
-        <wam-item label="Paste"></wam-item>
+        <wam-item label="Cut" icon="content_cut"></wam-item>
+        <wam-item label="Copy" icon="content_copy"></wam-item>
+        <wam-item label="Paste" icon="content_paste"></wam-item>
         <wam-separator></wam-separator>
         <wam-item label="Paste Special"></wam-item>
     </wam-popup>
 
     <h2><code>&lt;wam-nestedmenu&gt;</code></h2>
-    <wam-nestedmenu>
+    <wam-nestedmenu static>
         <wam-item label="Generic Item"></wam-item>
         <wam-submenu label="List of Fruits">
             <wam-item label="Apple"></wam-item>
