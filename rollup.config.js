@@ -18,7 +18,7 @@ const licenseTxt = fs.readFileSync(filePath, 'utf-8');
 function getPlugins(isProd) {
   const sassOptions = {output:false};
   if(isProd) {
-    sassOptions.processor = css => postcss([cssnano]).process(css).then(result => result.css);
+    sassOptions.processor = css => postcss([cssnano]).process(css,{from:undefined}).then(result => result.css);
   }
 
   let plugins = [
