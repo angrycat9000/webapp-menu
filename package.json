@@ -1,6 +1,6 @@
 {
   "name": "webapp-menu",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "Create accessible menus for web apps (eg. file, edit, context menus)",
   "main": "dist/webapp-menu.js",
   "scripts": {

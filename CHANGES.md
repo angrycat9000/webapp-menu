@@ -1,5 +1,8 @@
 # Changes
 
+## 2.2.7
+ - Update packages
+
 ## 2.2.6
 - Fix [#10  using wrong function to clear timeout](https://github.com/angrycat9000/webapp-menu/issues/10).
 - Package updates for critical issues
