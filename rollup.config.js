@@ -1,9 +1,9 @@
 
 import svg from 'rollup-plugin-svg'
 import sass from 'rollup-plugin-sass'
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 import indexHTML from 'rollup-plugin-index-html';
