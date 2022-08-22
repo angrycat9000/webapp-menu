@@ -2,7 +2,7 @@ import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import Wam from '../dist/webapp-menu';
 
-describe('Menu', () => {  
+describe.skip('Menu', () => {  
     describe('isOpen', ()=> {
         it(`initialize to false for <wam-popup>`, async () => {
             const el = (await fixture(`<wam-popup popup></wam-popup`));

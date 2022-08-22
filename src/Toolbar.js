@@ -1,4 +1,4 @@
-import {Menu, Direction} from './Menu';
+import {Menu, Direction} from './Menu.js';
 
 import Attributes from './Attributes';
 import {ReusableStyleSheet} from './Style';

@@ -10,7 +10,7 @@ const menu5items = `<wam-popup style="width:100px" open>
     <wam-item></wam-item>
     </wam-popup>`
 
-describe('Position', () => { 
+describe.skip('Position', () => { 
     it('Full Screen', async ()=> {
         //viewport.set(1000,1000)
         const el = await fixture(menu5items);

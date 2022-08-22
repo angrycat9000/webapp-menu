@@ -1,3 +1,7 @@
+import MenuElement from "./MenuElement.js";
+import MenubarElement from "./MenubarElement.js";
+import ItemElement from "./ItemElement.js";
+
 import {Direction, CloseReason} from './Menu';
 import Item from './Item';
 import Position from './Position';
@@ -9,8 +13,7 @@ import Separator from './Separator';
 import CheckItem from './CheckItem';
 import IconFactory from './IconFactory';
 
-export {
-    Popup,
+export { MenuElement, MenubarElement, ItemElement,     Popup,
     Toolbar,
     NestedMenu,
     Item,
@@ -20,28 +23,17 @@ export {
     CloseReason,
     Position,
     Direction,
-    IconFactory
-};
-
+    IconFactory };
 
 const Wam = {
-    Popup,
-    Toolbar,
-    NestedMenu,
-    Item,
-    SubMenuItem,
-    CheckItem,
-    Separator,
-    CloseReason,
-    Position,
-    Direction,
-    IconFactory
+  MenuElement,
+  MenubarElement,
+  ItemElement,
 };
 
-for(let e in Wam) {
-    const c = Wam[e];
-    if(c.tagName)
-        window.customElements.define(c.tagName, c);
+for (let e in Wam) {
+  const c = Wam[e];
+  if (c.tagName) window.customElements.define(c.tagName, c);
 }
 
 export default Wam;

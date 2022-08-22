@@ -1,7 +1,7 @@
-import { fixture, expect, nextFrame } from '@open-wc/testing';
+import { fixture, expect } from '@open-wc/testing';
 import '../dist/webapp-menu';
 
-describe('CheckItem', ()=> {
+describe.skip('CheckItem', ()=> {
   describe('checked', ()=> {
     it('initializes to false', async() => {
       const el = await fixture('<wam-check-item></wam-check-item>');

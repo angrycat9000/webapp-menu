@@ -22,7 +22,7 @@ const itemHeight = 48;
 const border = 2;
 function sizeOfItems(n) {return n * itemHeight + border}
 
-describe('NestedMenu', () => {  
+describe.skip('NestedMenu', () => {  
   describe('autoresize attribute', ()=>{ 
     it('default', async () => {
         const el = (await fixture(`<wam-nestedmenu></wam-nestedmenu>`));

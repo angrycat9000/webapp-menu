@@ -2,7 +2,7 @@ import Menu from './Menu';
 import Item from './Item';
 import SubMenuItem from './SubMenuItem';
 import Animation from './Animation'
-import TabList from './TabList';
+import FocusList from './FocusList';
 import Attributes from './Attributes';
 
 import {ReusableStyleSheet} from './Style';
@@ -38,7 +38,7 @@ export class NestedMenu extends Menu {
 
     get displayItems() {
         const source = this.topSubMenu ? [this.topSubMenu.backItem, ...this.topSubMenu.items] : this.items;
-        return new TabList(source);
+        return new FocusList(source);
     }
 
     /** @type {?SubMenuItem} */

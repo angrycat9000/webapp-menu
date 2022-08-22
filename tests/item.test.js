@@ -2,7 +2,7 @@ import { fixture, expect, nextFrame } from '@open-wc/testing';
 
 import Wam from '../dist/webapp-menu';
 
-describe('Item', () => {  
+describe.skip('Item', () => {  
     describe('label', ()=> {
         it('Default label undefined', async () => {
             const el = (await fixture(`<wam-item></wam-item>`));

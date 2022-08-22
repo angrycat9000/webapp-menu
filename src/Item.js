@@ -222,7 +222,7 @@ export class Item extends ItemBase {
     set disabled(value) {Attributes.setExists(this ,'disabled', value)}
 
     /**
-     * True if the item is the one to recieve focus when the user tabs into the parent menu
+     * True if the item is the one to receive focus when the user tabs into the parent menu
      * @type {boolean} isDefaultFocus
      * @package
      */

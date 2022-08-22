@@ -3,7 +3,7 @@ import { fixture, expect } from '@open-wc/testing';
 import '../dist/webapp-menu';
 
 
-describe('TabList', () => {  
+describe('FocusList', () => {  
     it(`next`, async () => {
         const el = (await fixture(`
           <wam-popup>

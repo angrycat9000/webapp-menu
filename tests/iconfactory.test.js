@@ -2,7 +2,7 @@ import {expect} from '@open-wc/testing';
 
 import Wam from '../dist/webapp-menu';
 
-describe('IconFactory', () => {
+describe.skip('IconFactory', () => {
   it('can set defaultFactory', () => {
       const iconFactory = function () { return document.createElement('span')}
       Wam.IconFactory.defaultFactory = iconFactory;

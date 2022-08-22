@@ -2,7 +2,7 @@ import {fixture, expect, nextFrame} from '@open-wc/testing';
 
 import '../dist/webapp-menu';
 
-describe('Interaction', () => {  
+describe.skip('Interaction', () => {  
     it(`wam-item-activate is fired`, async () => {
         const el = (await fixture(`<wam-popup><wam-item></wam-item></wam-popup>`));
         const item = el.firstElementChild;

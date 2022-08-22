@@ -3,7 +3,7 @@ import Position from './Position';
 import Item from './Item';
 import {nextId} from './Id';
 import ItemCollection from './ItemCollection';
-import TabList from './TabList';
+import FocusList from './FocusList';
 import Attributes from './Attributes';
 import IconFactory from './IconFactory';
 
@@ -122,11 +122,11 @@ export class Menu extends HTMLElement {
      * 
      * @see Menu#items
      * @see Menu#displayedItems
-     * @type {TabList}
+     * @type {FocusList}
      * @readonly
      */
     get interactiveItems() {
-        return new TabList(this.displayItems.array.filter(item => item.isInteractive));
+        return new FocusList(this.displayItems._items.filter(item => item.isInteractive));
     }
 
     /**
@@ -136,10 +136,10 @@ export class Menu extends HTMLElement {
      * 
      * @see Menu#items
      * @see Menu#displayedItems
-     * @type {TabList}
+     * @type {FocusList}
      * @readonly
      */
-    get displayItems() {return new TabList(this.items);}
+    get displayItems() {return new FocusList(this.items);}
 
     /**
      * Is the menu displayed to the user.
@@ -500,7 +500,7 @@ export class Menu extends HTMLElement {
 
     onKeyPress(e) {
         const key = e.key.toLowerCase();
-        const matching = this.interactiveItems.array.filter(i => {
+        const matching = this.interactiveItems._items.filter(i => {
             const label = i.label;
             if( ! label)
                 return false;
@@ -509,7 +509,7 @@ export class Menu extends HTMLElement {
         });
         if(0 == matching.length)
             return;
-        const tablist = new TabList(matching);
+        const tablist = new FocusList(matching);
         const next = tablist.next(tablist.defaultFocusItem);
         this.setFocusOn(next);
     }

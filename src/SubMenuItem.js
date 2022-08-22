@@ -2,7 +2,7 @@ import Item from './Item';
 import ItemCollection from './ItemCollection';
 import Icon from './Icon';
 import {nextId} from './Id';
-import TabList from './TabList';
+import FocusList from './FocusList';
 
 import {ReusableStyleSheet} from './Style';
 import style from '../style/submenu.scss';
@@ -72,7 +72,7 @@ export class SubMenuItem extends Item {
         return this.shadowRoot.querySelector('wam-item');
     }
 
-    get displayItems() {return new TabList([this.backItem].concat(Array.from(this.items)))}
+    get displayItems() {return new FocusList([this.backItem].concat(Array.from(this.items)))}
 
     get topMenu() {
         let e = this.parentElement;

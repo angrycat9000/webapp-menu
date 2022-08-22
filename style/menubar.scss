@@ -1,0 +1,24 @@
+@import 'theme.scss';
+
+
+:host {
+  display: block;
+  border: $menu-border-width solid $menu-border-color;
+  border-radius: $menu-border-radius;
+  color: $menu-text-color;
+  font-family: $menu-font;
+}
+
+:host-context([orientation="vertical"]) {
+  display:inline-block;
+}
+
+[role=menubar]{
+  display: flex;
+  flex-direction: row;
+}
+
+[role=menubar][aria-orientation="vertical"] {
+  display: inline-flex;
+  flex-direction: column;
+}

@@ -3,7 +3,7 @@
 .menu {
   border-radius: #{$menu-border-radius};
   border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
-  border: $menu-border;    
+  border: $menu-border; 
   background: $menu-background;
   box-shadow: $menu-shadow;
   padding:0;
@@ -17,13 +17,13 @@
   display:inline-block;
 }
 
-:host {
+/*:host {
   border-radius: $menu-border-radius;
   color: $menu-text-color;
   font-family: $menu-font;
   z-index: 1; // push above other things
   pointer-events: none; // stop from blocking clicks if the host is sized, but the menu is hidden
-}
+}*/
 
 
 .menu.animation-show__second,
@@ -41,4 +41,32 @@
 {
   transform: scale3d(1,1,1);
   opacity:1
+}
+
+
+:host {
+  border-color: $menu-border-color;
+  border-width: $menu-border-width;
+  border-radius: $menu-border-radius;
+  background: $menu-background;
+  background:red;
+  color: $menu-text-color;
+  font-family: $menu-font;
+}
+
+
+[part="popup"] {
+  display: none;
+}
+
+[aria-expanded="true"] + [part="popup"] {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+[part="popup"] {
+  border: $menu-border;
+  border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
+  box-shadow: $menu-shadow;
 }

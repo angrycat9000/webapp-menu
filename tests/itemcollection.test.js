@@ -3,7 +3,7 @@ import { fixture, expect } from '@open-wc/testing';
 import '../dist/webapp-menu';
 
 
-describe('ItemCollection', () => {  
+describe.skip('ItemCollection', () => {  
     it(`Empty`, async () => {
         const el = (await fixture(`<wam-popup></wam-popup>`));
         expect(el.items.length).to.be.equal(0);

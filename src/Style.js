@@ -1,3 +1,6 @@
+import itemStyle from '../style/item.scss';
+import menuStyle from '../style/menu.scss';
+
 export class ReusableStyleSheet {
     constructor(styleText) {
         this.text = styleText;
@@ -31,3 +34,6 @@ export class ReusableStyleSheet {
             shadow.appendChild(this.template.content.cloneNode(true))
     }
 }
+
+export const ItemStyle =  new ReusableStyleSheet(itemStyle);
+export const MenuStyle = new ReusableStyleSheet(menuStyle);
