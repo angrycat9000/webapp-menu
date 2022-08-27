@@ -49,24 +49,31 @@
   border-width: $menu-border-width;
   border-radius: $menu-border-radius;
   background: $menu-background;
-  background:red;
   color: $menu-text-color;
   font-family: $menu-font;
 }
 
 
-[part="popup"] {
+/* [part="popup"] */
+[role="menu"] {
   display: none;
 }
 
-[aria-expanded="true"] + [part="popup"] {
+/* Open menu
+ [part="popup"] */
+[aria-expanded=true] + [role=menu] {
   position: absolute;
   display: flex;
   flex-direction: column;
+  border: $menu-border;
+  border-radius: $menu-border-radius;
+  box-shadow: $menu-shadow;
 }
 
-[part="popup"] {
-  border: $menu-border;
-  border-radius: calc(#{$menu-border-radius} + #{$menu-border-width});
-  box-shadow: $menu-shadow;
+[role=menu][aria-orientation=horizontal] {
+  flex-direction:row;
+}
+
+[role=menuitem][data-parent-type=""] {
+  display: none;
 }

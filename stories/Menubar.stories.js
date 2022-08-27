@@ -17,8 +17,6 @@ export const basic = () => `<wam-menubar>
   </wam-menu>
 </wam-menu-bar>`
 
-
-
 export const multipleLevels = () => `<wam-menubar>
   <wam-menu name="File">
     <wam-item>Open</wam-item>

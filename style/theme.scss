@@ -10,11 +10,11 @@ $menu-item-size: var(--wam-item-size, 3em);
 $menu-text-color:#202020;
 $menu-font: sans-serif;
 
-$menu-border-radius: var(--menu-border-radius, 0.25rem);
-$menu-border-width: var(--menu-border-width, 1px);
-$menu-border-style: var(--menu-border-style, solid);
-$menu-border-color: var(--menu-border-color, #a0a0a0);
-$menu-border: $menu-border-width $menu-border-style $menu-border-color;
+$menu-border-radius: var(--wam-border-radius, 0.25rem);
+$menu-border-width: var(--wam-border-width, 1px);
+$menu-border-color: var(--wam-border-color, #a0a0a0);
+$menu-border: $menu-border-width solid $menu-border-color;
+$menu-inner-border-radius: calc(#{$menu-border-radius} - #{$menu-border-width});
 
 $menu-background: var(--menu-background, $mid-bg);
 $menu-hover-background: var(--menu-hover-background, rgba($menu-highlight-color, 0.5));

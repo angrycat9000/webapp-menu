@@ -17,6 +17,9 @@ export default class MenubarElement extends HTMLElement {
   constructor() {
     super();
 
+    this._updateItemsRequestId = undefined;
+    this._updateItems = this._updateItems.bind(this);
+
     const shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
     stylesheet.addToShadow(shadow);
 
@@ -29,9 +32,14 @@ export default class MenubarElement extends HTMLElement {
     this._container.setAttribute("aria-orientation", Orientation.Horizontal);
     shadow.appendChild(this._container);
 
-
-    this.addEventListener("wam-menu-open", this._insureOnlyOneMenuOpen.bind(this));
-    this.addEventListener("wam-menu-close", this._moveFocusBackToParent.bind(this));
+    this.addEventListener(
+      "wam-menu-open",
+      this._insureOnlyOneMenuOpen.bind(this)
+    );
+    this.addEventListener(
+      "wam-menu-close",
+      this._moveFocusBackToParent.bind(this)
+    );
     this.addEventListener("keydown", updateDefaultFocus);
   }
 
@@ -65,6 +73,13 @@ export default class MenubarElement extends HTMLElement {
     this.getInteractiveItems().insureDefaultSet();
   }
 
+  disconnectedCallback() {
+    if(this._updateItemsRequestId) {
+      window.cancelAnimationFrame(this._updateItemsRequestId);
+      this._updateItemsRequestId = undefined;
+    }
+  }
+
   /** @property {Orientation} */
   get orientation() {
     return this._container.getAttribute("aria-orientation");
@@ -79,33 +94,48 @@ export default class MenubarElement extends HTMLElement {
     );
   }
 
-
   focus() {
     this.getInteractiveItems().defaultFocus?.focus();
   }
 
-
   _moveFocusBackToParent(event) {
-    if(isItemOf(event.detail.menu, this)) {
+    if (isItemOf(event.detail.menu, this)) {
       this.focus();
     }
   }
 
   _insureOnlyOneMenuOpen(event) {
     let openChild = event.target;
-    while(openChild.parentElement && openChild.parentElement !== this) {
+    while (openChild.parentElement && openChild.parentElement !== this) {
       openChild = openChild.parentElement;
     }
 
-    if(!openChild) {
+    if (!openChild) {
       return;
     }
-    
+
     const interactiveItems = this.getInteractiveItems();
-    for(const item of interactiveItems) {
-      if(item.isOpen && item !== openChild) {
+    for (const item of interactiveItems) {
+      if (item.isOpen && item !== openChild) {
         item.isOpen = false;
       }
     }
+  }
+
+  _updateItems() {
+    const items = getItemsFlatteningGroups(this);
+    items.forEach((item, index, items) =>
+      item.setContextFromParent(this, index, items)
+    );
+    this._updateItemsRequestId = undefined;
+  }
+
+  queueItemUpdate() {
+    if (this._updateItemsRequestId) {
+      return;
+    }
+    this._updateItemsRequestId = window.requestAnimationFrame(
+      this._updateItems
+    );
   }
 }

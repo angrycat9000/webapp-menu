@@ -1,6 +1,7 @@
 import { ReusableStyleSheet } from "./Style";
 import style from "../style/item.scss";
 import Attributes from "./Attributes";
+import setItemContextAttributes from "./setItemContextAttributes.js";
 
 const stylesheet = new ReusableStyleSheet(style);
 
@@ -50,6 +51,10 @@ export default class ItemElement extends HTMLElement {
     }
   }
 
+  connectedCallback() {
+    this.parentMenu?.queueItemUpdate();
+  }
+
   /**
    * @property {boolean}
    */
@@ -73,6 +78,22 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
+   * @property {HTMLElement}
+   * @readonly
+   */
+   get parentMenu() {
+    return this.parentElement?.closest("wam-menu, wam-menubar");
+  }
+
+  /**
+   * Set attributes based on the context of the parent.
+   * @protected
+   */
+   setContextFromParent(parent, index, items) {
+    setItemContextAttributes(this._item, index, parent, items);
+  }
+
+  /**
    * @private
    */
   _onClick() {
@@ -80,7 +101,7 @@ export default class ItemElement extends HTMLElement {
       return;
     }
 
-    const event = new CustomEvent("wam-item-activate", {bubbles: true});
+    const event = new CustomEvent("wam-item-activate", { bubbles: true });
     const okToClose = this.dispatchEvent(event);
     if (!okToClose) {
       return;

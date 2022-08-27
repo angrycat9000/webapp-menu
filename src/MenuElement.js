@@ -6,14 +6,17 @@ import Orientation from "./Orientation.js";
 import updateDefaultFocus from "./updateDefaultFocus.js";
 import { Alignment, position } from "./Position.js";
 import Icon from "./Icon.js";
+import setItemContextAttributes from "./setItemContextAttributes.js";
+
 /**
- * Occurs when a menu is opened
+ * Occurs when a menu is opened.
  * @event wam-menu-open
  * @type {CustomEvent}
  * @property {Menu} detail.menu
  */
+
 /**
- * Occurs when a menu is close
+ * Occurs when a menu is closed.
  * @event wam-menu-close
  * @type {CustomEvent}
  * @property {Menu} detail.menu
@@ -33,6 +36,11 @@ export default class MenuElement extends HTMLElement {
   constructor() {
     super();
 
+    this._updateItemsRequestId = undefined;
+    this._updateItems = this._updateItems.bind(this);
+
+    this.addEventListener("keydown", this._onKeyDown.bind(this));
+
     const shadow = this.attachShadow({ mode: "open" });
     MenuStyle.addToShadow(shadow);
     ItemStyle.addToShadow(shadow);
@@ -43,13 +51,14 @@ export default class MenuElement extends HTMLElement {
       aria-haspopup="menu"
       aria-expanded="false" 
       tabindex="-1"
+      data-parent-type=""
     >
       <slot name="icon"></slot>
       <slot name="text"></slot>
     </button>
     <div
       part="popup"
-      role"menu"
+      role="menu"
       aria-orientation="vertical"
     >
       <slot></slot>
@@ -63,10 +72,8 @@ export default class MenuElement extends HTMLElement {
     this._popup = this.shadowRoot.querySelector('[part="popup"]');
 
     const nestedIcon = Icon.Nested;
-    nestedIcon.setAttribute("class", 'nested-icon');
+    nestedIcon.setAttribute("class", "nested-icon");
     this._item.appendChild(nestedIcon);
-
-    this.addEventListener("keydown", this._onKeyDown.bind(this));
   }
 
   /**
@@ -83,7 +90,7 @@ export default class MenuElement extends HTMLElement {
     const hasAttribute = null !== newValue;
     switch (name) {
       case "name":
-        this.shadowRoot.querySelector('slot[name="text"]').innerText =  newValue;
+        this.shadowRoot.querySelector('slot[name="text"]').innerText = newValue;
         break;
       case "open":
         if (hasAttribute) {
@@ -109,13 +116,19 @@ export default class MenuElement extends HTMLElement {
     // before trying to select the focused item
     window.customElements.upgrade(this);
 
-    this.getInteractiveItems().insureDefaultSet();
+    this.parentMenu?.queueItemUpdate();
 
-    const inContainer = this.parentElement.closest("wam-menu, wam-menubar");
-    this._setParentType(inContainer?.tagName);
+    this.getInteractiveItems().insureDefaultSet();
 
     if (this.isOpen) {
       this._updatePosition();
+    }
+  }
+
+  disconnectedCallback() {
+    if(this._updateItemsRequestId) {
+      window.cancelAnimationFrame(this._updateItemsRequestId);
+      this._updateItemsRequestId = undefined;
     }
   }
 
@@ -149,19 +162,19 @@ export default class MenuElement extends HTMLElement {
   }
 
   /**
-   * @private
+   * @property {HTMLElement}
+   * @readonly
    */
-  _setParentType(value) {
-    if('WAM-MENUBAR' === value) {
-      this.shadowRoot.querySelector('.nested-icon').style.display = "none";
-      this._item.style.display = "";
-    } else if('WAM-MENU' === value) {
-      this.shadowRoot.querySelector('.nested-icon').style.display = "";
-      this._item.style.display = "";
-    } else {
-      this.shadowRoot.querySelector('.nested-icon').style.display = "none";
-      this._item.style.display = "none";
-    }
+  get parentMenu() {
+    return this.parentElement?.closest("wam-menu, wam-menubar");
+  }
+
+  /**
+   * Set attributes based on the context of the parent.
+   * @protected
+   */
+  setContextFromParent(parent, index, items) {
+    setItemContextAttributes(this._item, index, parent, items);
   }
 
   /**
@@ -253,5 +266,19 @@ export default class MenuElement extends HTMLElement {
       alignment,
       anchorMargin: 4,
     });
+  }
+
+  _updateItems() {
+    const items = getItemsFlatteningGroups(this);
+    items.forEach((item, index, items) =>
+      item.setContextFromParent(this, index, items)
+    );
+    this._itemUpdatePending = false;
+  }
+
+  queueItemUpdate() {
+    if (this._itemUpdatePending) return;
+    this._itemUpdatePending = true;
+    window.queueMicrotask(this._updateItems);
   }
 }
