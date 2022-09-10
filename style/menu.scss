@@ -45,10 +45,7 @@
 
 
 :host {
-  border-color: $menu-border-color;
-  border-width: $menu-border-width;
-  border-radius: $menu-border-radius;
-  background: $menu-background;
+
   color: $menu-text-color;
   font-family: $menu-font;
 }
@@ -67,7 +64,7 @@
   flex-direction: column;
   border: $menu-border;
   border-radius: $menu-border-radius;
-  box-shadow: $menu-shadow;
+  background: $menu-background;
 }
 
 [role=menu][aria-orientation=horizontal] {

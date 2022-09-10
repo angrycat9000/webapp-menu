@@ -19,6 +19,7 @@ export default class MenubarElement extends HTMLElement {
 
     this._updateItemsRequestId = undefined;
     this._updateItems = this._updateItems.bind(this);
+    this._onKeyDown = this._onKeyDown.bind(this);
 
     const shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
     stylesheet.addToShadow(shadow);
@@ -40,7 +41,7 @@ export default class MenubarElement extends HTMLElement {
       "wam-menu-close",
       this._moveFocusBackToParent.bind(this)
     );
-    this.addEventListener("keydown", updateDefaultFocus);
+    this.addEventListener("keydown", this._onKeyDown);
   }
 
   /**
@@ -120,6 +121,10 @@ export default class MenubarElement extends HTMLElement {
         item.isOpen = false;
       }
     }
+  }
+
+  _onKeyDown(event) {
+    updateDefaultFocus(event, this);
   }
 
   _updateItems() {

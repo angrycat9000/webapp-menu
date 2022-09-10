@@ -2,6 +2,7 @@ import { ReusableStyleSheet } from "./Style";
 import style from "../style/item.scss";
 import Attributes from "./Attributes";
 import setItemContextAttributes from "./setItemContextAttributes.js";
+import updateDefaultFocus from "./updateDefaultFocus.js";
 
 const stylesheet = new ReusableStyleSheet(style);
 
@@ -19,12 +20,13 @@ export default class ItemElement extends HTMLElement {
     const shadow = this.attachShadow({ mode: "open", delegateFocus: true });
     stylesheet.addToShadow(shadow);
 
-    this._item = document.createElement("button");
+    this._item = document.createElement("div");
     this._item.setAttribute("part", "item");
     this._item.setAttribute("role", "menuitem");
     this._item.setAttribute("tabindex", -1);
     this._item.appendChild(document.createElement("slot"));
     this._item.addEventListener("click", this._onClick.bind(this));
+    this._item.addEventListener("keydown", this._onKeyDown.bind(this));
 
     shadow.appendChild(this._item);
   }
@@ -81,7 +83,7 @@ export default class ItemElement extends HTMLElement {
    * @property {HTMLElement}
    * @readonly
    */
-   get parentMenu() {
+  get parentMenu() {
     return this.parentElement?.closest("wam-menu, wam-menubar");
   }
 
@@ -89,8 +91,16 @@ export default class ItemElement extends HTMLElement {
    * Set attributes based on the context of the parent.
    * @protected
    */
-   setContextFromParent(parent, index, items) {
+  setContextFromParent(parent, index, items) {
     setItemContextAttributes(this._item, index, parent, items);
+  }
+
+  _onKeyDown(event) {
+    if (event.key === " " || event.key === "Enter") {
+      this._onClick();
+    } else {
+      updateDefaultFocus(event, this.parentMenu);
+    }
   }
 
   /**

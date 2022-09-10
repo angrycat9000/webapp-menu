@@ -3,34 +3,54 @@ import Orientation from "./Orientation.js";
 /**
  * Updates the default focus item of a menu.  The event.currentTarget
  * must be an element that has an `orientation` property and `getInteractiveItems` function
- * @param {Event} event.
+ * @param {Event} event
+ * @param {HTMLElement} menu
  */
-export default function updateDefaultFocus(event) {
-  const element = event.currentTarget;
+export default function updateDefaultFocus(event, menu) {
+  if (!menu) {
+    return;
+  }
 
-  if (
-    "ArrowLeft" === event.key &&
-    Orientation.Horizontal == element.orientation
-  ) {
-    element.getInteractiveItems().focusPrevious();
-    event.preventDefault();
-  } else if (
-    "ArrowUp" === event.key &&
-    Orientation.Vertical == element.orientation
-  ) {
-    element.getInteractiveItems().focusPrevious();
-    event.preventDefault();
-  } else if (
-    "ArrowRight" === event.key &&
-    Orientation.Horizontal == element.orientation
-  ) {
-    element.getInteractiveItems().focusNext();
-    event.preventDefault();
-  } else if (
-    "ArrowDown" === event.key &&
-    Orientation.Vertical == element.orientation
-  ) {
-    element.getInteractiveItems().focusNext();
-    event.preventDefault();
+  switch (event.key) {
+    case "ArrowLeft":
+      if (Orientation.Horizontal === menu.orientation) {
+        menu.getInteractiveItems().focusPrevious();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (menu.parentMenu) {
+        menu.isOpen = false;
+        menu.parentMenu.focus();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      break;
+    case "ArrowUp":
+      if (Orientation.Vertical === menu.orientation) {
+        menu.getInteractiveItems().focusPrevious();
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (menu.parentMenu) {
+        menu.isOpen = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      break;
+    case "ArrowRight":
+      if (Orientation.Horizontal == menu.orientation) {
+        menu.getInteractiveItems().focusNext();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      break;
+    case "ArrowDown":
+      if (
+        "ArrowDown" === event.key &&
+        Orientation.Vertical == menu.orientation
+      ) {
+        menu.getInteractiveItems().focusNext();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      break;
   }
 }

@@ -38,8 +38,9 @@ export default class MenuElement extends HTMLElement {
 
     this._updateItemsRequestId = undefined;
     this._updateItems = this._updateItems.bind(this);
-
-    this.addEventListener("keydown", this._onKeyDown.bind(this));
+    this._onItemKeyDown = this._onItemKeyDown.bind(this);
+    this._onMenuKeyDown = this._onMenuKeyDown.bind(this);
+    this._onMenuFocusOut = this._onMenuFocusOut.bind(this);
 
     const shadow = this.attachShadow({ mode: "open" });
     MenuStyle.addToShadow(shadow);
@@ -68,8 +69,11 @@ export default class MenuElement extends HTMLElement {
     this._item.addEventListener("click", () => {
       this.isOpen = !this.isOpen;
     });
+    this._item.addEventListener("keydown", this._onItemKeyDown);
 
     this._popup = this.shadowRoot.querySelector('[part="popup"]');
+    this._popup.addEventListener("keydown", this._onMenuKeyDown);
+    this._popup.addEventListener("focusout", this._onMenuFocusOut);
 
     const nestedIcon = Icon.Nested;
     nestedIcon.setAttribute("class", "nested-icon");
@@ -89,6 +93,9 @@ export default class MenuElement extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     const hasAttribute = null !== newValue;
     switch (name) {
+      case "disabled":
+        this._item.setAttribute("aria-disabled", hasAttribute);
+        break;
       case "name":
         this.shadowRoot.querySelector('slot[name="text"]').innerText = newValue;
         break;
@@ -126,12 +133,23 @@ export default class MenuElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    if(this._updateItemsRequestId) {
+    if (this._updateItemsRequestId) {
       window.cancelAnimationFrame(this._updateItemsRequestId);
       this._updateItemsRequestId = undefined;
     }
   }
 
+  /** @property {boolean} */
+  get disabled() {
+    return this._item.getAttribute("aria-disabled") === "true";
+  }
+  set disabled(value) {
+    if (value) {
+      this.setAttribute("disabled", "");
+    } else {
+      this.removeAttribute("disabled");
+    }
+  }
   /** @property {boolean} */
   get isInteractive() {
     return true;
@@ -214,9 +232,9 @@ export default class MenuElement extends HTMLElement {
     }
 
     this._item.setAttribute("aria-expanded", "true");
-
     this._updatePosition();
-    this.focus();
+    this.getInteractiveItems().focusFirst();
+
     this.dispatchEvent(
       new CustomEvent("wam-menu-open", {
         bubbles: true,
@@ -225,12 +243,57 @@ export default class MenuElement extends HTMLElement {
     );
   }
 
-  _onKeyDown(event) {
+  _onMenuFocusOut() {
+    console.log(this.getRootNode().activeElement);
+    // this.isOpen = false;
+  }
+
+  _onMenuKeyDown(event) {
     if ("Escape" == event.key) {
       this.isOpen = false;
+      if (this.parentMenu) {
+        this.parentMenu.focus();
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
 
-    updateDefaultFocus(event);
+    if (
+      this.parentMenu &&
+      (("ArrowLeft" === event.key &&
+        Orientation.Vertical === this.orientation) ||
+        ("ArrowUp" === event.key &&
+          Orientation.Horizontal === this.orientation))
+    ) {
+      this.isOpen = false;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
+  _onItemKeyDown(event) {
+    if (
+      event.key === " " ||
+      event.key === "Enter" ||
+      (event.key === "ArrowDown" &&
+        this.parentMenu?.orientation === "horizontal") ||
+      (event.key === "ArrowRight" && this.parentMenu.orientation === "vertical")
+    ) {
+      this._onClick();
+      event.stopPropagation();
+      event.preventDefault();
+    } else {
+      updateDefaultFocus(event, this.parentMenu);
+    }
+  }
+
+  _onClick() {
+    if (this.disabled) {
+      return;
+    }
+
+    this.isOpen = !this.isOpen;
   }
 
   _getAnchor() {

@@ -65,6 +65,10 @@ class FocusList {
     }
   }
 
+  focusFirst() {
+    this.focusOn(this.first);
+  }
+
   focusNext() {
     this.focusOn(this.next);
   }
