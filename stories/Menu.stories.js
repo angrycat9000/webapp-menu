@@ -10,6 +10,19 @@ export const basic = () => `<wam-menu name="File" open>
     <wam-item>Close</wam-item>
   </wam-menu>`;
 
+export const icons = () => `<wam-menu name="File" open>
+    <wam-item>
+      Open
+      <span class="material-symbols-outlined" slot="icon">folder_open</span>
+    </wam-item>
+    <wam-item>New</wam-item>
+    <wam-item>
+      Save
+      <span class="material-symbols-outlined" slot="icon">save</span>
+    </wam-item>
+    <wam-item>Close</wam-item>
+  </wam-menu>`;
+
 export const multipleLevels = () => `<wam-menu name="Edit" open>
   <wam-menu name="Copy">
     <wam-item>As Text</wam-item>
@@ -40,4 +53,4 @@ export const horizontal = () => `<wam-menu name="Edit" open orientation="horizon
 <wam-item>Paste</wam-item>
 <wam-item>Save</wam-item>
 <wam-item>Close</wam-item>
-</wam-menu>`
+</wam-menu>`;

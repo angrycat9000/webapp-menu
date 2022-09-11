@@ -105,6 +105,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 0.5em;
   box-sizing: border-box;
   border:0;
   background: $menu-item-background;
@@ -189,4 +190,15 @@
   border-bottom-left-radius:  $menu-inner-border-radius;
 }
 
+
+slot[name="icon"] {
+  display: none;
+}
+
+[data-has-icon] slot[name="icon"],
+[data-sibling-icons="true"][data-parent-orientation="vertical"] slot[name="icon"]{
+  display: block;
+  width: $menu-icon-size;
+  height: $menu-icon-size;
+}
 

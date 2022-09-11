@@ -20,22 +20,36 @@ export default class ItemElement extends HTMLElement {
     const shadow = this.attachShadow({ mode: "open", delegateFocus: true });
     stylesheet.addToShadow(shadow);
 
-    this._item = document.createElement("div");
-    this._item.setAttribute("part", "item");
-    this._item.setAttribute("role", "menuitem");
-    this._item.setAttribute("tabindex", -1);
-    this._item.appendChild(document.createElement("slot"));
+    this.shadowRoot.innerHTML =
+      `<div
+        part="item"
+        role="menuitem"
+        tabindex="-1">
+        <slot name="icon" aria-hidden="true"></slot>
+        <slot></slot>
+      </div>`
+
+    this._item = this.shadowRoot.querySelector('[part="item"]')
     this._item.addEventListener("click", this._onClick.bind(this));
     this._item.addEventListener("keydown", this._onKeyDown.bind(this));
 
-    shadow.appendChild(this._item);
+    const iconSlot = this.shadowRoot.querySelector('slot[name="icon"]');
+    iconSlot.addEventListener("slotchange", (event)=> {
+      const hasIcon = event.target.assignedElements().length > 0;
+      if(hasIcon) {
+        this._item.setAttribute("data-has-icon","");
+      } else {
+        this._item.removeAttribute("data-has-icon");
+      }
+      this.parentMenu?.queueItemUpdate()
+    });
   }
 
   /**
    * Web component life cycle to define what attributes trigger #attributeChangedCallback
    */
   static get observedAttributes() {
-    return ["disabled", "is-default-focus"];
+    return ["disabled", "icon", "is-default-focus"];
   }
 
   /**
@@ -46,6 +60,9 @@ export default class ItemElement extends HTMLElement {
     switch (name) {
       case "disabled":
         this._item.setAttribute("aria-disabled", hasAttribute);
+        break;
+      case "icon":
+        this._updateIcon(newValue);
         break;
       case "is-default-focus":
         this._item.setAttribute("tabindex", hasAttribute ? 0 : -1);
@@ -85,6 +102,21 @@ export default class ItemElement extends HTMLElement {
    */
   get parentMenu() {
     return this.parentElement?.closest("wam-menu, wam-menubar");
+  }
+
+  /**
+   * Does this item have a icon. This includes both icons added directly into
+   * the HTML and icons added by setting a name and icon factory function.
+   * @type {boolean}
+   * @readonly
+   */
+  get hasIcon() {
+    for (const child of this.children) {
+      if (child.getAttribute("slot") === "icon") {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

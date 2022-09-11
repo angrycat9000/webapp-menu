@@ -7,6 +7,7 @@
 export default function setItemContextAttributes(shadowItemElement, index, parentMenu, items)  {
   shadowItemElement.dataset.parentType = parentMenu.tagName.toLowerCase();
   shadowItemElement.dataset.parentOrientation = parentMenu.orientation;
+  shadowItemElement.dataset.siblingIcons = parentMenu.childHasIcon;
 
   if(index === 0) {
     shadowItemElement.dataset.isFirstItem = "";

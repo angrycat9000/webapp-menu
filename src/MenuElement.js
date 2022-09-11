@@ -37,6 +37,8 @@ export default class MenuElement extends HTMLElement {
     super();
 
     this._updateItemsRequestId = undefined;
+    this._childHasIcon = false;
+
     this._updateItems = this._updateItems.bind(this);
     this._onItemKeyDown = this._onItemKeyDown.bind(this);
     this._onMenuKeyDown = this._onMenuKeyDown.bind(this);
@@ -78,6 +80,17 @@ export default class MenuElement extends HTMLElement {
     const nestedIcon = Icon.Nested;
     nestedIcon.setAttribute("class", "nested-icon");
     this._item.appendChild(nestedIcon);
+
+    const iconSlot = this.shadowRoot.querySelector('slot[name="icon"]');
+    iconSlot.addEventListener("slotchange", (event)=> {
+      const hasIcon = event.target.assignedElements().length > 0;
+      if(hasIcon) {
+        this._item.setAttribute("data-has-icon","");
+      } else {
+        this._item.removeAttribute("data-has-icon");
+      }
+      this.parentMenu?.queueItemUpdate()
+    });
   }
 
   /**
@@ -188,6 +201,30 @@ export default class MenuElement extends HTMLElement {
   }
 
   /**
+   * Does this item have a icon. This includes both icons added directly into
+   * the HTML and icons added by setting a name and icon factory function.
+   * @type {boolean}
+   * @readonly
+   */
+  get hasIcon() {
+    for (const child of this.children) {
+      if (child.getAttribute("slot") === "icon") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * True if at least one child has an icon
+   * @property {boolean}
+   * @protected
+   */
+  get childHasIcon() {
+    return this._childHasIcon;
+  }
+
+  /**
    * Set attributes based on the context of the parent.
    * @protected
    */
@@ -202,6 +239,13 @@ export default class MenuElement extends HTMLElement {
     return new FocusList(
       getItemsFlatteningGroups(this).filter((item) => item.isInteractive)
     );
+  }
+
+  /**
+   * @property {iconFactoryFunction}
+   */
+  get iconFactory() {
+    return this._iconFactory ?? this.parentMenu?.iconFactory;
   }
 
   focus() {
@@ -333,6 +377,7 @@ export default class MenuElement extends HTMLElement {
 
   _updateItems() {
     const items = getItemsFlatteningGroups(this);
+    this._childHasIcon = items.some((item) => item.hasIcon);
     items.forEach((item, index, items) =>
       item.setContextFromParent(this, index, items)
     );

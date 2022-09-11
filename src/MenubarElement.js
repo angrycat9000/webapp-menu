@@ -18,6 +18,7 @@ export default class MenubarElement extends HTMLElement {
     super();
 
     this._updateItemsRequestId = undefined;
+    this._childHasIcon = false;
     this._updateItems = this._updateItems.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
 
@@ -89,6 +90,17 @@ export default class MenubarElement extends HTMLElement {
     Attributes.setString(this, "orientation", value, Orientation.Horizontal);
   }
 
+    
+  /**
+   * True if at least one child has an icon
+   * @property {boolean}
+   * @protected
+   */
+   get childHasIcon() {
+    return this._childHasIcon;
+  }
+
+
   getInteractiveItems() {
     return new FocusList(
       getItemsFlatteningGroups(this).filter((item) => item.isInteractive)
@@ -129,6 +141,7 @@ export default class MenubarElement extends HTMLElement {
 
   _updateItems() {
     const items = getItemsFlatteningGroups(this);
+    this._childHasIcon = items.some(item => item.hasIcon);
     items.forEach((item, index, items) =>
       item.setContextFromParent(this, index, items)
     );
