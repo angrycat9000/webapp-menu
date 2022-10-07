@@ -14,6 +14,8 @@ export default class ItemElement extends HTMLElement {
     return "wam-item";
   }
 
+  #item;
+
   constructor() {
     super();
 
@@ -29,19 +31,19 @@ export default class ItemElement extends HTMLElement {
         <slot></slot>
       </div>`
 
-    this._item = this.shadowRoot.querySelector('[part="item"]')
-    this._item.addEventListener("click", this._onClick.bind(this));
-    this._item.addEventListener("keydown", this._onKeyDown.bind(this));
+    this.#item = this.shadowRoot.querySelector('[part="item"]')
+    this.#item.addEventListener("click", this.#onClick.bind(this));
+    this.#item.addEventListener("keydown", this.#onKeyDown.bind(this));
 
     const iconSlot = this.shadowRoot.querySelector('slot[name="icon"]');
     iconSlot.addEventListener("slotchange", (event)=> {
       const hasIcon = event.target.assignedElements().length > 0;
       if(hasIcon) {
-        this._item.setAttribute("data-has-icon","");
+        this.#item.setAttribute("data-has-icon","");
       } else {
-        this._item.removeAttribute("data-has-icon");
+        this.#item.removeAttribute("data-has-icon");
       }
-      this.parentMenu?.queueItemUpdate()
+      this.parentMenu?.queueItemUpdate();
     });
   }
 
@@ -49,7 +51,7 @@ export default class ItemElement extends HTMLElement {
    * Web component life cycle to define what attributes trigger #attributeChangedCallback
    */
   static get observedAttributes() {
-    return ["disabled", "icon", "is-default-focus"];
+    return ["disabled", "is-default-focus"];
   }
 
   /**
@@ -59,13 +61,10 @@ export default class ItemElement extends HTMLElement {
     const hasAttribute = null !== newValue;
     switch (name) {
       case "disabled":
-        this._item.setAttribute("aria-disabled", hasAttribute);
-        break;
-      case "icon":
-        this._updateIcon(newValue);
+        this.#item.setAttribute("aria-disabled", hasAttribute);
         break;
       case "is-default-focus":
-        this._item.setAttribute("tabindex", hasAttribute ? 0 : -1);
+        this.#item.setAttribute("tabindex", hasAttribute ? 0 : -1);
         break;
     }
   }
@@ -78,7 +77,7 @@ export default class ItemElement extends HTMLElement {
    * @property {boolean}
    */
   get disabled() {
-    return this._item.getAttribute("aria-disabled") === "true";
+    return this.#item.getAttribute("aria-disabled") === "true";
   }
   set disabled(value) {
     Attributes.setTrueFalse(this, "disabled", value);
@@ -90,7 +89,7 @@ export default class ItemElement extends HTMLElement {
 
   /** @property {boolean} */
   get isDefaultFocus() {
-    return this._item.getAttribute("tabindex") === "0";
+    return this.#item.getAttribute("tabindex") === "0";
   }
   set isDefaultFocus(value) {
     Attributes.setTrueFalse(this, "is-default-focus", value);
@@ -105,18 +104,12 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
-   * Does this item have a icon. This includes both icons added directly into
-   * the HTML and icons added by setting a name and icon factory function.
+   * Does this item have a element in the icon slot
    * @type {boolean}
    * @readonly
    */
   get hasIcon() {
-    for (const child of this.children) {
-      if (child.getAttribute("slot") === "icon") {
-        return true;
-      }
-    }
-    return false;
+    return this.#item.hasAttribute("data-has-icon");
   }
 
   /**
@@ -124,12 +117,12 @@ export default class ItemElement extends HTMLElement {
    * @protected
    */
   setContextFromParent(parent, index, items) {
-    setItemContextAttributes(this._item, index, parent, items);
+    setItemContextAttributes(this.#item, index, parent, items);
   }
 
-  _onKeyDown(event) {
+  #onKeyDown(event) {
     if (event.key === " " || event.key === "Enter") {
-      this._onClick();
+      this.#onClick();
     } else {
       updateDefaultFocus(event, this.parentMenu);
     }
@@ -138,7 +131,7 @@ export default class ItemElement extends HTMLElement {
   /**
    * @private
    */
-  _onClick() {
+  #onClick() {
     if (this.disabled) {
       return;
     }
@@ -160,6 +153,6 @@ export default class ItemElement extends HTMLElement {
   }
 
   focus() {
-    this._item.focus();
+    this.#item.focus();
   }
 }

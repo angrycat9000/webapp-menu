@@ -30,9 +30,6 @@
     "url": "https://github.com/angrycat9000/webapp-menu/issues"
   },
   "homepage": "https://github.com/angrycat9000/webapp-menu#readme",
-  "dependencies": {
-    "tiny-emitter": "^2.1.0"
-  },
   "devDependencies": {
     "@open-wc/rollup-plugin-html": "^1.2.5",
     "@open-wc/semantic-dom-diff": "^0.14.3",
@@ -45,13 +42,12 @@
     "cssnano": "^5.1.13",
     "deepmerge": "^3.2.0",
     "es-dev-server": "^1.60.2",
-    "eslint": "^7.23.0",
+    "eslint": "^8.23.0",
     "karma": "^6.3.1",
     "node-sass": "^6.0.1",
     "postcss": "^8.4.16",
     "rimraf": "^3.0.0",
     "rollup": "2.78.0",
-    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-license": "^2.8.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-sass": "^1.2.13",

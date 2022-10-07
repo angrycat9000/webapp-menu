@@ -12,11 +12,7 @@ function getTrueFalse(element, attributeName) {
 }
 
 function setTrueFalse(element, attributeName, value) {
-  const boolValue =
-    true === value || "yes" === value || "true" === value
-      ? true
-      : Boolean(value);
-  if (boolValue) {
+  if (value) {
     element.setAttribute(attributeName, "");
   } else {
     element.removeAttribute(attributeName);

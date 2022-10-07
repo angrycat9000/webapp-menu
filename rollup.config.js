@@ -3,7 +3,6 @@ import svg from 'rollup-plugin-svg'
 import sass from 'rollup-plugin-sass'
 import resolve from 'rollup-plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
-import commonjs from 'rollup-plugin-commonjs'
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 import html from '@open-wc/rollup-plugin-html';
@@ -24,7 +23,6 @@ function getPlugins(isProd) {
   let plugins = [
     html(),
     resolve(),
-    commonjs(),
     svg(),
     sass(sassOptions),
   ];

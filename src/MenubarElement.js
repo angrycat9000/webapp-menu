@@ -14,35 +14,38 @@ export default class MenubarElement extends HTMLElement {
     return "wam-menubar";
   }
 
+  // declare private fields
+  #childHasIcon;
+  #container;
+  #updateItemsRequestId;
+
   constructor() {
     super();
 
-    this._updateItemsRequestId = undefined;
-    this._childHasIcon = false;
-    this._updateItems = this._updateItems.bind(this);
-    this._onKeyDown = this._onKeyDown.bind(this);
+    this.#updateItemsRequestId = undefined;
+    this.#childHasIcon = false;
 
     const shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
     stylesheet.addToShadow(shadow);
 
-    this._container = document.createElement("div");
-    this._container.className = "";
-    this._container.setAttribute("role", "menubar");
+    this.#container = document.createElement("div");
+    this.#container.className = "";
+    this.#container.setAttribute("role", "menubar");
 
     const slot = document.createElement("slot");
-    this._container.appendChild(slot);
-    this._container.setAttribute("aria-orientation", Orientation.Horizontal);
-    shadow.appendChild(this._container);
+    this.#container.appendChild(slot);
+    this.#container.setAttribute("aria-orientation", Orientation.Horizontal);
+    shadow.appendChild(this.#container);
 
     this.addEventListener(
       "wam-menu-open",
-      this._insureOnlyOneMenuOpen.bind(this)
+      this.#insureOnlyOneMenuOpen.bind(this)
     );
     this.addEventListener(
       "wam-menu-close",
-      this._moveFocusBackToParent.bind(this)
+      this.#moveFocusBackToParent.bind(this)
     );
-    this.addEventListener("keydown", this._onKeyDown);
+    this.addEventListener("keydown", this.#onKeyDown.bind(this));
   }
 
   /**
@@ -59,7 +62,7 @@ export default class MenubarElement extends HTMLElement {
     //const hasAttribute = null !== newValue;
     switch (name) {
       case "orientation":
-        this._container.setAttribute(
+        this.#container.setAttribute(
           "aria-orientation",
           newValue ?? Orientation.Horizontal
         );
@@ -76,15 +79,15 @@ export default class MenubarElement extends HTMLElement {
   }
 
   disconnectedCallback() {
-    if(this._updateItemsRequestId) {
-      window.cancelAnimationFrame(this._updateItemsRequestId);
-      this._updateItemsRequestId = undefined;
+    if(this.#updateItemsRequestId) {
+      window.cancelAnimationFrame(this.#updateItemsRequestId);
+      this.#updateItemsRequestId = undefined;
     }
   }
 
   /** @property {Orientation} */
   get orientation() {
-    return this._container.getAttribute("aria-orientation");
+    return this.#container.getAttribute("aria-orientation");
   }
   set orientation(value) {
     Attributes.setString(this, "orientation", value, Orientation.Horizontal);
@@ -97,7 +100,7 @@ export default class MenubarElement extends HTMLElement {
    * @protected
    */
    get childHasIcon() {
-    return this._childHasIcon;
+    return this.#childHasIcon;
   }
 
 
@@ -111,13 +114,13 @@ export default class MenubarElement extends HTMLElement {
     this.getInteractiveItems().defaultFocus?.focus();
   }
 
-  _moveFocusBackToParent(event) {
+  #moveFocusBackToParent(event) {
     if (isItemOf(event.detail.menu, this)) {
       this.focus();
     }
   }
 
-  _insureOnlyOneMenuOpen(event) {
+  #insureOnlyOneMenuOpen(event) {
     let openChild = event.target;
     while (openChild.parentElement && openChild.parentElement !== this) {
       openChild = openChild.parentElement;
@@ -135,25 +138,25 @@ export default class MenubarElement extends HTMLElement {
     }
   }
 
-  _onKeyDown(event) {
+  #onKeyDown(event) {
     updateDefaultFocus(event, this);
   }
 
-  _updateItems() {
+  #updateItems() {
     const items = getItemsFlatteningGroups(this);
-    this._childHasIcon = items.some(item => item.hasIcon);
+    this.#childHasIcon = items.some(item => item.hasIcon);
     items.forEach((item, index, items) =>
       item.setContextFromParent(this, index, items)
     );
-    this._updateItemsRequestId = undefined;
+    this.#updateItemsRequestId = undefined;
   }
 
   queueItemUpdate() {
-    if (this._updateItemsRequestId) {
+    if (this.#updateItemsRequestId) {
       return;
     }
-    this._updateItemsRequestId = window.requestAnimationFrame(
-      this._updateItems
+    this.#updateItemsRequestId = window.requestAnimationFrame(
+      this.#updateItems.bind(this)
     );
   }
 }
