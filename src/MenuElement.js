@@ -315,7 +315,7 @@ export default class MenuElement extends HTMLElement {
         this.parentMenu?.orientation === "horizontal") ||
       (event.key === "ArrowRight" && this.parentMenu.orientation === "vertical")
     ) {
-      this.#onClick();
+      this.click();
       event.stopPropagation();
       event.preventDefault();
     } else {
@@ -323,7 +323,10 @@ export default class MenuElement extends HTMLElement {
     }
   }
 
-  #onClick() {
+  /** 
+   * Activate the menu item
+   */
+  click() {
     if (this.disabled) {
       return;
     }

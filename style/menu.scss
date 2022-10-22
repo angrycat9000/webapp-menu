@@ -60,8 +60,8 @@
  [part="popup"] */
 [aria-expanded=true] + [role=menu] {
   position: absolute;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  width: max-content;
   border: $menu-border;
   border-radius: $menu-border-radius;
   background: $menu-background;

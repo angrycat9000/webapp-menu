@@ -8,6 +8,8 @@ const stylesheet = new ReusableStyleSheet(style);
 
 /**
  * @element wam-item
+ * 
+ * @slot icon - used for displaying an graphic element
  */
 export default class ItemElement extends HTMLElement {
   static get tagName() {
@@ -27,12 +29,12 @@ export default class ItemElement extends HTMLElement {
         part="item"
         role="menuitem"
         tabindex="-1">
-        <slot name="icon" aria-hidden="true"></slot>
+        <slot name="icon" part="icon" aria-hidden="true"></slot>
         <slot></slot>
       </div>`
 
     this.#item = this.shadowRoot.querySelector('[part="item"]')
-    this.#item.addEventListener("click", this.#onClick.bind(this));
+    this.#item.addEventListener("click", this.click.bind(this));
     this.#item.addEventListener("keydown", this.#onKeyDown.bind(this));
 
     const iconSlot = this.shadowRoot.querySelector('slot[name="icon"]');
@@ -122,16 +124,16 @@ export default class ItemElement extends HTMLElement {
 
   #onKeyDown(event) {
     if (event.key === " " || event.key === "Enter") {
-      this.#onClick();
+      this.click();
     } else {
       updateDefaultFocus(event, this.parentMenu);
     }
   }
 
   /**
-   * @private
+   * A
    */
-  #onClick() {
+  click() {
     if (this.disabled) {
       return;
     }
