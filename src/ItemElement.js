@@ -30,7 +30,7 @@ export default class ItemElement extends HTMLElement {
         role="menuitem"
         tabindex="-1">
         <slot name="icon" part="icon" aria-hidden="true"></slot>
-        <slot></slot>
+        <slot part="text"></slot>
       </div>`
 
     this.#item = this.shadowRoot.querySelector('[part="item"]')

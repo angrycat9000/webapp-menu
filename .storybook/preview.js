@@ -1,15 +1,12 @@
-import { setCustomElements } from '@storybook/web-components';
-
-import Menu from '../dist/webapp-menu.js';
+import  '../dist/webapp-menu.js';
+//import { setCustomElements } from '@storybook/web-components';
 //import customElements from '../dist/custom-elements.json';
-
 //setCustomElements(customElements);
-
-//Menu.IconFactory.defaultFactory = Menu.IconFactory.materialIcon;
 
 export const parameters = {
   actions: {
     handles: [
+      'change',
       'wam-item-activate',
       'wam-menu-open',
       'wam-menu-close',

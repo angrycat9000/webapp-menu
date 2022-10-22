@@ -60,10 +60,10 @@
   display: block;
 }
 
-[part=item][aria-disabled="true"] {
-  .label, .icon {
-    opacity:0.8;
-    font-style:italic;
+[part=item][aria-disabled=true] {
+  [part=text], [part=icon] {
+    opacity:0.6;
+    font-style: italic;
   }
 }
 
