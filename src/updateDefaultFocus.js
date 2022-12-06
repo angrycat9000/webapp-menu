@@ -1,4 +1,4 @@
-import Orientation from "./Orientation.js";
+import {Orientation} from "./Orientation.js";
 
 /**
  * Updates the default focus item of a menu.  The event.currentTarget

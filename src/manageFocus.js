@@ -1,4 +1,4 @@
-import Orientation from "./Orientation.js";
+import {Orientation} from "./Orientation.js";
 
 function onKeyDown(event) {
   const element = event.currentTarget;

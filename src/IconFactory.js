@@ -4,6 +4,9 @@
  * @return {HTMLElement}
  */
 
+/**
+ * 
+ */
 export const IconFactory = {
   /**
    * Uses the icon name as an image source

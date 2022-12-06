@@ -1,15 +1,24 @@
-import ItemElement from "./ItemElement.js";
+import {ItemElement} from "./ItemElement.js";
 import Attributes from "./Attributes";
 
 /**
+ * @event change
+ * @type {CustomElement}
+ */
+
+/**
+ * Interface for manipulating `wam-checkboxitem` elements.  Provides ARIA menuitemcheckbox role.
+ * 
  * Menu item that has a checked and unchecked state representing a checkbox
+ * 
+ * @augments ItemElement
  * 
  * @element wam-check-item
  * 
  * @slot icon-on - icon shown when checked
  * @slot icon-off - icon shown when not checked
  */
-export default class CheckboxItemElement extends ItemElement {
+export class CheckboxItemElement extends ItemElement {
 
   static get tagName() { return  "wam-checkbox-item"}
 
@@ -46,8 +55,9 @@ export default class CheckboxItemElement extends ItemElement {
   }
 
   /**
-   * @attribute {on/off} checked
-   * @type {Boolean} checked
+   * Is the menu item checked.
+   * @attribute checked
+   * @type {boolean}
    */
   get checked() {
     return this.#item.getAttribute("aria-checked") === "true";
@@ -60,6 +70,11 @@ export default class CheckboxItemElement extends ItemElement {
     return true;
   }
 
+  /**
+   * Simulate the user activating the item to toggle the value.
+   * 
+   * @fires change
+   */
   click() {
     if (this.disabled) {
       return;

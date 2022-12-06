@@ -3,11 +3,13 @@ import separatorStyle from '../style/separator.scss';
 import setItemContextAttributes from './setItemContextAttributes';
 
 /**
- * Non-interactive separator to group different menu items
+ * Interface for manipulating `wam-separator` elements.  Provides ARIA separator role.
+ * 
+ * Non-interactive separator to group different menu items.
  * 
  * @element wam-separator
  */
-export default class SeparatorElement extends HTMLElement {
+export class SeparatorElement extends HTMLElement {
 
     #separator;
 

@@ -10,9 +10,10 @@
     "start": "rollup -w -c rollup.config.js & es-dev-server --app-index dist/index.html  --watch --open",
     "develop": "rollup -w -c rollup.config.js",
     "build:site": "npm run build && npm run build:storybook --",
-    "build:docs": "wca analyze src --format json --outFile dist/custom-elements.json",
+    "build:custom-elements": "wca analyze src --format json --outFile dist/custom-elements.json",
+    "build:jsdocs": "jsdoc -c ./jsdoc.json -d ./dist/docs/ -R ./README.md",
     "build:code": " rollup -c rollup.config.js --configProduction",
-    "build": "rimraf dist && npm run build:code && npm run build:docs",
+    "build": "rimraf dist && npm run build:code && npm run build:custom-elements",
     "prepare": "npm run build",
     "storybook": "start-storybook -p 6006",
     "build:storybook": "build-storybook -o dist/storybook"
@@ -39,10 +40,12 @@
     "@storybook/addon-docs": "^6.0.21",
     "@storybook/addon-storysource": "^6.0.19",
     "@storybook/web-components": "^6.0.19",
+    "braintree-jsdoc-template": "^3.3.0",
     "cssnano": "^5.1.13",
     "deepmerge": "^3.2.0",
     "es-dev-server": "^1.60.2",
     "eslint": "^8.23.0",
+    "jsdoc": "^4.0.0",
     "karma": "^6.3.1",
     "node-sass": "^6.0.1",
     "postcss": "^8.4.16",
@@ -53,6 +56,7 @@
     "rollup-plugin-sass": "^1.2.13",
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-terser": "^7.0.2",
+    "taffydb": "^2.7.3",
     "web-component-analyzer": "^1.1.6"
   },
   "keywords": [

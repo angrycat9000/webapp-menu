@@ -2,6 +2,7 @@
  * @param {HTMLElement} root
  * @param {Array<HTMLElement>} [items=[]]
  * @returns {Array<HTMLElement>}
+ * @private
  */
 export default function getItemsFlatteningGroups(root, items) {
   items = items ?? [];

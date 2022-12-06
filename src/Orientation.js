@@ -1,9 +1,13 @@
 /**
- * @enum Orientation
+ * Layout direction of the control.
+ * @enum {string}
+ * @readonly
  */
-const Orientation  = Object.freeze({
+export const Orientation = {
+  /** The items are arranged in a top to bottom layout */
   Vertical: 'vertical',
+  /** the items are arranged in a left to right (or right to left) pattern */
   Horizontal: 'horizontal',
-});
-
-export default Orientation;
+};
+ 
+Object.freeze(Orientation);

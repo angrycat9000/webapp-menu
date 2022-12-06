@@ -6,6 +6,7 @@ export const Alignment = Object.freeze({
 
 /**
  * @return {DOMRect}
+ * @private
  */
  function getWindowBounds() {
   return {
@@ -24,6 +25,7 @@ export const Alignment = Object.freeze({
  * @param {DOMRect} options.elementBounds
  * @param {DOMRect} options.anchorBounds
  * @returns {number}
+ * @private
  */
 function positionBelow({ containerBounds, elementBounds, anchorBounds }) {
   if (anchorBounds.bottom + elementBounds.height <= containerBounds.bottom) {
@@ -44,6 +46,7 @@ function positionBelow({ containerBounds, elementBounds, anchorBounds }) {
  * @param {DOMRect} options.elementBounds
  * @param {DOMRect} options.anchorBounds
  * @returns {number}
+ * @private
  */
 function positionRight({ containerBounds, elementBounds, anchorBounds }) {
   if (anchorBounds.right + elementBounds.width <= containerBounds.right) {
@@ -88,6 +91,7 @@ function centerHorizontally({ containerBounds, elementBounds, anchorBounds }) {
  * @param {Alignment} [options.alignment = Alignment.BottomCenter]
  * @param {number} [options.anchorMargin = 0]
  * @param {number} [containerMargin = 0]
+ * @private
  */
 export function position(options) {
   let containerBounds;

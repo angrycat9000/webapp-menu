@@ -7,11 +7,25 @@ import updateDefaultFocus from "./updateDefaultFocus.js";
 const stylesheet = new ReusableStyleSheet(style);
 
 /**
- * @element wam-item
+ * Occurs when a menu item is clicked.
  * 
+ * The default behavior for `wam-item` is to close all the containing menus after the item is activated.
+ * Use `event.preventDefault()` to have the menus remain open. 
+ * @event wam-item-activate
+ * @type {CustomEvent}
+ */
+
+/**
+ * Interface for manipulating `wam-item` elements.  Provides ARIA menuitem role.
+ * 
+ * Defines an interactive item in a menu, menubar, or toolbar.
+ * 
+ * @augments HTMLElement
+ *
+ * @element wam-item
  * @slot icon - used for displaying an graphic element
  */
-export default class ItemElement extends HTMLElement {
+export class ItemElement extends HTMLElement {
   static get tagName() {
     return "wam-item";
   }
@@ -49,16 +63,10 @@ export default class ItemElement extends HTMLElement {
     });
   }
 
-  /**
-   * Web component life cycle to define what attributes trigger #attributeChangedCallback
-   */
   static get observedAttributes() {
     return ["disabled", "is-default-focus"];
   }
 
-  /**
-   * Web component life cycle when an attribute on the element is changed
-   */
   attributeChangedCallback(name, oldValue, newValue) {
     const hasAttribute = null !== newValue;
     switch (name) {
@@ -76,7 +84,8 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
-   * @property {boolean}
+   * A boolean value indicating whether or not the control is disabled.  A disabled control does not accept clicks.
+   * @type {boolean}
    */
   get disabled() {
     return this.#item.getAttribute("aria-disabled") === "true";
@@ -89,7 +98,10 @@ export default class ItemElement extends HTMLElement {
     return true;
   }
 
-  /** @property {boolean} */
+  /**
+   * A boolean property indicating if the item will be focused when the parent container is focused. Only one item in the container can be the default focus.s
+   * @type {boolean}
+   */
   get isDefaultFocus() {
     return this.#item.getAttribute("tabindex") === "0";
   }
@@ -98,7 +110,7 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
-   * @property {HTMLElement}
+   * @type {?(MenuElement|MenubarElement)}
    * @readonly
    */
   get parentMenu() {
@@ -106,7 +118,7 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
-   * Does this item have a element in the icon slot
+   * A boolean value indicating whether or not there is an element in the icon slot.
    * @type {boolean}
    * @readonly
    */
@@ -131,7 +143,9 @@ export default class ItemElement extends HTMLElement {
   }
 
   /**
-   * A
+   * Simulate the user activating the item.
+   * 
+   * @fires wam-item-activate
    */
   click() {
     if (this.disabled) {

@@ -2,7 +2,7 @@ import { MenuStyle, ItemStyle } from "./Style.js";
 import Attributes from "./Attributes.js";
 import FocusList from "./FocusList.js";
 import getItemsFlatteningGroups from "./getItemsFlatteningGroups.js";
-import Orientation from "./Orientation.js";
+import {Orientation} from "./Orientation.js";
 import updateDefaultFocus from "./updateDefaultFocus.js";
 import { Alignment, position } from "./Position.js";
 import Icon from "./Icon.js";
@@ -12,22 +12,27 @@ import setItemContextAttributes from "./setItemContextAttributes.js";
  * Occurs when a menu is opened.
  * @event wam-menu-open
  * @type {CustomEvent}
- * @property {Menu} detail.menu
+ * @property {MenuElement} detail.menu
  */
 
 /**
  * Occurs when a menu is closed.
  * @event wam-menu-close
  * @type {CustomEvent}
- * @property {Menu} detail.menu
+ * @property {MenuElement} detail.menu
  */
 
 
 /**
- * @element wam-menu
+ * Interface for manipulating `<wam-menu>` elements.  Provides the ARIA role of menu.
+ * 
+ * Displays a list of pop up choices to the user.  May be nested inside of a menubar or menu.
  *
+ * @augments HTMLElement
+ * @element wam-menu
+ * @class
  */
-export default class MenuElement extends HTMLElement {
+export class MenuElement extends HTMLElement {
   static get tagName() {
     return "wam-menu";
   }
@@ -93,16 +98,10 @@ export default class MenuElement extends HTMLElement {
     });
   }
 
-  /**
-   * Web component life cycle to define what attributes trigger #attributeChangedCallback
-   */
   static get observedAttributes() {
     return ["name", "open", "is-default-focus", "orientation", "disabled"];
   }
 
-  /**
-   * Web component life cycle when an attribute on the element is changed
-   */
   attributeChangedCallback(name, oldValue, newValue) {
     const hasAttribute = null !== newValue;
     switch (name) {
@@ -152,7 +151,9 @@ export default class MenuElement extends HTMLElement {
     }
   }
 
-  /** @property {boolean} */
+  /**
+   * A boolean value indicating whether or not the control is disabled.  A disabled control does not accept clicks.
+   * @type {boolean} */
   get disabled() {
     return this.#item.getAttribute("aria-disabled") === "true";
   }
@@ -163,14 +164,16 @@ export default class MenuElement extends HTMLElement {
       this.removeAttribute("disabled");
     }
   }
-  /** @property {boolean} */
+
+  /** @type {boolean} */
   get isInteractive() {
     return true;
   }
 
   /** 
-   * Is the menu open
-   * @property {boolean}
+   * Determine if the menu is open.  USes the `open` attribute
+   * @attribute open
+   * @type {boolean}
    */
   get isOpen() {
     return this.#item.getAttribute("aria-expanded") === "true";
@@ -179,7 +182,7 @@ export default class MenuElement extends HTMLElement {
     Attributes.setTrueFalse(this, "open", value);
   }
 
-  /** @property {boolean} */
+  /** @type {boolean} */
   get isDefaultFocus() {
     return this.#item.getAttribute("tabindex") === "0";
   }
@@ -187,7 +190,7 @@ export default class MenuElement extends HTMLElement {
     Attributes.setTrueFalse(this, "is-default-focus", value);
   }
 
-  /** @property {Orientation} */
+  /** @type {Orientation} */
   get orientation() {
     return this.#popup.getAttribute("aria-orientation");
   }
@@ -197,7 +200,7 @@ export default class MenuElement extends HTMLElement {
 
   /**
    * Get the closest menu or menubar that contains this menu.
-   * @property {?HTMLElement}
+   * @type {?(MenuElement|MenubarElement)}
    * @readonly
    */
   get parentMenu() {
@@ -205,7 +208,7 @@ export default class MenuElement extends HTMLElement {
   }
 
   /**
-   * Does this item have a element in the icon slot
+   * A boolean value indicating whether or not there is an element in the icon slot.
    * @type {boolean}
    * @readonly
    */
@@ -215,7 +218,7 @@ export default class MenuElement extends HTMLElement {
 
   /**
    * True if at least one child has an icon.  Updated before the next animation frame
-   * @property {boolean}
+   * @type {boolean}
    * @protected
    */
   get childHasIcon() {

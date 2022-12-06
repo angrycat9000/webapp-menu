@@ -1,7 +1,7 @@
 import { ReusableStyleSheet } from "./Style";
 import style from "../style/menubar.scss";
 import Attributes from "./Attributes.js";
-import Orientation from "./Orientation.js";
+import {Orientation} from "./Orientation.js";
 import getItemsFlatteningGroups from "./getItemsFlatteningGroups.js";
 import FocusList from "./FocusList.js";
 import updateDefaultFocus from "./updateDefaultFocus.js";
@@ -9,7 +9,13 @@ import isItemOf from "./isItemOf.js";
 
 const stylesheet = new ReusableStyleSheet(style);
 
-export default class MenubarElement extends HTMLElement {
+/**
+ * Interface for manipulating `wam-menubar` elements.  Provides ARIA menubar role.
+ * 
+ * @augments HTMLElement
+ * @element wam-menubar
+ */
+export class MenubarElement extends HTMLElement {
   static get tagName() {
     return "wam-menubar";
   }
@@ -48,16 +54,10 @@ export default class MenubarElement extends HTMLElement {
     this.addEventListener("keydown", this.#onKeyDown.bind(this));
   }
 
-  /**
-   * Web component life cycle to define what attributes trigger #attributeChangedCallback
-   */
   static get observedAttributes() {
     return ["orientation"];
   }
 
-  /**
-   * Web component life cycle when an attribute on the element is changed
-   */
   attributeChangedCallback(name, oldValue, newValue) {
     //const hasAttribute = null !== newValue;
     switch (name) {
@@ -85,7 +85,7 @@ export default class MenubarElement extends HTMLElement {
     }
   }
 
-  /** @property {Orientation} */
+  /** @type {Orientation} */
   get orientation() {
     return this.#container.getAttribute("aria-orientation");
   }
@@ -96,7 +96,7 @@ export default class MenubarElement extends HTMLElement {
     
   /**
    * True if at least one child has an icon
-   * @property {boolean}
+   * @type {boolean}
    * @protected
    */
    get childHasIcon() {
@@ -104,6 +104,7 @@ export default class MenubarElement extends HTMLElement {
   }
 
 
+  /** @returns {FocusList} */
   getInteractiveItems() {
     return new FocusList(
       getItemsFlatteningGroups(this).filter((item) => item.isInteractive)
