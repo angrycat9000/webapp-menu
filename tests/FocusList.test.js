@@ -3,13 +3,14 @@ import '../dist/webapp-menu';
 
 describe("FocusList", () => {
   let list;
-  beforeEach(async ()=>{
+  beforeEach(async () => {
     const parent = await fixture(
-      html`<wam-menu
-        ><wam-item id="one"></wam-item>
-        <wam-item id="two"></wam-item
-        ><wam-item id="three"></wam-item
-      ></wam-menu>`
+      html`<wam-menu>
+        <wam-item id="one"></wam-item>npmm 
+        <wam-item id="two"></wam-item>
+        <wam-separator></wam-separator>
+        <wam-item id="three"></wam-item>
+      </wam-menu>`
     );
     list = parent.getInteractiveItems();
   })
@@ -22,13 +23,17 @@ describe("FocusList", () => {
     });
   });
 
-  it("first returns first element in list",  () => {
+  it("first returns first element in list", () => {
     expect(list.first.id).to.equal("one");
   });
 
-  it.skip("focusFirst focuses first element", ()=>{
+  it("does not include separator", async () => {
+    expect(list.length).to.equal(3);
+  })
+
+  it.skip("focusFirst focuses first element", () => {
     const first = list.first;
-  //expect(document.activeElement === first, "document.activeElement === first").to.be.false;
+    //expect(document.activeElement === first, "document.activeElement === first").to.be.false;
 
     //list.focusFirst();
     first.focus();

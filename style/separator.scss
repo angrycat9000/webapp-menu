@@ -3,7 +3,14 @@
 :host {
   cursor: none;
   margin: $menu-margin;
-  border-top: $menu-border;
-  border-left: $menu-border;
   display: block;
+}
+
+div[data-parent-orientation=vertical] {
+  border-top: $menu-border;
+}
+
+div[data-parent-orientation=horizontal] {
+  border-left: $menu-border;
+  height:100%;
 }
