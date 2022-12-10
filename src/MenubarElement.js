@@ -76,6 +76,7 @@ export class MenubarElement extends HTMLElement {
     window.customElements.upgrade(this);
 
     this.getInteractiveItems().insureDefaultSet();
+    this.queueItemUpdate();
   }
 
   disconnectedCallback() {

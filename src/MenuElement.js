@@ -135,7 +135,8 @@ export class MenuElement extends HTMLElement {
     // before trying to select the focused item
     window.customElements.upgrade(this);
 
-    this.parentMenu?.queueItemUpdate();
+    this.parentMenu?.queueItemUpdate?.();
+    this.queueItemUpdate();
 
     this.getInteractiveItems().insureDefaultSet();
 
@@ -338,10 +339,11 @@ export class MenuElement extends HTMLElement {
   }
 
   #getAnchor() {
-    if (this.#item.style.display === "") {
+    if (this.parentMenu) {
       return this.#item;
     }
-    return undefined;
+
+    return null;
   }
 
   #updatePosition() {
@@ -353,6 +355,7 @@ export class MenuElement extends HTMLElement {
     if (!anchor) {
       this.#popup.style.left = "";
       this.#popup.style.top = "";
+      this.#popup.style.position ="static";
       return;
     }
 
