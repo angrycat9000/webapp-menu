@@ -64,7 +64,7 @@ export class ItemElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["disabled", "is-default-focus"];
+    return ["disabled", "focus-target"];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -73,7 +73,7 @@ export class ItemElement extends HTMLElement {
       case "disabled":
         this.#item.setAttribute("aria-disabled", hasAttribute);
         break;
-      case "is-default-focus":
+      case "focus-target":
         this.#item.setAttribute("tabindex", hasAttribute ? 0 : -1);
         break;
     }
@@ -91,7 +91,7 @@ export class ItemElement extends HTMLElement {
     return this.#item.getAttribute("aria-disabled") === "true";
   }
   set disabled(value) {
-    Attributes.setTrueFalse(this, "disabled", value);
+    Attributes.setBoolean(this, "disabled", value);
   }
 
   get isInteractive() {
@@ -102,11 +102,11 @@ export class ItemElement extends HTMLElement {
    * A boolean property indicating if the item will be focused when the parent container is focused. Only one item in the container can be the default focus.s
    * @type {boolean}
    */
-  get isDefaultFocus() {
+  get isFocusTarget() {
     return this.#item.getAttribute("tabindex") === "0";
   }
-  set isDefaultFocus(value) {
-    Attributes.setTrueFalse(this, "is-default-focus", value);
+  set isFocusTarget(value) {
+    Attributes.setBoolean(this, "focus-target", value);
   }
 
   /**

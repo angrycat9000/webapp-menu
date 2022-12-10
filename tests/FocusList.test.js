@@ -19,10 +19,10 @@ describe("FocusList", () => {
     itemThree = menu.querySelector('#three');
   })
 
-  describe("isDefaultFocus", () => {
+  describe("isFocusTarget", () => {
     it("defaults to false", () => {
       const element = document.createElement("wam-item");
-      expect(element.isDefaultFocus).to.be.false;
+      expect(element.isFocusTarget).to.be.false;
     });
   });
 

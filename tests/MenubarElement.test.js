@@ -19,6 +19,6 @@ describe("MenubarElement", () => {
       `<wam-menu><wam-item></wam-item><wam-item></wam-item></wam-menu>`
     );
     const item = menu.firstElementChild;
-    expect(item.isDefaultFocus).to.be.true;
+    expect(item.isFocusTarget).to.be.true;
   });
 });

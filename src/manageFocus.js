@@ -38,7 +38,7 @@ export default function manageFocus(element, slot) {
 
   slot.addEventListener("slotchange", () => {
     const interactiveItems = element.getInteractiveItems();
-    if (!interactiveItems.defaultFocus) {
+    if (!interactiveItems.current) {
       interactiveItems.focusOn(interactiveItems.first);
     }
   });

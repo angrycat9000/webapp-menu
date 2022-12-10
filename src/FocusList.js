@@ -1,3 +1,26 @@
+import Attributes from "./Attributes.js";
+
+
+function isFocusTarget(element) {
+  switch (element.tagName) {
+    case 'WAM-ITEM':
+    case 'WAM-MENU':
+      return Attributes.getBoolean(element, 'focus-target');
+    default:
+      return element.getAttribute('tabindex') === "0";
+  }
+}
+
+function setIsFocusTarget(element, isTarget) {
+  switch (element.tagName) {
+    case 'WAM-ITEM':
+    case 'WAM-MENU':
+      return Attributes.setBoolean(element, 'focus-target', isTarget);
+    default:
+      return element.setAttribute('tabindex', isTarget? "0" : "-1");
+  }
+}
+
 /**
  * List of interactive items that can take focus.
  */
@@ -39,7 +62,7 @@ class FocusList {
    * @type {?HTMLElement}
    */
   get next() {
-    const index = this.defaultFocusIndex;
+    const index = this.currentIndex;
     if (-1 === index) {
       return this.first;
     }
@@ -54,7 +77,7 @@ class FocusList {
    * @type {?HTMLElement}
    */
   get previous() {
-    const index = this.defaultFocusIndex;
+    const index = this.currentIndex;
     if (-1 === index) {
       return this.last;
     }
@@ -64,31 +87,31 @@ class FocusList {
   }
 
   /**
-   * The current element.  It either has focus, or will get focus when the parent element is focused.
+   * The target focus element.  It either has focus, or will get focus when the parent element is focused.
    * @type {?HTMLElement}
    */
-  get defaultFocus() {
-    return this._items.find((item) => item.isDefaultFocus);
+  get current() {
+    return this._items.find(isFocusTarget);
   }
 
   /**
-   * The index of the defaultFocus element in the list.  If there is no default focus, -1 is returned.
+   * The index of the current focus target in the list.  If there is no focus target, -1 is returned.
    * @type {number}
    */
-  get defaultFocusIndex() {
-    return this._items.findIndex((item) => item.isDefaultFocus);
+  get currentIndex() {
+    return this._items.findIndex(isFocusTarget);
   }
 
   *[Symbol.iterator]() {
     for (let e of this._items) yield e;
   }
-  
+
   /**
    * Make sure that there is a default element set so that it will receive focus.
    */
   insureDefaultSet() {
-    if(!this.defaultFocus && this._items.length > 0) {
-        this.first.isDefaultFocus = true;
+    if (!this.current && this._items.length > 0) {
+      setIsFocusTarget(this.first, true);
     }
   }
 
@@ -98,10 +121,11 @@ class FocusList {
    */
   focusOn(itemToFocus) {
     for (const item of this._items) {
-      const isDefaultFocus = item === itemToFocus;
-      item.isDefaultFocus = isDefaultFocus;
-      if (isDefaultFocus) {
+      if (item === itemToFocus) {
+        setIsFocusTarget(item, true);
         item.focus();
+      } else {
+        setIsFocusTarget(item, false)
       }
     }
   }

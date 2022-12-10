@@ -99,7 +99,7 @@ export class MenuElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["name", "open", "is-default-focus", "orientation", "disabled"];
+    return ["name", "open", "focus-target", "orientation", "disabled"];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -124,7 +124,7 @@ export class MenuElement extends HTMLElement {
           newValue ?? Orientation.Horizontal
         );
         break;
-      case "is-default-focus":
+      case "focus-target":
         this.#item.setAttribute("tabindex", hasAttribute ? 0 : -1);
         break;
     }
@@ -180,15 +180,15 @@ export class MenuElement extends HTMLElement {
     return this.#item.getAttribute("aria-expanded") === "true";
   }
   set isOpen(value) {
-    Attributes.setTrueFalse(this, "open", value);
+    Attributes.setBoolean(this, "open", value);
   }
 
   /** @type {boolean} */
-  get isDefaultFocus() {
+  get isFocusTarget() {
     return this.#item.getAttribute("tabindex") === "0";
   }
-  set isDefaultFocus(value) {
-    Attributes.setTrueFalse(this, "is-default-focus", value);
+  set isFocusTarget(value) {
+    Attributes.setBoolean(this, "focus-target", value);
   }
 
   /** @type {Orientation} */
@@ -247,7 +247,7 @@ export class MenuElement extends HTMLElement {
     if (!this.isOpen) {
       this.#item.focus();
     } else {
-      this.getInteractiveItems().defaultFocus?.focus();
+      this.getInteractiveItems().current?.focus();
     }
   }
 

@@ -113,7 +113,7 @@ export class MenubarElement extends HTMLElement {
   }
 
   focus() {
-    this.getInteractiveItems().defaultFocus?.focus();
+    this.getInteractiveItems().current?.focus();
   }
 
   #moveFocusBackToParent(event) {

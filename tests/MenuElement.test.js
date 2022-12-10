@@ -1,42 +1,42 @@
 import { expect, fixture, html } from "@open-wc/testing";
 
 describe("MenuElement", () => {
-  describe("isDefaultFocus", () => {
+  describe("isFocusTarget", () => {
     it("defaults to false", () => {
       const element = document.createElement("wam-menu");
-      expect(element.isDefaultFocus).to.be.false;
+      expect(element.isFocusTarget).to.be.false;
     });
 
     it("can be set true by property", () => {
       const element = document.createElement("wam-menu");
-      element.isDefaultFocus = true;
-      expect(element.isDefaultFocus).to.be.true;
+      element.isFocusTarget = true;
+      expect(element.isFocusTarget).to.be.true;
     });
 
     it("can be set by attribute", async () => {
       const element = await fixture(
-        html`<wam-menu is-default-focus></wam-menu>`
+        html`<wam-menu focus-target></wam-menu>`
       );
-      expect(element.isDefaultFocus).to.be.true;
+      expect(element.isFocusTarget).to.be.true;
     });
 
     it("setting property to true adds attribute", () => {
       const element = document.createElement("wam-menu");
-      element.isDefaultFocus = true;
-      expect(element.getAttribute("is-default-focus")).to.equal("");
+      element.isFocusTarget = true;
+      expect(element.getAttribute("focus-target")).to.equal("");
     });
 
     it("setting property to false removes the attribute", async () => {
       const element = await fixture(
-        html`<wam-menu is-default-focus></wam-menu>`
+        html`<wam-menu focus-target></wam-menu>`
       );
-      element.isDefaultFocus = false;
-      expect(element.hasAttribute("is-default-focus")).to.be.false;
+      element.isFocusTarget = false;
+      expect(element.hasAttribute("focus-target")).to.be.false;
     });
 
     it("true sets item.tabindex to 0", async () => {
       const element = await fixture(
-        html`<wam-menu is-default-focus></wam-menu>`
+        html`<wam-menu focus-target></wam-menu>`
       );
       const item = element.shadowRoot.querySelector("[part=item]");
       expect(item.getAttribute("tabindex")).to.equal("0");
@@ -71,7 +71,7 @@ describe("MenuElement", () => {
   it('sets defaultFocus on the first item', async() => {
     const menu = await fixture(`<wam-menu open><wam-item></wam-item><wam-item></wam-item></wam-menu>`);
     const item = menu.firstElementChild;
-    expect(item.isDefaultFocus, "isDefaultFocus").to.be.true;
+    expect(item.isFocusTarget, "isFocusTarget").to.be.true;
 })
 
   describe("disabled", ()=>{

@@ -63,7 +63,7 @@ export class CheckboxItemElement extends ItemElement {
     return this.#item.getAttribute("aria-checked") === "true";
   }
   set checked(value) {
-    Attributes.setTrueFalse(this, "checked", value);
+    Attributes.setBoolean(this, "checked", value);
   }
 
   get hasIcon() {

@@ -1,42 +1,42 @@
 import { expect, fixture, html, nextFrame } from "@open-wc/testing";
 
 describe("ItemElement", () => {
-  describe("isDefaultFocus", () => {
+  describe("isFocusTarget", () => {
     it("defaults to false", () => {
       const element = document.createElement("wam-item");
-      expect(element.isDefaultFocus).to.be.false;
+      expect(element.isFocusTarget).to.be.false;
     });
 
     it("can be set true by property", () => {
       const element = document.createElement("wam-item");
-      element.isDefaultFocus = true;
-      expect(element.isDefaultFocus).to.be.true;
+      element.isFocusTarget = true;
+      expect(element.isFocusTarget).to.be.true;
     });
 
     it("can be set by attribute", async () => {
       const element = await fixture(
-        html`<wam-item is-default-focus></wam-item>`
+        html`<wam-item focus-target></wam-item>`
       );
-      expect(element.isDefaultFocus).to.be.true;
+      expect(element.isFocusTarget).to.be.true;
     });
 
     it("setting property to true adds attribute", () => {
       const element = document.createElement("wam-item");
-      element.isDefaultFocus = true;
-      expect(element.getAttribute("is-default-focus")).to.equal("");
+      element.isFocusTarget = true;
+      expect(element.getAttribute("focus-target")).to.equal("");
     });
 
     it("setting property to false removes the attribute", async () => {
       const element = await fixture(
-        html`<wam-item is-default-focus></wam-item>`
+        html`<wam-item focus-target></wam-item>`
       );
-      element.isDefaultFocus = false;
-      expect(element.hasAttribute("is-default-focus")).to.be.false;
+      element.isFocusTarget = false;
+      expect(element.hasAttribute("focus-target")).to.be.false;
     });
 
     it("true sets item.tabindex to 0", async () => {
       const element = await fixture(
-        html`<wam-item is-default-focus></wam-item>`
+        html`<wam-item focus-target></wam-item>`
       );
       const item = element.shadowRoot.querySelector("[part=item]");
       expect(item.getAttribute("tabindex")).to.equal("0");
