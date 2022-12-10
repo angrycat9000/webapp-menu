@@ -152,7 +152,7 @@ export class ItemElement extends HTMLElement {
       return;
     }
 
-    const event = new CustomEvent("wam-item-activate", { bubbles: true });
+    const event = new CustomEvent("wam-item-activate", { bubbles: true, cancelable: true });
     const okToClose = this.dispatchEvent(event);
     if (!okToClose) {
       return;

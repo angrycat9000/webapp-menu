@@ -163,5 +163,23 @@ describe("ItemElement", () => {
 
       expect(fired, "event count").to.be.equal(0);
     });
+
+    it("closes parent menu by default", async()=>{
+      const menu = await fixture(html`<wam-menu open><wam-item></wam-item></wam-menu>`);
+      menu.firstElementChild.click();
+      expect(menu.isOpen).to.be.false;
+    })
+    
+    it("does not close parent if event.preventDefault() has been called", async()=>{
+      const menu = await fixture(html`
+        <wam-menu 
+          open 
+          @wam-item-activate=${(event)=>{event.preventDefault()}}
+        >
+          <wam-item></wam-item>
+      </wam-menu>`);
+      menu.firstElementChild.click();
+      expect(menu.isOpen).to.be.true;
+    })
   });
 });
