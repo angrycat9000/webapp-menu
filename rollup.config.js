@@ -5,7 +5,6 @@ import resolve from 'rollup-plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
 import cssnano from 'cssnano';
 import postcss from 'postcss';
-import html from '@open-wc/rollup-plugin-html';
 const license = require('rollup-plugin-license');
 
 const path = require('path');
@@ -21,7 +20,6 @@ function getPlugins(isProd) {
   }
 
   let plugins = [
-    html(),
     resolve(),
     svg(),
     sass(sassOptions),
@@ -57,10 +55,9 @@ function getPlugins(isProd) {
 }
 
 const config = {
-  input: './src/index.html',
+  input: './src/webapp-menu.js',
   output: {
-    //file:'dist/webapp-menu.js',
-    dir: 'dist',
+    file: 'dist/webapp-menu.js',
     format: 'esm',
     sourcemap: true,
   },

@@ -8,8 +8,13 @@ screenshots
 examples
 stories
 .storybook
-dist/index*
 style
 src
 icons
 coverage
+site
+jsdoc.json
+web-test-runner.config.mjs
+CHANGES.md
+.eslintingore
+.eslintrc.json

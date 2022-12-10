@@ -3,11 +3,15 @@
  * @enum {string}
  * @readonly
  */
-export const Orientation = {
+const Orientation = {
   /** The items are arranged in a top to bottom layout */
   Vertical: 'vertical',
-  /** the items are arranged in a left to right (or right to left) pattern */
+  /** The items are arranged in a left to right (or right to left) pattern */
   Horizontal: 'horizontal',
 };
- 
+
+// Work around that JS Doc does not include the values if export or freeze are used.
+// https://github.com/jsdoc/jsdoc/issues/777
+// https://github.com/jsdoc/jsdoc/issues/1657
 Object.freeze(Orientation);
+export {Orientation};
