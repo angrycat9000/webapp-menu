@@ -10,19 +10,19 @@ No framework dependencies.  It is written in with vanilla JS and can be used wit
 
 ## Screenshots & Demo
 
-[Live Demo](https://webapp-menu.netlify.com/)
+[Live Demo](https://webapp-menu.netlify.app/)
 
 Toolbar
 
-[![toolbar screenshot](screenshots/toolbar.png)](https://webapp-menu.netlify.com/)
+[![toolbar screenshot](screenshots/toolbar.png)](https://webapp-menu.netlify.app/)
 
 Popup
 
-[![context popup screenshot](screenshots/popup.png)](https://webapp-menu.netlify.com/)
+[![context popup screenshot](screenshots/popup.png)](https://webapp-menu.netlify.app/)
 
 Nested Menu
 
-[![nested menu control screenshot](screenshots/nested-menu.png)](https://webapp-menu.netlify.com/)
+[![nested menu control screenshot](screenshots/nested-menu.png)](https://webapp-menu.netlify.app/)
 
 
 ## Setup
@@ -51,7 +51,7 @@ import Menu from 'webapp-menu';
 
 The menu components can be configured using either HTML or JavaScript.
 
-See the [storybook examples](https://webapp-menu.netlify.com/storybook/) for more details.
+See the [storybook examples](https://webapp-menu.netlify.app/storybook/) for more details.
 
 ### Using HTML
 
